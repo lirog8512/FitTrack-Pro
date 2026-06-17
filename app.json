@@ -4,13 +4,13 @@
     "slug": "fittrack-pro",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
       "resizeMode": "contain",
       "backgroundColor": "#0A0A0F"
     },
+    "sdkVersion": "54.0.0",
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
