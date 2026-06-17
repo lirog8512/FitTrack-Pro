@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, FONTS } from '../src/constants/theme';
@@ -16,7 +16,7 @@ import ProgressScreen from '../src/screens/progress/ProgressScreen';
 import ProfileScreen from '../src/screens/profile/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const NAV_THEME = {
   ...DefaultTheme,
@@ -29,7 +29,7 @@ const NAV_THEME = {
   },
 };
 
-function CustomTabBar({ state, descriptors, navigation }) {
+function CustomTabBar({ state, navigation }) {
   const tabs = [
     { name: 'Inicio', icon: 'home', iconOutline: 'home-outline' },
     { name: 'Nutrition', icon: 'restaurant', iconOutline: 'restaurant-outline' },
@@ -45,31 +45,26 @@ function CustomTabBar({ state, descriptors, navigation }) {
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
           const tab = tabs[index];
-          const label = labels[index];
           const color = isFocused ? COLORS.green : COLORS.textMuted;
 
           return (
-            <View key={route.key} style={tabStyles.tabItem}>
+            <TouchableOpacity
+              key={route.key}
+              style={tabStyles.tabItem}
+              onPress={() => {
+                if (!isFocused) navigation.navigate(route.name);
+              }}
+              activeOpacity={0.7}
+            >
               {isFocused && (
                 <LinearGradient
                   colors={[COLORS.green + '25', COLORS.green + '05']}
                   style={tabStyles.activeIndicator}
                 />
               )}
-              <View
-                style={tabStyles.tabInner}
-                onStartShouldSetResponder={() => true}
-                onResponderRelease={() => {
-                  const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-                  if (!isFocused && !event.defaultPrevented) navigation.navigate(route.name);
-                }}
-              >
-                <Ionicons name={isFocused ? tab.icon : tab.iconOutline} size={22} color={color} />
-                <View style={[tabStyles.label, isFocused && tabStyles.labelActive]}>
-                  <View style={tabStyles.dot} />
-                </View>
-              </View>
-            </View>
+              <Ionicons name={isFocused ? tab.icon : tab.iconOutline} size={22} color={color} />
+              {isFocused && <View style={tabStyles.dot} />}
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -95,10 +90,14 @@ function MainTabs() {
 export default function Navigation() {
   return (
     <NavigationContainer theme={NAV_THEME}>
-      <Stack.Navigator screenOptions={{ headerShown: false, cardStyle: { backgroundColor: COLORS.background } }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Main" component={MainTabs} />
-        <Stack.Screen name="ActiveWorkout" component={ActiveWorkoutScreen} options={{ presentation: 'modal' }} />
+        <Stack.Screen
+          name="ActiveWorkout"
+          component={ActiveWorkoutScreen}
+          options={{ presentation: 'modal' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -109,7 +108,7 @@ const tabStyles = StyleSheet.create({
     backgroundColor: COLORS.card,
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
-    paddingBottom: 20,
+    paddingBottom: 24,
     paddingTop: 8,
   },
   bar: {
@@ -119,22 +118,22 @@ const tabStyles = StyleSheet.create({
   tabItem: {
     flex: 1,
     alignItems: 'center',
+    paddingVertical: 8,
     position: 'relative',
   },
   activeIndicator: {
     position: 'absolute',
-    top: -4,
+    top: 0,
     left: 4,
     right: 4,
-    height: 48,
+    bottom: 0,
     borderRadius: 16,
   },
-  tabInner: {
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+  dot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: COLORS.green,
+    marginTop: 4,
   },
-  label: { marginTop: 4, width: 4, height: 4 },
-  labelActive: {},
-  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: COLORS.green },
 });
