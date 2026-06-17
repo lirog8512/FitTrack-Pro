@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "resizeMode": "contain",
       "backgroundColor": "#0A0A0F"
@@ -20,15 +20,6 @@
         "backgroundColor": "#0A0A0F"
       },
       "package": "com.fittrackpro.app"
-    },
-    "plugins": [
-      "expo-image-picker",
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#0A0A0F"
-        }
-      ]
-    ]
+    }
   }
 }
