@@ -10,7 +10,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#0A0A0F"
     },
-    "sdkVersion": "54.0.0",
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
