@@ -146,19 +146,31 @@ function ExerciseModal({ exercise, dayDate, visible, onClose }) {
     setShowTips(true);
     setImgUrl(null);
     setImgError(false);
-    const key = user.unsplashKey;
-    if (!key) return;
+    const pixabayKey = user.pixabayKey;
+    const unsplashKey = user.unsplashKey;
+    if (!pixabayKey && !unsplashKey) return;
     setImgLoading(true);
     const query = EXERCISE_QUERY[exercise.name] || exercise.name + ' gym workout';
-    fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(query)}&orientation=landscape&client_id=${key}`)
-      .then(r => r.json())
-      .then(d => {
-        setImgUrl(d.urls?.regular || null);
-        setImgLoading(false);
-      })
-      .catch(() => setImgLoading(false));
+    if (pixabayKey) {
+      fetch(`https://pixabay.com/api/?key=${pixabayKey}&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&category=sports&per_page=3&safesearch=true`)
+        .then(r => r.json())
+        .then(d => {
+          const hit = d.hits?.[0];
+          setImgUrl(hit?.webformatURL || hit?.largeImageURL || null);
+          setImgLoading(false);
+        })
+        .catch(() => setImgLoading(false));
+    } else {
+      fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(query)}&orientation=landscape&client_id=${unsplashKey}`)
+        .then(r => r.json())
+        .then(d => {
+          setImgUrl(d.urls?.regular || null);
+          setImgLoading(false);
+        })
+        .catch(() => setImgLoading(false));
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exercise?.name, user.unsplashKey]);
+  }, [exercise?.name, user.pixabayKey, user.unsplashKey]);
 
   const history = exercise ? getExerciseHistory(exercise.name) : [];
   const lastSession = history[0];
@@ -231,9 +243,9 @@ function ExerciseModal({ exercise, dayDate, visible, onClose }) {
                   <Text style={{ fontSize:56 }}>{cat.emoji}</Text>
                   <Text style={{ color:C.text, fontSize:18, fontWeight:'900', marginTop:10, textAlign:'center' }}>{exercise.name}</Text>
                   <Text style={{ color:C.muted, fontSize:12, marginTop:4, textAlign:'center' }}>{exercise.note}</Text>
-                  {!user.unsplashKey && (
+                  {!user.pixabayKey && !user.unsplashKey && (
                     <View style={{ marginTop:12, backgroundColor:'#00000066', borderRadius:10, paddingHorizontal:14, paddingVertical:8 }}>
-                      <Text style={{ color:C.muted, fontSize:10, textAlign:'center' }}>📸 Agrega tu API Key de Unsplash en Perfil para ver fotos reales</Text>
+                      <Text style={{ color:C.muted, fontSize:10, textAlign:'center' }}>📸 Agrega tu API Key de Pixabay en Perfil → fotos reales de ejercicios</Text>
                     </View>
                   )}
                 </LinearGradient>

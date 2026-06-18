@@ -17,6 +17,7 @@ const defaultUser = {
   injuries: ['Tendones bíceps', 'Protrusión L4-L5'],
   apiKey: '',
   unsplashKey: '',
+  pixabayKey: '',
   lastBodyAnalysis: '',
 };
 

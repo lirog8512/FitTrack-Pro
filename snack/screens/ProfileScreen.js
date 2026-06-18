@@ -73,6 +73,7 @@ export default function ProfileScreen() {
     waterGoal: { title:'Meta de agua',      keyboardType:'numeric',     unit:'ml',   transform:Number },
     apiKey:       { title:'API Key Anthropic', keyboardType:'default', unit:'', transform:v=>v, secure:true, placeholder:'sk-ant-...' },
     unsplashKey:  { title:'API Key Unsplash',  keyboardType:'default', unit:'', transform:v=>v, secure:true, placeholder:'Tu Access Key de Unsplash' },
+    pixabayKey:   { title:'API Key Pixabay',   keyboardType:'default', unit:'', transform:v=>v, secure:true, placeholder:'Tu API Key de Pixabay' },
   };
 
   return (
@@ -114,14 +115,15 @@ export default function ProfileScreen() {
               </View>
             </View>
             <Row icon="key" label="API Key de Anthropic" value={user.apiKey} color={C.green} onPress={() => setEditing('apiKey')} masked={true} />
-            <Row icon="image" label="API Key de Unsplash (fotos ejercicios)" value={user.unsplashKey} color={C.blue} onPress={() => setEditing('unsplashKey')} masked={true} />
-            {(!user.apiKey || !user.unsplashKey) && (
+            <Row icon="image" label="Pixabay (fotos ejercicios · acceso inmediato)" value={user.pixabayKey} color={C.blue} onPress={() => setEditing('pixabayKey')} masked={true} />
+            <Row icon="image-outline" label="Unsplash (fotos ejercicios · pendiente aprobación)" value={user.unsplashKey} color={C.purple} onPress={() => setEditing('unsplashKey')} masked={true} />
+            {(!user.apiKey || !user.pixabayKey) && (
               <View style={{ backgroundColor:'#22C55E11', borderRadius:10, padding:10, marginTop:8, gap:6 }}>
                 {!user.apiKey && <Text style={{ color:C.muted, fontSize:11, lineHeight:18 }}>
                   🤖 Anthropic: console.anthropic.com → Scanner comida · Análisis corporal
                 </Text>}
-                {!user.unsplashKey && <Text style={{ color:C.muted, fontSize:11, lineHeight:18 }}>
-                  📸 Unsplash (gratis): unsplash.com/developers → crear app → Access Key → fotos reales de ejercicios
+                {!user.pixabayKey && <Text style={{ color:C.muted, fontSize:11, lineHeight:18 }}>
+                  📸 Pixabay GRATIS (sin espera): pixabay.com/api/docs → Get API Key → acceso inmediato
                 </Text>}
               </View>
             )}
