@@ -16,37 +16,49 @@ const CAT = {
   core:      { grad:['#F59E0B','#B45309'], emoji:'🔥', label:'Core' },
 };
 
-const U = 'https://source.unsplash.com/600x400/?';
+// Verified Unsplash IDs — confirmed to load gym/exercise content
+const BENCH = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80';
+const DUMB  = 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&q=80';
+const SHLD  = 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&q=80';
+const ROW   = 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=600&q=80';
+const LAT   = 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80';
+const LEGS  = 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600&q=80';
+const LEGM  = 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80';
+const GLUT  = 'https://images.unsplash.com/photo-1550977616-efc580084ac5?w=600&q=80';
+const LUNG  = 'https://images.unsplash.com/photo-1434682966088-29fd38c0f27e?w=600&q=80';
+const FLOOR = 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80';
+const PLNK  = 'https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=600&q=80';
+
 const EXERCISE_IMAGES = {
-  'Press de banca plano':                    U+'bench+press+barbell+gym',
-  'Press inclinado con mancuernas':          U+'incline+dumbbell+press+chest',
-  'Aperturas en polea baja':                 U+'cable+fly+chest+gym',
-  'Press militar mancuernas sentado':        U+'overhead+press+dumbbell+shoulder',
-  'Elevaciones laterales':                   U+'lateral+raise+dumbbell+shoulder',
-  'Fondos en banco (asistido)':              U+'tricep+dips+bench+gym',
-  'Extensión tríceps polea':                 U+'tricep+pushdown+cable+gym',
-  'Remo con barra en T (apoyado)':           U+'barbell+row+back+gym',
-  'Jalones polea al pecho (agarre ancho)':   U+'lat+pulldown+cable+back',
-  'Remo en polea baja sentado':              U+'seated+cable+row+back',
-  'Pullover con mancuerna':                  U+'dumbbell+pullover+back+gym',
-  'Face pulls en polea':                     U+'face+pull+cable+shoulder',
-  'Curl martillo con mancuernas':            U+'hammer+curl+dumbbell+bicep',
-  'Curl en polea baja':                      U+'cable+curl+bicep+gym',
-  'Prensa de piernas 45°':                   U+'leg+press+machine+gym',
-  'Extensión de cuádriceps en máquina':      U+'leg+extension+quadriceps+machine',
-  'Curl femoral tumbado':                    U+'leg+curl+hamstring+machine',
-  'Hip thrust con barra':                    U+'hip+thrust+barbell+glute',
-  'Zancadas caminando (sin peso)':           U+'walking+lunge+legs+gym',
-  'Elevación de gemelos de pie':             U+'calf+raise+standing+gym',
-  'Dead bug':                                U+'core+exercise+floor+abs',
-  'Plancha frontal':                         U+'plank+exercise+core+gym',
-  'Bird dog':                                U+'bird+dog+core+exercise',
-  'Plancha lateral':                         U+'side+plank+core+oblique',
-  'Crunch en polea':                         U+'cable+crunch+abs+gym',
-  'Prensa de piernas (ligero)':              U+'leg+press+machine+gym',
-  'Remo en máquina':                         U+'rowing+machine+back+gym',
-  'Press en máquina pecho':                  U+'chest+press+machine+gym',
-  'Plancha + variaciones':                   U+'plank+variation+core+gym',
+  'Press de banca plano':                    BENCH,
+  'Press inclinado con mancuernas':          DUMB,
+  'Aperturas en polea baja':                 LAT,
+  'Press militar mancuernas sentado':        SHLD,
+  'Elevaciones laterales':                   SHLD,
+  'Fondos en banco (asistido)':              DUMB,
+  'Extensión tríceps polea':                 ROW,
+  'Remo con barra en T (apoyado)':           ROW,
+  'Jalones polea al pecho (agarre ancho)':   LAT,
+  'Remo en polea baja sentado':              ROW,
+  'Pullover con mancuerna':                  DUMB,
+  'Face pulls en polea':                     SHLD,
+  'Curl martillo con mancuernas':            DUMB,
+  'Curl en polea baja':                      LAT,
+  'Prensa de piernas 45°':                   LEGS,
+  'Extensión de cuádriceps en máquina':      LEGM,
+  'Curl femoral tumbado':                    LEGM,
+  'Hip thrust con barra':                    GLUT,
+  'Zancadas caminando (sin peso)':           LUNG,
+  'Elevación de gemelos de pie':             LEGS,
+  'Dead bug':                                FLOOR,
+  'Plancha frontal':                         PLNK,
+  'Bird dog':                                FLOOR,
+  'Plancha lateral':                         PLNK,
+  'Crunch en polea':                         LAT,
+  'Prensa de piernas (ligero)':              LEGS,
+  'Remo en máquina':                         ROW,
+  'Press en máquina pecho':                  BENCH,
+  'Plancha + variaciones':                   PLNK,
 };
 
 const PLAN = [
