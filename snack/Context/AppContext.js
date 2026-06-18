@@ -38,7 +38,7 @@ export function AppProvider({ children }) {
         if (d.completedWorkouts) setCompletedWorkouts(d.completedWorkouts);
         if (d.weightHistory) setWeightHistory(d.weightHistory);
         if (d.workoutHistory) setWorkoutHistory(d.workoutHistory);
-      } catch (e) {}
+      } catch (e) { /* ignore parse errors */ }
     });
   }, []);
 

@@ -144,6 +144,7 @@ function ExerciseModal({ exercise, dayDate, visible, onClose }) {
       setShowTips(true);
       setImgError(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exercise?.name]);
 
   const history = exercise ? getExerciseHistory(exercise.name) : [];
