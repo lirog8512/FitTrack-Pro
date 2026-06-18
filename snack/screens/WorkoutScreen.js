@@ -16,49 +16,37 @@ const CAT = {
   core:      { grad:['#F59E0B','#B45309'], emoji:'🔥', label:'Core' },
 };
 
-// Verified Unsplash IDs — confirmed to load gym/exercise content
-const BENCH = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80';
-const DUMB  = 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&q=80';
-const SHLD  = 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&q=80';
-const ROW   = 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=600&q=80';
-const LAT   = 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80';
-const LEGS  = 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600&q=80';
-const LEGM  = 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80';
-const GLUT  = 'https://images.unsplash.com/photo-1550977616-efc580084ac5?w=600&q=80';
-const LUNG  = 'https://images.unsplash.com/photo-1434682966088-29fd38c0f27e?w=600&q=80';
-const FLOOR = 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80';
-const PLNK  = 'https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=600&q=80';
-
-const EXERCISE_IMAGES = {
-  'Press de banca plano':                    BENCH,
-  'Press inclinado con mancuernas':          DUMB,
-  'Aperturas en polea baja':                 LAT,
-  'Press militar mancuernas sentado':        SHLD,
-  'Elevaciones laterales':                   SHLD,
-  'Fondos en banco (asistido)':              DUMB,
-  'Extensión tríceps polea':                 ROW,
-  'Remo con barra en T (apoyado)':           ROW,
-  'Jalones polea al pecho (agarre ancho)':   LAT,
-  'Remo en polea baja sentado':              ROW,
-  'Pullover con mancuerna':                  DUMB,
-  'Face pulls en polea':                     SHLD,
-  'Curl martillo con mancuernas':            DUMB,
-  'Curl en polea baja':                      LAT,
-  'Prensa de piernas 45°':                   LEGS,
-  'Extensión de cuádriceps en máquina':      LEGM,
-  'Curl femoral tumbado':                    LEGM,
-  'Hip thrust con barra':                    GLUT,
-  'Zancadas caminando (sin peso)':           LUNG,
-  'Elevación de gemelos de pie':             LEGS,
-  'Dead bug':                                FLOOR,
-  'Plancha frontal':                         PLNK,
-  'Bird dog':                                FLOOR,
-  'Plancha lateral':                         PLNK,
-  'Crunch en polea':                         LAT,
-  'Prensa de piernas (ligero)':              LEGS,
-  'Remo en máquina':                         ROW,
-  'Press en máquina pecho':                  BENCH,
-  'Plancha + variaciones':                   PLNK,
+// English names for wger.de exercise image API (free, no API key needed)
+const WGER_NAME = {
+  'Press de banca plano':                  'bench press',
+  'Press inclinado con mancuernas':        'incline dumbbell press',
+  'Aperturas en polea baja':               'cable fly',
+  'Press militar mancuernas sentado':      'seated dumbbell press',
+  'Elevaciones laterales':                 'lateral raise',
+  'Fondos en banco (asistido)':            'bench dip',
+  'Extensión tríceps polea':               'triceps pushdown',
+  'Remo con barra en T (apoyado)':         't-bar row',
+  'Jalones polea al pecho (agarre ancho)': 'lat pulldown',
+  'Remo en polea baja sentado':            'seated cable row',
+  'Pullover con mancuerna':               'dumbbell pullover',
+  'Face pulls en polea':                   'face pull',
+  'Curl martillo con mancuernas':          'hammer curl',
+  'Curl en polea baja':                    'cable curl',
+  'Prensa de piernas 45°':                 'leg press',
+  'Extensión de cuádriceps en máquina':    'leg extension',
+  'Curl femoral tumbado':                  'leg curl',
+  'Hip thrust con barra':                  'hip thrust',
+  'Zancadas caminando (sin peso)':         'lunge',
+  'Elevación de gemelos de pie':           'calf raise',
+  'Dead bug':                              'dead bug',
+  'Plancha frontal':                       'plank',
+  'Bird dog':                              'bird dog',
+  'Plancha lateral':                       'side plank',
+  'Crunch en polea':                       'cable crunch',
+  'Prensa de piernas (ligero)':            'leg press',
+  'Remo en máquina':                       'seated row',
+  'Press en máquina pecho':                'chest press',
+  'Plancha + variaciones':                 'plank',
 };
 
 const PLAN = [
@@ -148,14 +136,33 @@ function ExerciseModal({ exercise, dayDate, visible, onClose }) {
   const { logWorkoutSets, getExerciseHistory } = useApp();
   const [sets, setSets] = useState([]);
   const [showTips, setShowTips] = useState(true);
+  const [imgUrl, setImgUrl] = useState(null);
+  const [imgLoading, setImgLoading] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   React.useEffect(() => {
-    if (exercise) {
-      setSets(Array.from({ length: exercise.sets }, (_, i) => ({ set:i+1, weight:'', reps:'' })));
-      setShowTips(true);
-      setImgError(false);
-    }
+    if (!exercise) return;
+    setSets(Array.from({ length: exercise.sets }, (_, i) => ({ set:i+1, weight:'', reps:'' })));
+    setShowTips(true);
+    setImgUrl(null);
+    setImgError(false);
+    setImgLoading(true);
+    const term = WGER_NAME[exercise.name];
+    if (!term) { setImgLoading(false); return; }
+    fetch(`https://wger.de/api/v2/exercise/search/?term=${encodeURIComponent(term)}&language=2&format=json`)
+      .then(r => r.json())
+      .then(data => {
+        const baseId = data.suggestions?.[0]?.data?.base_id;
+        if (!baseId) { setImgLoading(false); return; }
+        return fetch(`https://wger.de/api/v2/exerciseimage/?exercise_base=${baseId}&format=json`)
+          .then(r => r.json())
+          .then(d => {
+            const img = d.results?.[0]?.image;
+            setImgUrl(img || null);
+            setImgLoading(false);
+          });
+      })
+      .catch(() => setImgLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exercise?.name]);
 
@@ -163,7 +170,7 @@ function ExerciseModal({ exercise, dayDate, visible, onClose }) {
   const lastSession = history[0];
   if (!exercise) return null;
   const cat = CAT[exercise.category] || CAT.core;
-  const imageUrl = EXERCISE_IMAGES[exercise.name];
+  const imageUrl = imgUrl;
 
   function updateSet(index, field, value) {
     setSets(prev => prev.map((s, i) => i === index ? { ...s, [field]: value } : s));
@@ -193,7 +200,12 @@ function ExerciseModal({ exercise, dayDate, visible, onClose }) {
 
             {/* Exercise photo with technique overlaid */}
             <View style={{ borderTopLeftRadius:28, borderTopRightRadius:28, overflow:'hidden' }}>
-              {imageUrl && !imgError ? (
+              {imgLoading && (
+                <LinearGradient colors={[cat.grad[0]+'44','#0A0A0F']} style={{ height:180, alignItems:'center', justifyContent:'center' }}>
+                  <Text style={{ color:C.muted, fontSize:13 }}>Cargando imagen...</Text>
+                </LinearGradient>
+              )}
+              {!imgLoading && imageUrl && !imgError ? (
                 <View>
                   <Image
                     source={{ uri: imageUrl }}
@@ -220,13 +232,13 @@ function ExerciseModal({ exercise, dayDate, visible, onClose }) {
                     <Text style={{ color:C.muted, fontSize:11, marginTop:2 }}>{exercise.note}</Text>
                   </View>
                 </View>
-              ) : (
+              ) : !imgLoading ? (
                 <LinearGradient colors={[cat.grad[0]+'44','#0A0A0F']} style={{ height:180, alignItems:'center', justifyContent:'center', padding:20 }}>
                   <Text style={{ fontSize:56 }}>{cat.emoji}</Text>
                   <Text style={{ color:C.text, fontSize:18, fontWeight:'900', marginTop:10, textAlign:'center' }}>{exercise.name}</Text>
                   <Text style={{ color:C.muted, fontSize:12, marginTop:4, textAlign:'center' }}>{exercise.note}</Text>
                 </LinearGradient>
-              )}
+              ) : null}
             </View>
 
             {/* Stats row */}
@@ -461,13 +473,10 @@ export default function WorkoutScreen() {
                       const saved = workoutHistory[dayDate]?.[ex.name] || [];
                       const totalReps = saved.reduce ? saved.reduce((a,s) => a+(parseInt(s.reps)||0), 0) : 0;
                       const maxWeight = saved.reduce ? saved.reduce((a,s) => Math.max(a, parseFloat(s.weight)||0), 0) : 0;
-                      const imgUrl = EXERCISE_IMAGES[ex.name];
                       return (
                         <TouchableOpacity key={j} onPress={() => setSelectedExercise(ex)} activeOpacity={0.8}>
                           <View style={[styles.exRow, isDone && { borderColor:C.green+'55', backgroundColor:'#031503' }]}>
-                            {imgUrl ? (
-                              <Image source={{ uri: imgUrl }} style={styles.exThumb} resizeMode="cover" />
-                            ) : (
+                            {(
                               <LinearGradient colors={cat.grad} style={styles.exThumb}>
                                 <Text style={{ fontSize:20 }}>{cat.emoji}</Text>
                               </LinearGradient>
