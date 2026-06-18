@@ -48,7 +48,7 @@ function Row({ icon, label, value, color=C.green, onPress, masked=false }) {
           {masked && value ? '••••••••••••' + value.slice(-4) : (value || 'No configurado')}
         </Text>
       </View>
-      {onPress && <Ionicons name="chevron-forward" size:16 color={C.muted} />}
+      {onPress && <Ionicons name="chevron-forward" size={16} color={C.muted} />}
     </TouchableOpacity>
   );
 }
@@ -176,7 +176,7 @@ export default function ProfileScreen() {
             {user.injuries?.map((inj,i) => (
               <View key={i} style={{ flexDirection:'row', gap:10, paddingVertical:10, borderBottomWidth:i<user.injuries.length-1?1:0, borderBottomColor:C.border }}>
                 <View style={{ width:32, height:32, borderRadius:10, backgroundColor:'#F9731622', alignItems:'center', justifyContent:'center' }}>
-                  <Ionicons name="bandage" size:14 color={C.orange} />
+                  <Ionicons name="bandage" size={14} color={C.orange} />
                 </View>
                 <View style={{ flex:1, justifyContent:'center' }}>
                   <Text style={{ color:C.text, fontWeight:'600' }}>{inj}</Text>
