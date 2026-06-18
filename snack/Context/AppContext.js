@@ -16,6 +16,7 @@ const defaultUser = {
   waterGoal: 3000,
   injuries: ['Tendones bíceps', 'Protrusión L4-L5'],
   apiKey: '',
+  unsplashKey: '',
   lastBodyAnalysis: '',
 };
 

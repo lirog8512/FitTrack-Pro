@@ -71,7 +71,8 @@ export default function ProfileScreen() {
     carbs:     { title:'Carbohidratos',     keyboardType:'numeric',     unit:'g',    transform:Number },
     fat:       { title:'Grasas',            keyboardType:'numeric',     unit:'g',    transform:Number },
     waterGoal: { title:'Meta de agua',      keyboardType:'numeric',     unit:'ml',   transform:Number },
-    apiKey:    { title:'API Key Anthropic', keyboardType:'default',     unit:'',     transform:v=>v, secure:true, placeholder:'sk-ant-...' },
+    apiKey:       { title:'API Key Anthropic', keyboardType:'default', unit:'', transform:v=>v, secure:true, placeholder:'sk-ant-...' },
+    unsplashKey:  { title:'API Key Unsplash',  keyboardType:'default', unit:'', transform:v=>v, secure:true, placeholder:'Tu Access Key de Unsplash' },
   };
 
   return (
@@ -113,12 +114,15 @@ export default function ProfileScreen() {
               </View>
             </View>
             <Row icon="key" label="API Key de Anthropic" value={user.apiKey} color={C.green} onPress={() => setEditing('apiKey')} masked={true} />
-            {!user.apiKey && (
-              <View style={{ backgroundColor:'#22C55E11', borderRadius:10, padding:10, marginTop:8 }}>
-                <Text style={{ color:C.muted, fontSize:11, lineHeight:18 }}>
-                  Obtén tu clave gratuita en console.anthropic.com{'\n'}
-                  Habilita: 📸 Scanner de comida · 🧠 Análisis corporal · 🔄 Plan adaptativo
-                </Text>
+            <Row icon="image" label="API Key de Unsplash (fotos ejercicios)" value={user.unsplashKey} color={C.blue} onPress={() => setEditing('unsplashKey')} masked={true} />
+            {(!user.apiKey || !user.unsplashKey) && (
+              <View style={{ backgroundColor:'#22C55E11', borderRadius:10, padding:10, marginTop:8, gap:6 }}>
+                {!user.apiKey && <Text style={{ color:C.muted, fontSize:11, lineHeight:18 }}>
+                  🤖 Anthropic: console.anthropic.com → Scanner comida · Análisis corporal
+                </Text>}
+                {!user.unsplashKey && <Text style={{ color:C.muted, fontSize:11, lineHeight:18 }}>
+                  📸 Unsplash (gratis): unsplash.com/developers → crear app → Access Key → fotos reales de ejercicios
+                </Text>}
               </View>
             )}
           </LinearGradient>

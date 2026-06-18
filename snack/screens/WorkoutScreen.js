@@ -16,37 +16,37 @@ const CAT = {
   core:      { grad:['#F59E0B','#B45309'], emoji:'🔥', label:'Core' },
 };
 
-// English names for wger.de exercise image API (free, no API key needed)
-const WGER_NAME = {
-  'Press de banca plano':                  'bench press',
-  'Press inclinado con mancuernas':        'incline dumbbell press',
-  'Aperturas en polea baja':               'cable fly',
-  'Press militar mancuernas sentado':      'seated dumbbell press',
-  'Elevaciones laterales':                 'lateral raise',
-  'Fondos en banco (asistido)':            'bench dip',
-  'Extensión tríceps polea':               'triceps pushdown',
-  'Remo con barra en T (apoyado)':         't-bar row',
-  'Jalones polea al pecho (agarre ancho)': 'lat pulldown',
-  'Remo en polea baja sentado':            'seated cable row',
-  'Pullover con mancuerna':               'dumbbell pullover',
-  'Face pulls en polea':                   'face pull',
-  'Curl martillo con mancuernas':          'hammer curl',
-  'Curl en polea baja':                    'cable curl',
-  'Prensa de piernas 45°':                 'leg press',
-  'Extensión de cuádriceps en máquina':    'leg extension',
-  'Curl femoral tumbado':                  'leg curl',
-  'Hip thrust con barra':                  'hip thrust',
-  'Zancadas caminando (sin peso)':         'lunge',
-  'Elevación de gemelos de pie':           'calf raise',
-  'Dead bug':                              'dead bug',
-  'Plancha frontal':                       'plank',
-  'Bird dog':                              'bird dog',
-  'Plancha lateral':                       'side plank',
-  'Crunch en polea':                       'cable crunch',
-  'Prensa de piernas (ligero)':            'leg press',
-  'Remo en máquina':                       'seated row',
-  'Press en máquina pecho':                'chest press',
-  'Plancha + variaciones':                 'plank',
+// English search terms for Unsplash exercise photo search
+const EXERCISE_QUERY = {
+  'Press de banca plano':                  'bench press barbell chest gym',
+  'Press inclinado con mancuernas':        'incline dumbbell press chest gym',
+  'Aperturas en polea baja':               'cable fly chest gym workout',
+  'Press militar mancuernas sentado':      'seated dumbbell shoulder press gym',
+  'Elevaciones laterales':                 'lateral raise shoulder dumbbell gym',
+  'Fondos en banco (asistido)':            'triceps bench dip gym workout',
+  'Extensión tríceps polea':               'triceps pushdown cable gym',
+  'Remo con barra en T (apoyado)':         't-bar row back gym workout',
+  'Jalones polea al pecho (agarre ancho)': 'lat pulldown cable back gym',
+  'Remo en polea baja sentado':            'seated cable row back gym',
+  'Pullover con mancuerna':               'dumbbell pullover back gym workout',
+  'Face pulls en polea':                   'face pull cable shoulder gym',
+  'Curl martillo con mancuernas':          'hammer curl biceps dumbbell gym',
+  'Curl en polea baja':                    'cable curl biceps gym workout',
+  'Prensa de piernas 45°':                 'leg press machine gym workout',
+  'Extensión de cuádriceps en máquina':    'leg extension machine quads gym',
+  'Curl femoral tumbado':                  'lying leg curl hamstring machine gym',
+  'Hip thrust con barra':                  'hip thrust barbell glutes gym',
+  'Zancadas caminando (sin peso)':         'walking lunges legs gym workout',
+  'Elevación de gemelos de pie':           'standing calf raise gym workout',
+  'Dead bug':                              'dead bug core exercise floor gym',
+  'Plancha frontal':                       'plank core exercise gym fitness',
+  'Bird dog':                              'bird dog core exercise floor gym',
+  'Plancha lateral':                       'side plank oblique core gym',
+  'Crunch en polea':                       'cable crunch abs gym workout',
+  'Prensa de piernas (ligero)':            'leg press machine gym workout',
+  'Remo en máquina':                       'machine row back gym workout',
+  'Press en máquina pecho':                'chest press machine gym workout',
+  'Plancha + variaciones':                 'plank core exercise gym fitness',
 };
 
 const PLAN = [
@@ -133,7 +133,7 @@ const PLAN = [
 ];
 
 function ExerciseModal({ exercise, dayDate, visible, onClose }) {
-  const { logWorkoutSets, getExerciseHistory } = useApp();
+  const { logWorkoutSets, getExerciseHistory, user } = useApp();
   const [sets, setSets] = useState([]);
   const [showTips, setShowTips] = useState(true);
   const [imgUrl, setImgUrl] = useState(null);
@@ -146,25 +146,19 @@ function ExerciseModal({ exercise, dayDate, visible, onClose }) {
     setShowTips(true);
     setImgUrl(null);
     setImgError(false);
+    const key = user.unsplashKey;
+    if (!key) return;
     setImgLoading(true);
-    const term = WGER_NAME[exercise.name];
-    if (!term) { setImgLoading(false); return; }
-    fetch(`https://wger.de/api/v2/exercise/search/?term=${encodeURIComponent(term)}&language=2&format=json`)
+    const query = EXERCISE_QUERY[exercise.name] || exercise.name + ' gym workout';
+    fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(query)}&orientation=landscape&client_id=${key}`)
       .then(r => r.json())
-      .then(data => {
-        const baseId = data.suggestions?.[0]?.data?.base_id;
-        if (!baseId) { setImgLoading(false); return; }
-        return fetch(`https://wger.de/api/v2/exerciseimage/?exercise_base=${baseId}&format=json`)
-          .then(r => r.json())
-          .then(d => {
-            const img = d.results?.[0]?.image;
-            setImgUrl(img || null);
-            setImgLoading(false);
-          });
+      .then(d => {
+        setImgUrl(d.urls?.regular || null);
+        setImgLoading(false);
       })
       .catch(() => setImgLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exercise?.name]);
+  }, [exercise?.name, user.unsplashKey]);
 
   const history = exercise ? getExerciseHistory(exercise.name) : [];
   const lastSession = history[0];
@@ -237,6 +231,11 @@ function ExerciseModal({ exercise, dayDate, visible, onClose }) {
                   <Text style={{ fontSize:56 }}>{cat.emoji}</Text>
                   <Text style={{ color:C.text, fontSize:18, fontWeight:'900', marginTop:10, textAlign:'center' }}>{exercise.name}</Text>
                   <Text style={{ color:C.muted, fontSize:12, marginTop:4, textAlign:'center' }}>{exercise.note}</Text>
+                  {!user.unsplashKey && (
+                    <View style={{ marginTop:12, backgroundColor:'#00000066', borderRadius:10, paddingHorizontal:14, paddingVertical:8 }}>
+                      <Text style={{ color:C.muted, fontSize:10, textAlign:'center' }}>📸 Agrega tu API Key de Unsplash en Perfil para ver fotos reales</Text>
+                    </View>
+                  )}
                 </LinearGradient>
               ) : null}
             </View>
