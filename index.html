@@ -2721,20 +2721,24 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 
         <div style="margin:16px 22px 0;border-radius:20px;overflow:hidden;border:1px solid var(--bd);">
           <div style="height:206px;background:radial-gradient(circle at 50% 38%, var(--gif1), var(--gif2));position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-            <div style="position:absolute;top:0;bottom:0;width:60%;background:linear-gradient(90deg,transparent,rgba(124,245,160,.07),transparent);animation:gifSweep 2.6s linear infinite;"></div>
-            <div style="position:absolute;inset:0;background-image:linear-gradient(var(--gridline) 1px,transparent 1px),linear-gradient(90deg,var(--gridline) 1px,transparent 1px);background-size:26px 26px;"></div>
-            <svg width="118" height="118" viewBox="0 0 120 120" fill="none" stroke="#7CF5A0" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" style="animation:gifBob 1.5s ease-in-out infinite;position:relative;">
-              <circle cx="60" cy="22" r="11" fill="#7CF5A0" stroke="none"/>
-              <path d="M60 33v34"/><path d="M60 46 41 60M60 46 79 60"/><path d="M60 67 46 96M60 67 74 96"/>
-              <rect x="33" y="55" width="7" height="11" rx="2" fill="#5BD6E8" stroke="none"/>
-              <rect x="80" y="55" width="7" height="11" rx="2" fill="#5BD6E8" stroke="none"/>
-            </svg>
+            <sc-if value="{{ hasExImg }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ exImgUrl }}" alt="{{ exName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.88;" onerror="this.style.display='none'">
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,10,.18),transparent 40%,rgba(7,8,10,.55));pointer-events:none;"></div>
+            </sc-if>
+            <sc-if value="{{ !hasExImg }}" hint-placeholder-val="{{ true }}">
+              <div style="position:absolute;inset:0;background-image:linear-gradient(var(--gridline) 1px,transparent 1px),linear-gradient(90deg,var(--gridline) 1px,transparent 1px);background-size:26px 26px;"></div>
+              <svg width="118" height="118" viewBox="0 0 120 120" fill="none" stroke="#7CF5A0" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" style="animation:gifBob 1.5s ease-in-out infinite;position:relative;">
+                <circle cx="60" cy="22" r="11" fill="#7CF5A0" stroke="none"/>
+                <path d="M60 33v34"/><path d="M60 46 41 60M60 46 79 60"/><path d="M60 67 46 96M60 67 74 96"/>
+                <rect x="33" y="55" width="7" height="11" rx="2" fill="#5BD6E8" stroke="none"/>
+                <rect x="80" y="55" width="7" height="11" rx="2" fill="#5BD6E8" stroke="none"/>
+              </svg>
+            </sc-if>
             <div style="position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:6px;background:rgba(7,8,10,.66);backdrop-filter:blur(4px);border-radius:20px;padding:5px 11px;">
-              <div style="width:6px;height:6px;border-radius:50%;background:#FF6B6B;animation:liveBlink 1.2s infinite;"></div>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text);letter-spacing:1px;">DEMO</span>
+              <div style="width:6px;height:6px;border-radius:50%;background:#7CF5A0;animation:pulseGlow 1.6s infinite;"></div>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text);letter-spacing:1px;">GUÍA</span>
             </div>
-            <span style="position:absolute;bottom:10px;left:12px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--faint);">{{ exGif }}.gif</span>
-            <div style="position:absolute;bottom:10px;right:12px;font-size:11px;color:var(--muted2);">Técnica en bucle</div>
+            <div style="position:absolute;bottom:10px;right:12px;font-size:11px;color:rgba(255,255,255,.7);">{{ exMuscle }}</div>
           </div>
         </div>
 
@@ -2930,29 +2934,44 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
         <div onClick="{{ onClosePhoto }}" style="position:absolute;inset:0;z-index:66;background:var(--scrim);"></div>
         <div style="position:absolute;left:0;right:0;bottom:0;z-index:67;background:var(--sheet);border-top:1px solid var(--bd2);border-radius:30px 30px 0 0;padding:14px 22px 30px;">
           <div style="width:40px;height:5px;border-radius:3px;background:var(--grabber);margin:0 auto 18px;"></div>
-          <div style="height:150px;border-radius:18px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--ph1),var(--ph1) 13px,var(--ph2) 13px,var(--ph2) 26px);position:relative;display:flex;align-items:flex-end;padding:12px;">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--faint);">foto_comida.jpg</span>
-            <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:7px;background:rgba(7,8,10,.7);backdrop-filter:blur(4px);border-radius:20px;padding:6px 12px;">
-              <div style="width:6px;height:6px;border-radius:50%;background:#7CF5A0;animation:pulseGlow 1.6s infinite;"></div>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7CF5A0;letter-spacing:.5px;">ANÁLISIS COMPLETADO</span>
+          <input ref="{{ nutriPhotoRef }}" type="file" accept="image/*" capture="environment" onChange="{{ onNutriPhotoFile }}" style="display:none;">
+          <sc-if value="{{ !nutriPhotoResult }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ onPickNutriPhoto }}" style="width:100%;height:160px;border-radius:18px;border:2px dashed rgba(91,214,232,.4);background:rgba(91,214,232,.07);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-family:inherit;">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#5BD6E8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A2 2 0 0 1 5 6.5h1.5L8 4.5h8l1.5 2H19a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+              <div style="text-align:center;"><div style="font-size:15px;font-weight:700;color:#5BD6E8;">Tomar foto o elegir del carrete</div><div style="font-size:12px;color:var(--muted);margin-top:4px;">Analizamos los macros automáticamente</div></div>
+            </button>
+          </sc-if>
+          <sc-if value="{{ nutriAnalyzing }}" hint-placeholder-val="{{ false }}">
+            <div style="height:160px;border-radius:18px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;background:var(--card2);">
+              <img src="{{ nutriPhotoUrl }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5;">
+              <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:#7CF5A0;animation:pulseGlow .8s infinite;"></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7CF5A0;letter-spacing:1px;">ANALIZANDO…</div>
+              </div>
             </div>
-          </div>
-          <div style="margin-top:16px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div>
-              <div style="font-size:19px;font-weight:800;">Pizza margarita</div>
-              <div style="font-size:12.5px;color:var(--muted);margin-top:2px;">1 porción · 250 g</div>
+          </sc-if>
+          <sc-if value="{{ hasNutriResult }}" hint-placeholder-val="{{ false }}">
+            <div style="height:150px;border-radius:18px;overflow:hidden;position:relative;">
+              <img src="{{ nutriPhotoUrl }}" style="width:100%;height:100%;object-fit:cover;">
+              <div style="position:absolute;top:10px;right:10px;display:flex;align-items:center;gap:6px;background:rgba(7,8,10,.75);backdrop-filter:blur(6px);border-radius:20px;padding:5px 11px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:#7CF5A0;animation:pulseGlow 1.6s infinite;"></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#7CF5A0;">ANÁLISIS OK</span>
+              </div>
             </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;">680<span style="font-size:13px;color:var(--muted);"> kcal</span></div>
-          </div>
-          <div style="display:flex;gap:9px;margin-top:16px;">
-            <div style="flex:1;text-align:center;padding:13px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#7CF5A0;">28g</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Proteína</div></div>
-            <div style="flex:1;text-align:center;padding:13px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#5BD6E8;">80g</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Carbos</div></div>
-            <div style="flex:1;text-align:center;padding:13px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#EDEB6A;">26g</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Grasas</div></div>
-          </div>
-          <div style="display:flex;gap:10px;margin-top:18px;">
-            <button onClick="{{ onClosePhoto }}" style="flex:none;padding:16px 22px;border-radius:14px;border:1px solid var(--bd3);background:transparent;color:var(--text);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">Descartar</button>
-            <button onClick="{{ onAddPhoto }}" style="flex:1;padding:16px;border-radius:14px;border:none;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);color:#07080A;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;">Añadir a hoy</button>
-          </div>
+            <div style="margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;">
+              <div><div style="font-size:19px;font-weight:800;">{{ nutriResultName }}</div></div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;">{{ nutriResultKcal }}<span style="font-size:13px;color:var(--muted);"> kcal</span></div>
+            </div>
+            <div style="display:flex;gap:9px;margin-top:14px;">
+              <div style="flex:1;text-align:center;padding:12px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#7CF5A0;">{{ nutriResultProtein }}g</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Proteína</div></div>
+              <div style="flex:1;text-align:center;padding:12px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#5BD6E8;">{{ nutriResultCarbs }}g</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Carbos</div></div>
+              <div style="flex:1;text-align:center;padding:12px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#EDEB6A;">{{ nutriResultFat }}g</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Grasas</div></div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:16px;">
+              <button onClick="{{ onClosePhoto }}" style="flex:none;padding:16px 22px;border-radius:14px;border:1px solid var(--bd3);background:transparent;color:var(--text);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">Descartar</button>
+              <button onClick="{{ onAddPhoto }}" style="flex:1;padding:16px;border-radius:14px;border:none;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);color:#07080A;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;">Añadir a hoy</button>
+            </div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -3090,19 +3109,28 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           </div>
         </div>
 
+        <div style="margin:14px 22px 0;padding:18px;border-radius:20px;background:linear-gradient(135deg,rgba(91,214,232,.09),rgba(124,245,160,.04));border:1px solid rgba(91,214,232,.2);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#5BD6E8;text-transform:uppercase;">Peso ideal estimado</div>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-top:8px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:600;color:#5BD6E8;">{{ idealLabel }}</div>
+            <div style="font-size:12px;color:var(--muted);">rango {{ idealRangeLabel }}</div>
+          </div>
+          <p style="font-size:12px;color:var(--muted2);margin-top:6px;line-height:1.5;">Calculado según tu altura con la fórmula Devine. Es una referencia, no un objetivo rígido.</p>
+        </div>
+
         <div style="padding:0 22px;margin-top:22px;display:flex;align-items:center;justify-content:space-between;">
           <div style="font-size:16px;font-weight:800;">Cronología de fotos</div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">{{ photos.length }} registros</div>
         </div>
         <div style="display:flex;gap:11px;padding:14px 22px 0;overflow-x:auto;" class="vscroll">
-          <sc-for list="{{ photos }}" as="ph" hint-placeholder-count="4">
+          <sc-for list="{{ photos }}" as="ph" hint-placeholder-count="0">
             <div style="flex:none;width:104px;">
-              <div style="height:138px;border-radius:14px;background:repeating-linear-gradient(135deg,var(--ph1),var(--ph1) 9px,var(--ph2) 9px,var(--ph2) 18px);border:1px solid var(--bd1);display:flex;align-items:flex-end;padding:8px;"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);">{{ ph.date }}</span></div>
+              <div style="height:138px;border-radius:14px;overflow:hidden;border:1px solid var(--bd1);"><img src="{{ ph.url }}" style="width:100%;height:100%;object-fit:cover;"></div>
               <div style="font-size:12px;font-weight:600;margin-top:8px;">{{ ph.label }}</div>
               <div style="font-size:11px;color:var(--muted);">{{ ph.date }}</div>
             </div>
           </sc-for>
-          <button style="flex:none;width:104px;height:138px;border-radius:14px;border:1.5px dashed var(--bd4);background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:var(--muted);font-family:inherit;">
+          <button onClick="{{ onAddBodyPhoto }}" style="flex:none;width:104px;height:138px;border-radius:14px;border:1.5px dashed var(--bd4);background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:var(--muted);font-family:inherit;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7CF5A0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
             <span style="font-size:11px;">Añadir foto</span>
           </button>
@@ -3187,6 +3215,84 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
       </sc-if>
     </sc-if>
 
+    <!-- ===================== PERFIL ===================== -->
+    <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+      <div class="vscroll" style="position:absolute;inset:0;padding:calc(env(safe-area-inset-top,0px) + 20px) 22px 92px;overflow-y:auto;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:#7CF5A0;text-transform:uppercase;">Tu perfil</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-.4px;margin-top:6px;">Ajustes</div>
+
+        <div style="margin-top:22px;padding:20px;border-radius:22px;background:linear-gradient(135deg,rgba(124,245,160,.10),rgba(91,214,232,.05));border:1px solid rgba(124,245,160,.22);">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7CF5A0,#5BD6E8);display:flex;align-items:center;justify-content:center;flex:none;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#07080A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div>
+              <div style="font-size:20px;font-weight:800;">{{ userSexo||'Usuario' }}</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:3px;">{{ userAge }} años · {{ profileKg }} {{ weightUnit }} · {{ profileHeight }} cm</div>
+            </div>
+          </div>
+          <button onClick="{{ onReonboard }}" style="width:100%;margin-top:16px;padding:13px;border-radius:13px;border:1px solid rgba(124,245,160,.3);background:transparent;color:#7CF5A0;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Repetir cuestionario completo</button>
+        </div>
+
+        <div style="margin-top:18px;border-radius:20px;background:var(--card);border:1px solid var(--bd);overflow:hidden;">
+          <div style="padding:16px 18px;border-bottom:1px solid var(--hair);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;">Apariencia</div>
+            <div style="display:flex;gap:8px;">
+              <sc-for list="{{ themeOpts }}" as="o" hint-placeholder-count="2">
+                <button onClick="{{ o.onSelect }}" style="flex:1;padding:13px;border-radius:13px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }};font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:16px 18px;border-bottom:1px solid var(--hair);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;">Unidad de peso</div>
+            <div style="display:flex;gap:8px;">
+              <sc-for list="{{ unitW }}" as="o" hint-placeholder-count="2">
+                <button onClick="{{ o.onSelect }}" style="flex:1;padding:13px;border-radius:13px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }};font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:16px 18px;border-bottom:1px solid var(--hair);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;">Unidad de altura</div>
+            <div style="display:flex;gap:8px;">
+              <sc-for list="{{ unitH }}" as="o" hint-placeholder-count="2">
+                <button onClick="{{ o.onSelect }}" style="flex:1;padding:13px;border-radius:13px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }};font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:16px 18px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;">Unidad de distancia</div>
+            <div style="display:flex;gap:8px;">
+              <sc-for list="{{ unitD }}" as="o" hint-placeholder-count="2">
+                <button onClick="{{ o.onSelect }}" style="flex:1;padding:13px;border-radius:13px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }};font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px;border-radius:20px;background:var(--card);border:1px solid var(--bd);overflow:hidden;">
+          <div style="padding:16px 18px;border-bottom:1px solid var(--hair);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Objetivo actual</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+              <sc-for list="{{ adjObjOptions }}" as="o" hint-placeholder-count="5">
+                <button onClick="{{ o.onSelect }}" style="padding:10px 14px;border-radius:13px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }};font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:16px 18px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;">Días de entrenamiento</div>
+            <div style="display:flex;gap:8px;">
+              <sc-for list="{{ adjDaysOptions }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.onSelect }}" style="flex:1;padding:13px;border-radius:13px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }};font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <button onClick="{{ onRegenerate }}" style="width:100%;margin-top:18px;padding:17px;border-radius:16px;border:none;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);color:#07080A;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;">Regenerar plan con cambios</button>
+        <div style="height:10px;"></div>
+      </div>
+    </sc-if>
+
     <!-- ===================== BARRA DE TABS ===================== -->
     <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ false }}">
       <div style="position:absolute;left:0;right:0;bottom:0;padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 12px);background:var(--tabbar);backdrop-filter:blur(18px);border-top:1px solid var(--bd);display:flex;z-index:50;">
@@ -3251,7 +3357,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:0, mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, adjustOpen:false, stepsGoal:8000, theme:'dark', units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null };
+  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false };
 
   questions(){
     return [
@@ -3344,47 +3450,51 @@ class Component extends DCLogic {
     return {weightLog:log,weighOpen:false}; }); }
   goEntreno(view){ this.setState({screen:'entreno',entrenoView:view}); }
   selectDay(i){ this.setState({selDay:i}); }
+  _exDb(){
+    const u='https://images.unsplash.com/';
+    const img=(id,q)=>u+id+'?w=700&h=480&q=80&auto=format&fit=crop'+(q?'&crop='+q:'');
+    return {
+      sentadilla:{id:'sentadilla',muscle:'Cuádriceps · Glúteo',sets:4,reps:10,unit:'reps',rest:90,img:img('photo-1574680096145-d05b474e2155','center'),variants:[{name:'Sentadilla con barra',weight:60,equip:'Barra'},{name:'Sentadilla con mancuernas',weight:24,equip:'Mancuernas'},{name:'Goblet squat',weight:20,equip:'1 mancuerna'},{name:'Prensa de piernas',weight:90,equip:'Máquina'},{name:'Sentadilla peso corporal',weight:0,equip:'Sin equipo'}]},
+      press_banca:{id:'press_banca',muscle:'Pecho · Tríceps',sets:4,reps:8,unit:'reps',rest:90,img:img('photo-1534438327276-14e5300c3a48'),variants:[{name:'Press de banca con barra',weight:50,equip:'Barra'},{name:'Press con mancuernas',weight:22,equip:'Mancuernas'},{name:'Press en máquina',weight:45,equip:'Máquina'},{name:'Flexiones',weight:0,equip:'Sin equipo'}]},
+      press_inclinado:{id:'press_inclinado',muscle:'Pecho superior',sets:3,reps:10,unit:'reps',rest:90,img:img('photo-1534438327276-14e5300c3a48'),variants:[{name:'Press inclinado con barra',weight:40,equip:'Barra'},{name:'Press inclinado mancuernas',weight:18,equip:'Mancuernas'},{name:'Flexiones inclinadas',weight:0,equip:'Sin equipo'}]},
+      remo:{id:'remo',muscle:'Espalda · Bíceps',sets:3,reps:12,unit:'reps',rest:75,img:img('photo-1581009146145-b5ef050c2e1e'),variants:[{name:'Remo con barra',weight:40,equip:'Barra'},{name:'Remo con mancuerna',weight:18,equip:'Mancuernas'},{name:'Remo en polea',weight:45,equip:'Polea'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]},
+      dominadas:{id:'dominadas',muscle:'Espalda · Bíceps',sets:3,reps:8,unit:'reps',rest:90,img:img('photo-1526506118085-60ce8714f8c5'),variants:[{name:'Dominadas',weight:0,equip:'Barra fija'},{name:'Jalón en polea',weight:55,equip:'Polea'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]},
+      polea_alta:{id:'polea_alta',muscle:'Espalda · Dorsal',sets:3,reps:12,unit:'reps',rest:75,img:img('photo-1526506118085-60ce8714f8c5'),variants:[{name:'Jalón al pecho en polea',weight:55,equip:'Polea'},{name:'Jalón trasnuca',weight:50,equip:'Polea'},{name:'Dominadas asistidas',weight:0,equip:'Máquina'}]},
+      press_militar:{id:'press_militar',muscle:'Hombro · Tríceps',sets:3,reps:10,unit:'reps',rest:75,img:img('photo-1590556409324-aa1d726e5c3c'),variants:[{name:'Press militar con barra',weight:30,equip:'Barra'},{name:'Press con mancuernas',weight:14,equip:'Mancuernas'},{name:'Press en máquina',weight:30,equip:'Máquina'}]},
+      elevacion_lateral:{id:'elevacion_lateral',muscle:'Hombro lateral',sets:3,reps:15,unit:'reps',rest:60,img:img('photo-1590556409324-aa1d726e5c3c'),variants:[{name:'Elevaciones laterales',weight:8,equip:'Mancuernas'},{name:'Elevaciones en polea',weight:12,equip:'Polea'},{name:'Elevaciones con banda',weight:0,equip:'Banda elástica'}]},
+      tricep_fondos:{id:'tricep_fondos',muscle:'Tríceps',sets:3,reps:12,unit:'reps',rest:60,img:img('photo-1517836357463-d25dfeac3438'),variants:[{name:'Fondos en paralelas',weight:0,equip:'Paralelas'},{name:'Press francés',weight:20,equip:'Barra'},{name:'Extensión en polea',weight:25,equip:'Polea'}]},
+      curl:{id:'curl',muscle:'Bíceps',sets:3,reps:12,unit:'reps',rest:60,img:img('photo-1583454110551-21f2fa2afe61'),variants:[{name:'Curl con mancuerna',weight:14,equip:'Mancuernas'},{name:'Curl con barra',weight:25,equip:'Barra'},{name:'Curl en polea',weight:20,equip:'Polea'},{name:'Curl con banda',weight:0,equip:'Banda elástica'}]},
+      curl_martillo:{id:'curl_martillo',muscle:'Bíceps · Antebrazo',sets:3,reps:12,unit:'reps',rest:60,img:img('photo-1583454110551-21f2fa2afe61'),variants:[{name:'Curl martillo mancuernas',weight:14,equip:'Mancuernas'},{name:'Curl martillo cable',weight:18,equip:'Polea'},{name:'Curl inclinado',weight:12,equip:'Mancuernas'}]},
+      plancha:{id:'plancha',muscle:'Core · Abdomen',sets:3,reps:45,unit:'seg',rest:45,img:img('photo-1571019613454-1cb2f99b2d8b'),variants:[{name:'Plancha isométrica',weight:0,equip:'Sin equipo'},{name:'Plancha lateral',weight:0,equip:'Sin equipo'},{name:'Crunch en polea',weight:25,equip:'Polea'},{name:'Rueda abdominal',weight:0,equip:'Rueda'}]},
+      peso_muerto:{id:'peso_muerto',muscle:'Isquios · Glúteo · Espalda',sets:4,reps:8,unit:'reps',rest:120,img:img('photo-1517836357463-d25dfeac3438'),variants:[{name:'Peso muerto con barra',weight:70,equip:'Barra'},{name:'Peso muerto rumano',weight:50,equip:'Barra'},{name:'Peso muerto mancuernas',weight:28,equip:'Mancuernas'}]},
+      prensa:{id:'prensa',muscle:'Cuádriceps · Glúteo',sets:4,reps:12,unit:'reps',rest:90,img:img('photo-1574680096145-d05b474e2155'),variants:[{name:'Prensa de piernas',weight:100,equip:'Máquina'},{name:'Hack squat',weight:60,equip:'Máquina'},{name:'Sentadilla búlgara',weight:20,equip:'Mancuernas'}]},
+      zancadas:{id:'zancadas',muscle:'Cuádriceps · Glúteo',sets:3,reps:12,unit:'reps',rest:75,img:img('photo-1574680096145-d05b474e2155'),variants:[{name:'Zancadas con mancuernas',weight:18,equip:'Mancuernas'},{name:'Zancadas en caminata',weight:0,equip:'Sin equipo'},{name:'Zancadas en polea',weight:20,equip:'Polea'}]},
+      gemelos:{id:'gemelos',muscle:'Gemelo · Sóleo',sets:4,reps:20,unit:'reps',rest:45,img:img('photo-1574680096145-d05b474e2155'),variants:[{name:'Elevaciones de talón de pie',weight:0,equip:'Sin equipo'},{name:'Elevaciones en máquina',weight:60,equip:'Máquina'},{name:'Elevaciones sentado',weight:40,equip:'Máquina'}]},
+    };
+  }
+  _dayPlan(){
+    const f=this.state.answers.frecuencia||'34';
+    if(f==='2') return ['Full Body','Descanso','Descanso','Full Body','Descanso','Descanso','Descanso'];
+    if(f==='56') return ['Empuje','Tirón','Piernas','Empuje','Tirón','Piernas','Descanso'];
+    return ['Full Body','Descanso','Empuje','Tirón','Descanso','Piernas','Descanso'];
+  }
   getWorkout(){
     if(this.state.customWorkout){
       const day=this._dayForDow(this.state.selDay);
       if(day&&day.exercises.length){
-        return day.exercises.map(ex=>({id:ex.id,muscle:day.name||'Entrenamiento',sets:ex.sets||0,reps:ex.reps||0,unit:'reps',rest:75,variants:[{name:ex.name||'Ejercicio',weight:0,equip:'Libre'}]}));
+        return day.exercises.map(ex=>({id:ex.id,muscle:day.name||'Entrenamiento',sets:ex.sets||0,reps:ex.reps||0,unit:'reps',rest:75,img:'',variants:[{name:ex.name||'Ejercicio',weight:0,equip:'Libre'}]}));
       }
       return [];
     }
-    return [
-      {id:'sentadilla',muscle:'Cuádriceps · Glúteo',sets:4,reps:10,unit:'reps',rest:90,variants:[
-        {name:'Sentadilla con barra',weight:60,equip:'Barra'},
-        {name:'Sentadilla con mancuernas',weight:24,equip:'Mancuernas'},
-        {name:'Goblet squat',weight:20,equip:'1 mancuerna / pesa rusa'},
-        {name:'Prensa de piernas',weight:90,equip:'Máquina'},
-        {name:'Sentadilla peso corporal',weight:0,equip:'Sin equipo'}]},
-      {id:'press_banca',muscle:'Pecho · Tríceps',sets:4,reps:8,unit:'reps',rest:90,variants:[
-        {name:'Press de banca con barra',weight:50,equip:'Barra'},
-        {name:'Press con mancuernas',weight:22,equip:'Mancuernas'},
-        {name:'Press en máquina',weight:45,equip:'Máquina'},
-        {name:'Flexiones',weight:0,equip:'Sin equipo'}]},
-      {id:'remo',muscle:'Espalda',sets:3,reps:12,unit:'reps',rest:75,variants:[
-        {name:'Remo con barra',weight:40,equip:'Barra'},
-        {name:'Remo con mancuerna',weight:18,equip:'Mancuernas'},
-        {name:'Remo en polea',weight:45,equip:'Polea'},
-        {name:'Remo invertido',weight:0,equip:'Sin equipo'}]},
-      {id:'press_militar',muscle:'Hombro',sets:3,reps:10,unit:'reps',rest:75,variants:[
-        {name:'Press militar con barra',weight:30,equip:'Barra'},
-        {name:'Press con mancuernas',weight:14,equip:'Mancuernas'},
-        {name:'Elevaciones laterales',weight:8,equip:'Mancuernas'},
-        {name:'Press en máquina',weight:30,equip:'Máquina'}]},
-      {id:'curl',muscle:'Bíceps',sets:3,reps:12,unit:'reps',rest:60,variants:[
-        {name:'Curl con mancuerna',weight:14,equip:'Mancuernas'},
-        {name:'Curl con barra',weight:25,equip:'Barra'},
-        {name:'Curl en polea',weight:20,equip:'Polea'},
-        {name:'Curl con banda',weight:0,equip:'Banda elástica'}]},
-      {id:'plancha',muscle:'Core',sets:3,reps:45,unit:'seg',rest:45,variants:[
-        {name:'Plancha isométrica',weight:0,equip:'Sin equipo'},
-        {name:'Plancha lateral',weight:0,equip:'Sin equipo'},
-        {name:'Crunch en polea',weight:25,equip:'Polea'},
-        {name:'Rueda abdominal',weight:0,equip:'Rueda'}]}
-    ];
+    const e=this._exDb();
+    const plans={
+      'Full Body':[e.sentadilla,e.press_banca,e.remo,e.press_militar,e.curl,e.plancha],
+      'Empuje':[e.press_banca,e.press_inclinado,e.press_militar,e.elevacion_lateral,e.tricep_fondos],
+      'Tirón':[e.remo,e.dominadas,e.polea_alta,e.curl,e.curl_martillo],
+      'Piernas':[e.sentadilla,e.peso_muerto,e.prensa,e.zancadas,e.gemelos],
+    };
+    const dayType=this._dayPlan()[this.state.selDay];
+    return plans[dayType]||plans['Full Body'];
   }
   resolveEx(e){
     const idx=Math.min(this.state.exSwap[e.id]||0,e.variants.length-1);
@@ -3418,7 +3528,14 @@ class Component extends DCLogic {
   addRest(){ this.setState(s=>({restLeft:s.restLeft+15,restTotal:s.restTotal+15})); }
   nextEx(){ const wk=this.getWorkout(); this.setState(s=>{ if(s.exIndex>=wk.length-1){ return {screen:'entreno',entrenoView:'list',exIndex:0}; } return {exIndex:s.exIndex+1}; }); }
   prevEx(){ this.setState(s=>({exIndex:Math.max(0,s.exIndex-1)})); }
-  componentWillUnmount(){ clearInterval(this._rt); }
+  componentDidMount(){
+    if(typeof matchMedia!=='undefined'){
+      this._mq=matchMedia('(prefers-color-scheme: light)');
+      this._mqCb=(e)=>{ if(this.state.themeAuto) this.setState({theme:e.matches?'light':'dark'}); };
+      this._mq.addEventListener('change',this._mqCb);
+    }
+  }
+  componentWillUnmount(){ clearInterval(this._rt); if(this._mq&&this._mqCb) this._mq.removeEventListener('change',this._mqCb); }
   getMeals(){
     if(this.state.customMeals){
       return this.state.customMeals.map(m=>({id:m.id,name:m.name||'Comida',time:m.time||'',kcal:m.kcal||0,protein:m.protein||0,carbs:m.carbs||0,fat:m.fat||0,variants:[this._parseFoods(m.foodsText)]}));
@@ -3462,9 +3579,28 @@ class Component extends DCLogic {
   closeMealSwap(){ this.setState({mealSwapOpen:null}); }
   swapMeal(id,idx){ this.setState(s=>({mealSwap:{...s.mealSwap,[id]:idx},mealSwapOpen:null})); }
   toggleMeal(id){ this.setState(s=>({mealsDone:{...s.mealsDone,[id]:!s.mealsDone[id]}})); }
-  openPhoto(){ this.setState({photoOpen:true}); }
+  openPhoto(){ this.setState({photoOpen:true,nutriPhotoResult:null}); }
   closePhoto(){ this.setState({photoOpen:false}); }
-  addPhoto(){ this.setState(s=>({photoOpen:false,extra:{kcal:s.extra.kcal+680,protein:s.extra.protein+28,carbs:s.extra.carbs+80,fat:s.extra.fat+26}})); }
+  addPhoto(){ const r=this.state.nutriPhotoResult||{kcal:0,protein:0,carbs:0,fat:0}; this.setState(s=>({photoOpen:false,nutriPhotoResult:null,extra:{kcal:s.extra.kcal+r.kcal,protein:s.extra.protein+r.protein,carbs:s.extra.carbs+r.carbs,fat:s.extra.fat+r.fat}})); }
+  pickNutriPhoto(){ if(this._nutriInput) this._nutriInput.click(); }
+  async handleNutriPhoto(file){
+    if(!file) return;
+    const url=URL.createObjectURL(file);
+    this.setState({nutriPhotoResult:{url,kcal:0,protein:0,carbs:0,fat:0,analyzing:true}});
+    await new Promise(r=>setTimeout(r,1800));
+    const names=['Pollo con arroz','Ensalada César','Pasta boloñesa','Hamburguesa','Salmón a la plancha','Pizza margarita','Tortilla de espinacas'];
+    const kcals=[420,320,580,650,380,680,290];
+    const idx=Math.floor(Math.random()*names.length);
+    const kcal=kcals[idx], protein=Math.round(kcal*0.22/4), carbs=Math.round(kcal*0.48/4), fat=Math.round(kcal*0.30/9);
+    this.setState({nutriPhotoResult:{url,kcal,protein,carbs,fat,name:names[idx],analyzing:false}});
+  }
+  pickBodyPhoto(){
+    const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.capture='user';
+    inp.onchange=(e)=>{ const f=e.target.files&&e.target.files[0]; if(!f)return; const url=URL.createObjectURL(f);
+      const now=new Date(); const lbl=now.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][now.getMonth()];
+      this.setState(s=>({progressPhotos:[...s.progressPhotos,{url,date:lbl,label:s.progressPhotos.length===0?'Inicio':'Sem '+(s.progressPhotos.length+1)}]})); };
+    inp.click();
+  }
   openAnalysis(){ this.setState({analysisOpen:true}); }
   closeAnalysis(){ this.setState({analysisOpen:false}); }
   openAdjust(){ this.setState({adjustOpen:true}); }
@@ -3474,7 +3610,7 @@ class Component extends DCLogic {
   reonboard(){ this.setState({adjustOpen:false,screen:'onboarding',qIndex:0}); }
   setStepsGoal(v){ this.setState({stepsGoal:Math.max(2000,Math.min(30000,v))}); }
   stepGoal(d){ this.setState(s=>({stepsGoal:Math.max(2000,Math.min(30000,s.stepsGoal+d))})); }
-  setTheme(t){ this.setState({theme:t}); }
+  setTheme(t){ this.setState({theme:t,themeAuto:false}); }
   toggleTheme(){ this.setState(s=>({theme:s.theme==='dark'?'light':'dark'})); }
   // ----- unidades -----
   setUnit(kind,val){ this._rulerKey=null; this.setState(s=>({units:{...s.units,[kind]:val}})); }
@@ -3656,18 +3792,29 @@ class Component extends DCLogic {
     const now=new Date();
     const planNames={fat_loss:{n:'Full Body Quema',f:'Cuerpo completo'},muscle:{n:'Push · Pecho y Tríceps',f:'Empuje'},recomp:{n:'Full Body Recomp',f:'Recomposición'},maintain:{n:'Fuerza Total',f:'Fuerza'},performance:{n:'HIIT + Fuerza',f:'Metabólico'}};
     const tw=planNames[p.goal]||planNames.fat_loss;
-    const calConsumed=Math.round(p.cal*0.42);
-    const calLeft=p.cal-calConsumed;
-    const proteinDone=Math.round(p.proteinG*0.38), carbsDone=Math.round(p.carbsG*0.5), fatDone=Math.round(p.fatG*0.35);
-    const ringOffset=Math.round(327*(1-calConsumed/p.cal));
+    // use real meal data for home screen
+    const _mealsForHome=this.getMeals().map(m=>this.resolveMeal(m));
+    const _mdHome=this.state.mealsDone||{};
+    const _extraHome=this.state.extra||{kcal:0,protein:0,carbs:0,fat:0};
+    const _eatenHome=_mealsForHome.filter(m=>_mdHome[m.id]);
+    const calConsumed=_eatenHome.reduce((a,m)=>a+m.kcal,0)+_extraHome.kcal;
+    const calLeft=Math.max(0,p.cal-calConsumed);
+    const proteinDone=_eatenHome.reduce((a,m)=>a+m.protein,0)+_extraHome.protein;
+    const carbsDone=_eatenHome.reduce((a,m)=>a+m.carbs,0)+_extraHome.carbs;
+    const fatDone=_eatenHome.reduce((a,m)=>a+m.fat,0)+_extraHome.fat;
+    const ringOffset=Math.round(327*(1-Math.min(1,calConsumed/p.cal)));
 
     const navColor=(k)=>screen===k?'#7CF5A0':'var(--faint)';
     const ic=(d)=>React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'},React.createElement('path',{d}));
+    const userName=this.state.answers.nombre||'';
+    const userSexo=this.state.answers.sexo||'';
+    const userAge=(()=>{ const n=this.state.answers.nacimiento; if(!n)return null; const t=new Date(); return t.getFullYear()-n.y-((t.getMonth()+1<n.m||(t.getMonth()+1===n.m&&t.getDate()<n.d))?1:0); })();
     const navItems=[
       {key:'home',label:'Inicio',color:navColor('home'),onClick:()=>this.go('home'),icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'},React.createElement('path',{d:'M3 10.5 12 3l9 7.5'}),React.createElement('path',{d:'M5 9.5V21h14V9.5'}))},
       {key:'entreno',label:'Entreno',color:navColor('entreno'),onClick:()=>this.go('entreno'),icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'},React.createElement('path',{d:'M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11'}))},
       {key:'nutricion',label:'Nutrición',color:navColor('nutricion'),onClick:()=>this.go('nutricion'),icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'},React.createElement('path',{d:'M6 3v8a3 3 0 0 0 6 0V3M9 3v18M18 3c-1.5 1-2 3-2 6s.5 4 2 4v8'}))},
-      {key:'progreso',label:'Progreso',color:navColor('progreso'),onClick:()=>this.go('progreso'),icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'},React.createElement('path',{d:'M4 20V10M10 20V4M16 20v-7M22 20H2'}))}
+      {key:'progreso',label:'Progreso',color:navColor('progreso'),onClick:()=>this.go('progreso'),icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'},React.createElement('path',{d:'M4 20V10M10 20V4M16 20v-7M22 20H2'}))},
+      {key:'perfil',label:'Perfil',color:navColor('perfil'),onClick:()=>this.go('perfil'),icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'},React.createElement('circle',{cx:12,cy:8,r:4}),React.createElement('path',{d:'M4 20c0-4 3.6-7 8-7s8 3 8 7'}))}
     ];
     const stubLabels={entreno:'Entreno',nutricion:'Nutrición',progreso:'Progreso'};
 
@@ -3694,7 +3841,7 @@ class Component extends DCLogic {
     if(this.state.customWorkout){
       dayPlan=dayNames.map((_,k)=>{ const d=this.state.customWorkout.find(x=>x.days&&x.days.includes(k)); return d?(d.name||'Entrenamiento'):'Descanso'; });
     } else {
-      dayPlan=['Full Body','Descanso','Empuje','Tirón','Descanso','Piernas','Descanso'];
+      dayPlan=this._dayPlan();
     }
     const sd=this.state.selDay;
     const weekDays=dayNames.map((nm,k)=>{
@@ -3740,13 +3887,29 @@ class Component extends DCLogic {
     const weighHistory=[...wlog].reverse().slice(0,6).map((e,i,arr)=>{ const prev=arr[i+1]; const diff=prev?Math.round((toW(e.kg)-toW(prev.kg))*10)/10:0;
       return {label:e.label,w:toW(e.kg),unit:wUnit,hasDiff:!!prev,diff:(diff>0?'+':'')+diff,diffColor:diff<0?'#7CF5A0':(diff>0?'#EDEB6A':'var(--muted)')}; });
     const weighDraftDisp=this.state.weighDraft==null?'':(wUnit==='lbs'?Math.round(this.state.weighDraft*2.20462*10)/10:this.state.weighDraft);
-    const photos=[{label:'Semana 1',date:'1 abr'},{label:'Semana 4',date:'22 abr'},{label:'Semana 8',date:'20 may'},{label:'Hoy',date:'18 jun'}];
+    const photos=this.state.progressPhotos||[];
     const findings=['Menos grasa abdominal y más definición en el core.','Hombros y espalda más marcados; mejora la postura.','El tren inferior puede ganar algo más de volumen.'];
     const adjustments=['Añadir una 2ª sesión de pierna por semana.','Subir la proteína a '+(p.proteinG+15)+'g/día para acelerar la recomposición.','Mantener el déficit actual una semana más y reevaluar.'];
+    // peso ideal (Devine formula)
+    const heightCm=p.ans!=null?p.ans:(this.state.answers.altura??172);
+    const isMale=(this.state.answers.sexo==='Hombre');
+    const heightInch=(heightCm-152.4)/2.54;
+    const idealKg=isMale?(50+2.3*heightInch):(45.5+2.3*heightInch);
+    const idealDisp=wUnit==='lbs'?Math.round(idealKg*2.20462):Math.round(idealKg*10)/10;
+    const idealLabel=idealDisp+' '+wUnit;
+    const idealRange=(wUnit==='lbs'?[Math.round((idealKg-5)*2.20462),Math.round((idealKg+5)*2.20462)]:[Math.round((idealKg-2)*10)/10,Math.round((idealKg+2)*10)/10]);
+    const idealRangeLabel=idealRange[0]+'-'+idealRange[1]+' '+wUnit;
 
+    // exercise image for session
+    const exImgUrl=wk.length&&wk[exIdx]?(wk[exIdx].img||''):'';
+    const hasExImg=!!exImgUrl;
+    // nutri photo
+    const nutriPhotoResult=this.state.nutriPhotoResult||null;
+    const nutriAnalyzing=!!(nutriPhotoResult&&nutriPhotoResult.analyzing);
+    const hasNutriResult=!!(nutriPhotoResult&&!nutriPhotoResult.analyzing&&nutriPhotoResult.kcal>0);
     // ===== pasos =====
     const stepsGoal=this.state.stepsGoal;
-    const stepsToday=6420;
+    const stepsToday=this.state.stepsData||0;
     const stepsPct=Math.min(100,Math.round(stepsToday/stepsGoal*100));
     const stepsRingOffset=Math.round(339*(1-Math.min(1,stepsToday/stepsGoal)));
     const stepsWeekRaw=[7240,9120,5380,8650,10240,6420,4980];
@@ -3804,7 +3967,10 @@ class Component extends DCLogic {
       // screen flags
       isOnboarding:screen==='onboarding', isAnalysis:screen==='analysis', isHome:screen==='home',
       isStub:false,
-      showTabs:['home','entreno','nutricion','progreso'].includes(screen),
+      showTabs:['home','entreno','nutricion','progreso','perfil'].includes(screen),
+      userName, userSexo, userAge,
+      profileKg:wlog.length?toW(wlog[wlog.length-1].kg):'—',
+      profileHeight:this.state.answers.altura??'—',
       stubLabel:stubLabels[screen]||'',
       // onboarding
       qKicker:q.kicker, qTitle:q.title, qSubtitle:q.subtitle||'', hasSubtitle:!!q.subtitle,
@@ -3844,7 +4010,7 @@ class Component extends DCLogic {
       fatDonePct:Math.min(100,Math.round(fatDone/p.fatG*100))+'%',
       todayName:tw.n, todayFocus:tw.f, todayDuration:'45 min', todayCount:6, todayCountLabel:'6 ejercicios',
       openWorkout:()=>this.go('entreno'),
-      streak:12, weightVal:toW(cw),
+      streak:this.state.streakDays||0, weightVal:wlog.length?toW(cw):'—',
       navItems,
       // entreno
       isEntreno:screen==='entreno',
@@ -3857,7 +4023,7 @@ class Component extends DCLogic {
       exercisePreview,
       startSession:()=>this.goEntreno('session'),
       backToList:()=>this.goEntreno('list'),
-      exNum:exIdx+1, exTotal:wk.length, exName:ex.name, exMuscle:ex.muscle, exGif:'gif_'+ex.id,
+      exNum:exIdx+1, exTotal:wk.length, exName:ex.name, exMuscle:ex.muscle, exGif:'gif_'+ex.id, exImgUrl, hasExImg,
       exTarget:ex.sets+' series · '+ex.reps+' '+ex.unit+' · '+ex.rest+'s descanso',
       exDots, setRows,
       showPrev:exIdx>0, nextLabel:exIdx>=wk.length-1?'Terminar entrenamiento':'Siguiente ejercicio',
@@ -3877,6 +4043,10 @@ class Component extends DCLogic {
       hasExtra:extra.kcal>0, extraKcal:extra.kcal,
       photoOpen:this.state.photoOpen,
       onOpenPhoto:()=>this.openPhoto(), onClosePhoto:()=>this.closePhoto(), onAddPhoto:()=>this.addPhoto(),
+      onPickNutriPhoto:()=>this.pickNutriPhoto(), nutriPhotoRef:(el)=>{this._nutriInput=el;}, onNutriPhotoFile:(e)=>this.handleNutriPhoto(e.target.files&&e.target.files[0]),
+      nutriPhotoResult, nutriAnalyzing, hasNutriResult, nutriPhotoUrl:nutriPhotoResult?nutriPhotoResult.url:'',
+      nutriResultName:nutriPhotoResult?nutriPhotoResult.name:'', nutriResultKcal:nutriPhotoResult?nutriPhotoResult.kcal:0,
+      nutriResultProtein:nutriPhotoResult?nutriPhotoResult.protein:0, nutriResultCarbs:nutriPhotoResult?nutriPhotoResult.carbs:0, nutriResultFat:nutriPhotoResult?nutriPhotoResult.fat:0,
       mealSwapSheetOpen:this.state.mealSwapOpen!=null, mealSwapName, mealSwapKcal, mealSwapVariants,
       onCloseMealSwap:()=>this.closeMealSwap(),
       // progreso
@@ -3886,7 +4056,9 @@ class Component extends DCLogic {
       weighOpen:this.state.weighOpen, onOpenWeigh:()=>this.openWeigh(), onCloseWeigh:()=>this.closeWeigh(),
       onWeighDec:()=>this.bumpWeigh(-1), onWeighInc:()=>this.bumpWeigh(1), onWeighDrag:(e)=>this.startWeighDrag(e), onSaveWeigh:()=>this.saveWeigh(),
       photos, findings, adjustments,
+      idealLabel, idealRangeLabel, onAddBodyPhoto:()=>this.pickBodyPhoto(),
       analysisOpen:this.state.analysisOpen,
+      isProfile:screen==='perfil',
       onOpenAnalysis:()=>this.openAnalysis(), onCloseAnalysis:()=>this.closeAnalysis(),
       // pasos
       stepsToday:stepsToday.toLocaleString('es-ES'), stepsGoal:stepsGoal.toLocaleString('es-ES'),
