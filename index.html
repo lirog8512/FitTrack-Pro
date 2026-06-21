@@ -2220,6 +2220,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
   --tabbar:rgba(255,255,255,.86);--scrim:rgba(30,40,52,.34);
 }
 @keyframes kenBurns{0%{transform:scale(1) translate(0,0);}50%{transform:scale(1.1) translate(-2%,-1.5%);}100%{transform:scale(1) translate(0,0);}}
+@keyframes exFlip{0%,35%{opacity:0}50%,85%{opacity:1}100%{opacity:0}}
 </style>
 </helmet>
 
@@ -2687,7 +2688,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
             <div style="display:flex;flex-direction:column;">
               <sc-for list="{{ exercisePreview }}" as="ex" hint-placeholder-count="6">
                 <div style="display:flex;align-items:center;gap:13px;padding:11px 18px;border-top:1px solid var(--hair);">
-                  <div style="width:46px;height:46px;border-radius:11px;flex:none;background:repeating-linear-gradient(135deg,var(--ph1),var(--ph1) 6px,var(--ph2) 6px,var(--ph2) 12px);display:flex;align-items:flex-end;padding:4px;"><span style="font-family:'JetBrains Mono',monospace;font-size:6.5px;color:var(--faint);line-height:1;">{{ ex.gif }}</span></div>
+                  <div style="width:52px;height:46px;border-radius:11px;flex:none;overflow:hidden;background:#111;position:relative;"><img src="{{ ex.img }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;" onerror="this.parentElement.style.background='var(--ph1)'"><img src="{{ ex.img2 }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;animation:exFlip 2s ease-in-out infinite;" onerror="this.style.display='none'"></div>
                   <div style="flex:1;">
                     <div style="font-size:14px;font-weight:600;">{{ ex.name }}</div>
                     <div style="font-size:11.5px;color:var(--muted);margin-top:2px;">{{ ex.muscle }}</div>
@@ -2722,8 +2723,9 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
         <div style="margin:16px 22px 0;border-radius:20px;overflow:hidden;border:1px solid var(--bd);">
           <div style="height:206px;background:radial-gradient(circle at 50% 38%, var(--gif1), var(--gif2));position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
             <sc-if value="{{ hasExImg }}" hint-placeholder-val="{{ false }}">
-              <img src="{{ exImgUrl }}" alt="{{ exName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.88;" onerror="this.style.display='none'">
-              <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,10,.18),transparent 40%,rgba(7,8,10,.55));pointer-events:none;"></div>
+              <img src="{{ exImgUrl }}" alt="{{ exName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#111;opacity:.92;" onerror="this.style.display='none'">
+              <img src="{{ exImg2Url }}" alt="{{ exName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:transparent;animation:exFlip 2s ease-in-out infinite;" onerror="this.style.display='none'">
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,10,.12),transparent 40%,rgba(7,8,10,.5));pointer-events:none;"></div>
             </sc-if>
             <sc-if value="{{ !hasExImg }}" hint-placeholder-val="{{ true }}">
               <div style="position:absolute;inset:0;background-image:linear-gradient(var(--gridline) 1px,transparent 1px),linear-gradient(90deg,var(--gridline) 1px,transparent 1px);background-size:26px 26px;"></div>
@@ -2869,9 +2871,18 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           </div>
         </div>
 
-        <div style="margin:18px 22px 0;padding:20px;border-radius:22px;background:var(--card);border:1px solid var(--bd);">
+        <div style="display:flex;gap:7px;padding:18px 22px 4px;">
+          <sc-for list="{{ nutriWeekDays }}" as="d" hint-placeholder-count="7">
+            <button onClick="{{ d.onClick }}" style="flex:1;padding:11px 0;border-radius:13px;background:{{ d.bg }};border:1px solid {{ d.border }};cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;color:{{ d.fg }};font-family:inherit;">
+              <span style="font-size:12px;font-weight:700;">{{ d.label }}</span>
+              <span style="width:6px;height:6px;border-radius:50%;background:{{ d.dot }};"></span>
+            </button>
+          </sc-for>
+        </div>
+
+        <div style="margin:10px 22px 0;padding:20px;border-radius:22px;background:var(--card);border:1px solid var(--bd);">
           <div style="display:flex;align-items:baseline;justify-content:space-between;">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;">Consumido hoy</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;">{{ selMealDayName }} · Consumido</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">{{ nKcal }} <span style="color:var(--muted);font-weight:500;">/ {{ nKcalTarget }} kcal</span></div>
           </div>
           <div style="height:7px;border-radius:4px;background:var(--track);overflow:hidden;margin-top:10px;"><div style="height:100%;width:{{ nKcalPct }};background:linear-gradient(90deg,#7CF5A0,#5BD6E8);border-radius:4px;transition:width .4s;"></div></div>
@@ -2901,7 +2912,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           </div>
         </sc-if>
 
-        <div style="padding:0 22px;margin-top:22px;font-size:16px;font-weight:800;">Comidas de hoy</div>
+        <div style="padding:0 22px;margin-top:22px;font-size:16px;font-weight:800;">Comidas del {{ selMealDayName }}</div>
         <div style="padding:12px 22px 0;display:flex;flex-direction:column;gap:10px;">
           <sc-for list="{{ mealRows }}" as="m" hint-placeholder-count="3">
             <div style="display:flex;align-items:center;gap:13px;padding:15px 16px;border-radius:18px;background:var(--card);border:1px solid var(--bd);">
@@ -3357,7 +3368,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false };
+  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false };
 
   questions(){
     return [
@@ -3451,25 +3462,25 @@ class Component extends DCLogic {
   goEntreno(view){ this.setState({screen:'entreno',entrenoView:view}); }
   selectDay(i){ this.setState({selDay:i}); }
   _exDb(){
-    const u='https://images.unsplash.com/';
-    const img=(id,q)=>u+id+'?w=700&h=480&q=80&auto=format&fit=crop'+(q?'&crop='+q:'');
+    const gh=(id)=>`https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/${id}/`;
+    const ex=(id,muscle,sets,reps,unit,rest,ghId,variants)=>({id,muscle,sets,reps,unit,rest,img:gh(ghId)+'0.jpg',img2:gh(ghId)+'1.jpg',variants});
     return {
-      sentadilla:{id:'sentadilla',muscle:'Cuádriceps · Glúteo',sets:4,reps:10,unit:'reps',rest:90,img:img('photo-1574680096145-d05b474e2155','center'),variants:[{name:'Sentadilla con barra',weight:60,equip:'Barra'},{name:'Sentadilla con mancuernas',weight:24,equip:'Mancuernas'},{name:'Goblet squat',weight:20,equip:'1 mancuerna'},{name:'Prensa de piernas',weight:90,equip:'Máquina'},{name:'Sentadilla peso corporal',weight:0,equip:'Sin equipo'}]},
-      press_banca:{id:'press_banca',muscle:'Pecho · Tríceps',sets:4,reps:8,unit:'reps',rest:90,img:img('photo-1534438327276-14e5300c3a48'),variants:[{name:'Press de banca con barra',weight:50,equip:'Barra'},{name:'Press con mancuernas',weight:22,equip:'Mancuernas'},{name:'Press en máquina',weight:45,equip:'Máquina'},{name:'Flexiones',weight:0,equip:'Sin equipo'}]},
-      press_inclinado:{id:'press_inclinado',muscle:'Pecho superior',sets:3,reps:10,unit:'reps',rest:90,img:img('photo-1534438327276-14e5300c3a48'),variants:[{name:'Press inclinado con barra',weight:40,equip:'Barra'},{name:'Press inclinado mancuernas',weight:18,equip:'Mancuernas'},{name:'Flexiones inclinadas',weight:0,equip:'Sin equipo'}]},
-      remo:{id:'remo',muscle:'Espalda · Bíceps',sets:3,reps:12,unit:'reps',rest:75,img:img('photo-1581009146145-b5ef050c2e1e'),variants:[{name:'Remo con barra',weight:40,equip:'Barra'},{name:'Remo con mancuerna',weight:18,equip:'Mancuernas'},{name:'Remo en polea',weight:45,equip:'Polea'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]},
-      dominadas:{id:'dominadas',muscle:'Espalda · Bíceps',sets:3,reps:8,unit:'reps',rest:90,img:img('photo-1526506118085-60ce8714f8c5'),variants:[{name:'Dominadas',weight:0,equip:'Barra fija'},{name:'Jalón en polea',weight:55,equip:'Polea'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]},
-      polea_alta:{id:'polea_alta',muscle:'Espalda · Dorsal',sets:3,reps:12,unit:'reps',rest:75,img:img('photo-1526506118085-60ce8714f8c5'),variants:[{name:'Jalón al pecho en polea',weight:55,equip:'Polea'},{name:'Jalón trasnuca',weight:50,equip:'Polea'},{name:'Dominadas asistidas',weight:0,equip:'Máquina'}]},
-      press_militar:{id:'press_militar',muscle:'Hombro · Tríceps',sets:3,reps:10,unit:'reps',rest:75,img:img('photo-1590556409324-aa1d726e5c3c'),variants:[{name:'Press militar con barra',weight:30,equip:'Barra'},{name:'Press con mancuernas',weight:14,equip:'Mancuernas'},{name:'Press en máquina',weight:30,equip:'Máquina'}]},
-      elevacion_lateral:{id:'elevacion_lateral',muscle:'Hombro lateral',sets:3,reps:15,unit:'reps',rest:60,img:img('photo-1590556409324-aa1d726e5c3c'),variants:[{name:'Elevaciones laterales',weight:8,equip:'Mancuernas'},{name:'Elevaciones en polea',weight:12,equip:'Polea'},{name:'Elevaciones con banda',weight:0,equip:'Banda elástica'}]},
-      tricep_fondos:{id:'tricep_fondos',muscle:'Tríceps',sets:3,reps:12,unit:'reps',rest:60,img:img('photo-1517836357463-d25dfeac3438'),variants:[{name:'Fondos en paralelas',weight:0,equip:'Paralelas'},{name:'Press francés',weight:20,equip:'Barra'},{name:'Extensión en polea',weight:25,equip:'Polea'}]},
-      curl:{id:'curl',muscle:'Bíceps',sets:3,reps:12,unit:'reps',rest:60,img:img('photo-1583454110551-21f2fa2afe61'),variants:[{name:'Curl con mancuerna',weight:14,equip:'Mancuernas'},{name:'Curl con barra',weight:25,equip:'Barra'},{name:'Curl en polea',weight:20,equip:'Polea'},{name:'Curl con banda',weight:0,equip:'Banda elástica'}]},
-      curl_martillo:{id:'curl_martillo',muscle:'Bíceps · Antebrazo',sets:3,reps:12,unit:'reps',rest:60,img:img('photo-1583454110551-21f2fa2afe61'),variants:[{name:'Curl martillo mancuernas',weight:14,equip:'Mancuernas'},{name:'Curl martillo cable',weight:18,equip:'Polea'},{name:'Curl inclinado',weight:12,equip:'Mancuernas'}]},
-      plancha:{id:'plancha',muscle:'Core · Abdomen',sets:3,reps:45,unit:'seg',rest:45,img:img('photo-1571019613454-1cb2f99b2d8b'),variants:[{name:'Plancha isométrica',weight:0,equip:'Sin equipo'},{name:'Plancha lateral',weight:0,equip:'Sin equipo'},{name:'Crunch en polea',weight:25,equip:'Polea'},{name:'Rueda abdominal',weight:0,equip:'Rueda'}]},
-      peso_muerto:{id:'peso_muerto',muscle:'Isquios · Glúteo · Espalda',sets:4,reps:8,unit:'reps',rest:120,img:img('photo-1517836357463-d25dfeac3438'),variants:[{name:'Peso muerto con barra',weight:70,equip:'Barra'},{name:'Peso muerto rumano',weight:50,equip:'Barra'},{name:'Peso muerto mancuernas',weight:28,equip:'Mancuernas'}]},
-      prensa:{id:'prensa',muscle:'Cuádriceps · Glúteo',sets:4,reps:12,unit:'reps',rest:90,img:img('photo-1574680096145-d05b474e2155'),variants:[{name:'Prensa de piernas',weight:100,equip:'Máquina'},{name:'Hack squat',weight:60,equip:'Máquina'},{name:'Sentadilla búlgara',weight:20,equip:'Mancuernas'}]},
-      zancadas:{id:'zancadas',muscle:'Cuádriceps · Glúteo',sets:3,reps:12,unit:'reps',rest:75,img:img('photo-1574680096145-d05b474e2155'),variants:[{name:'Zancadas con mancuernas',weight:18,equip:'Mancuernas'},{name:'Zancadas en caminata',weight:0,equip:'Sin equipo'},{name:'Zancadas en polea',weight:20,equip:'Polea'}]},
-      gemelos:{id:'gemelos',muscle:'Gemelo · Sóleo',sets:4,reps:20,unit:'reps',rest:45,img:img('photo-1574680096145-d05b474e2155'),variants:[{name:'Elevaciones de talón de pie',weight:0,equip:'Sin equipo'},{name:'Elevaciones en máquina',weight:60,equip:'Máquina'},{name:'Elevaciones sentado',weight:40,equip:'Máquina'}]},
+      sentadilla:ex('sentadilla','Cuádriceps · Glúteo',4,10,'reps',90,'Barbell_Squat',[{name:'Sentadilla con barra',weight:60,equip:'Barra'},{name:'Sentadilla con mancuernas',weight:24,equip:'Mancuernas'},{name:'Goblet squat',weight:20,equip:'1 mancuerna'},{name:'Prensa de piernas',weight:90,equip:'Máquina'},{name:'Sentadilla peso corporal',weight:0,equip:'Sin equipo'}]),
+      press_banca:ex('press_banca','Pecho · Tríceps',4,8,'reps',90,'Barbell_Bench_Press_-_Medium_Grip',[{name:'Press de banca con barra',weight:50,equip:'Barra'},{name:'Press con mancuernas',weight:22,equip:'Mancuernas'},{name:'Press en máquina',weight:45,equip:'Máquina'},{name:'Flexiones',weight:0,equip:'Sin equipo'}]),
+      press_inclinado:ex('press_inclinado','Pecho superior',3,10,'reps',90,'Barbell_Incline_Bench_Press_-_Medium_Grip',[{name:'Press inclinado con barra',weight:40,equip:'Barra'},{name:'Press inclinado mancuernas',weight:18,equip:'Mancuernas'},{name:'Flexiones inclinadas',weight:0,equip:'Sin equipo'}]),
+      remo:ex('remo','Espalda · Bíceps',3,12,'reps',75,'Bent_Over_Barbell_Row',[{name:'Remo con barra',weight:40,equip:'Barra'},{name:'Remo con mancuerna',weight:18,equip:'Mancuernas'},{name:'Remo en polea',weight:45,equip:'Polea'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]),
+      dominadas:ex('dominadas','Espalda · Bíceps',3,8,'reps',90,'Band_Assisted_Pull-Up',[{name:'Dominadas',weight:0,equip:'Barra fija'},{name:'Jalón en polea',weight:55,equip:'Polea'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]),
+      polea_alta:ex('polea_alta','Espalda · Dorsal',3,12,'reps',75,'Close-Grip_Front_Lat_Pulldown',[{name:'Jalón al pecho en polea',weight:55,equip:'Polea'},{name:'Jalón trasnuca',weight:50,equip:'Polea'},{name:'Dominadas asistidas',weight:0,equip:'Máquina'}]),
+      press_militar:ex('press_militar','Hombro · Tríceps',3,10,'reps',75,'Barbell_Shoulder_Press',[{name:'Press militar con barra',weight:30,equip:'Barra'},{name:'Press con mancuernas',weight:14,equip:'Mancuernas'},{name:'Press en máquina',weight:30,equip:'Máquina'}]),
+      elevacion_lateral:ex('elevacion_lateral','Hombro lateral',3,15,'reps',60,'Side_Lateral_Raise',[{name:'Elevaciones laterales',weight:8,equip:'Mancuernas'},{name:'Elevaciones en polea',weight:12,equip:'Polea'},{name:'Elevaciones con banda',weight:0,equip:'Banda elástica'}]),
+      tricep_fondos:ex('tricep_fondos','Tríceps',3,12,'reps',60,'Bench_Dips',[{name:'Fondos en paralelas',weight:0,equip:'Paralelas'},{name:'Press francés',weight:20,equip:'Barra'},{name:'Extensión en polea',weight:25,equip:'Polea'}]),
+      curl:ex('curl','Bíceps',3,12,'reps',60,'Barbell_Curl',[{name:'Curl con mancuerna',weight:14,equip:'Mancuernas'},{name:'Curl con barra',weight:25,equip:'Barra'},{name:'Curl en polea',weight:20,equip:'Polea'},{name:'Curl con banda',weight:0,equip:'Banda elástica'}]),
+      curl_martillo:ex('curl_martillo','Bíceps · Antebrazo',3,12,'reps',60,'Alternate_Hammer_Curl',[{name:'Curl martillo mancuernas',weight:14,equip:'Mancuernas'},{name:'Curl martillo cable',weight:18,equip:'Polea'},{name:'Curl inclinado',weight:12,equip:'Mancuernas'}]),
+      plancha:ex('plancha','Core · Abdomen',3,45,'seg',45,'Plank',[{name:'Plancha isométrica',weight:0,equip:'Sin equipo'},{name:'Plancha lateral',weight:0,equip:'Sin equipo'},{name:'Crunch en polea',weight:25,equip:'Polea'},{name:'Rueda abdominal',weight:0,equip:'Rueda'}]),
+      peso_muerto:ex('peso_muerto','Isquios · Glúteo · Espalda',4,8,'reps',120,'Barbell_Deadlift',[{name:'Peso muerto con barra',weight:70,equip:'Barra'},{name:'Peso muerto rumano',weight:50,equip:'Barra'},{name:'Peso muerto mancuernas',weight:28,equip:'Mancuernas'}]),
+      prensa:ex('prensa','Cuádriceps · Glúteo',4,12,'reps',90,'Leg_Press',[{name:'Prensa de piernas',weight:100,equip:'Máquina'},{name:'Hack squat',weight:60,equip:'Máquina'},{name:'Sentadilla búlgara',weight:20,equip:'Mancuernas'}]),
+      zancadas:ex('zancadas','Cuádriceps · Glúteo',3,12,'reps',75,'Barbell_Lunge',[{name:'Zancadas con mancuernas',weight:18,equip:'Mancuernas'},{name:'Zancadas en caminata',weight:0,equip:'Sin equipo'},{name:'Zancadas en polea',weight:20,equip:'Polea'}]),
+      gemelos:ex('gemelos','Gemelo · Sóleo',4,20,'reps',45,'Standing_Barbell_Calf_Raise',[{name:'Elevaciones de talón de pie',weight:0,equip:'Sin equipo'},{name:'Elevaciones en máquina',weight:60,equip:'Máquina'},{name:'Elevaciones sentado',weight:40,equip:'Máquina'}]),
     };
   }
   _dayPlan(){
@@ -3499,7 +3510,7 @@ class Component extends DCLogic {
   resolveEx(e){
     const idx=Math.min(this.state.exSwap[e.id]||0,e.variants.length-1);
     const v=e.variants[idx];
-    return {id:e.id,muscle:e.muscle,sets:e.sets,reps:e.reps,unit:e.unit,rest:e.rest,name:v.name,weight:v.weight,equip:v.equip,variantIdx:idx,variants:e.variants};
+    return {id:e.id,muscle:e.muscle,sets:e.sets,reps:e.reps,unit:e.unit,rest:e.rest,name:v.name,weight:v.weight,equip:v.equip,variantIdx:idx,variants:e.variants,img:e.img||'',img2:e.img2||''};
   }
   openSwap(exId){ this.setState({swapOpen:exId}); }
   closeSwap(){ this.setState({swapOpen:null}); }
@@ -3578,7 +3589,8 @@ class Component extends DCLogic {
   openMealSwap(id){ this.setState({mealSwapOpen:id}); }
   closeMealSwap(){ this.setState({mealSwapOpen:null}); }
   swapMeal(id,idx){ this.setState(s=>({mealSwap:{...s.mealSwap,[id]:idx},mealSwapOpen:null})); }
-  toggleMeal(id){ this.setState(s=>({mealsDone:{...s.mealsDone,[id]:!s.mealsDone[id]}})); }
+  selectMealDay(i){ this.setState({selMealDay:i}); }
+  toggleMeal(id){ const d=this.state.selMealDay; this.setState(s=>({mealsDone:{...s.mealsDone,[d]:{...(s.mealsDone[d]||{}),[id]:!(s.mealsDone[d]||{})[id]}}})); }
   openPhoto(){ this.setState({photoOpen:true,nutriPhotoResult:null}); }
   closePhoto(){ this.setState({photoOpen:false}); }
   addPhoto(){ const r=this.state.nutriPhotoResult||{kcal:0,protein:0,carbs:0,fat:0}; this.setState(s=>({photoOpen:false,nutriPhotoResult:null,extra:{kcal:s.extra.kcal+r.kcal,protein:s.extra.protein+r.protein,carbs:s.extra.carbs+r.carbs,fat:s.extra.fat+r.fat}})); }
@@ -3792,9 +3804,10 @@ class Component extends DCLogic {
     const now=new Date();
     const planNames={fat_loss:{n:'Full Body Quema',f:'Cuerpo completo'},muscle:{n:'Push · Pecho y Tríceps',f:'Empuje'},recomp:{n:'Full Body Recomp',f:'Recomposición'},maintain:{n:'Fuerza Total',f:'Fuerza'},performance:{n:'HIIT + Fuerza',f:'Metabólico'}};
     const tw=planNames[p.goal]||planNames.fat_loss;
-    // use real meal data for home screen
+    // use real meal data for home screen (today's data)
     const _mealsForHome=this.getMeals().map(m=>this.resolveMeal(m));
-    const _mdHome=this.state.mealsDone||{};
+    const _todayDow=new Date().getDay()===0?6:(new Date().getDay()-1);
+    const _mdHome=(this.state.mealsDone||{})[_todayDow]||{};
     const _extraHome=this.state.extra||{kcal:0,protein:0,carbs:0,fat:0};
     const _eatenHome=_mealsForHome.filter(m=>_mdHome[m.id]);
     const calConsumed=_eatenHome.reduce((a,m)=>a+m.kcal,0)+_extraHome.kcal;
@@ -3833,7 +3846,7 @@ class Component extends DCLogic {
       toggle:()=>this.toggleDone(ex,idx)
     }));
     const exDots=wk.map((_,k)=>({color:k<=exIdx?'#7CF5A0':'var(--bd2)'}));
-    const exercisePreview=wk.map(e=>{const r=this.resolveEx(e);return {name:r.name,muscle:e.muscle,target:e.sets+'×'+e.reps,gif:'gif_'+e.id};});
+    const exercisePreview=wk.map(e=>{const r=this.resolveEx(e);return {name:r.name,muscle:e.muscle,target:e.sets+'×'+e.reps,img:e.img||'',img2:e.img2||''};});
     // sustitución de ejercicio
     const swapVariants=ex.variants.map((v,k)=>({name:v.name,equip:v.equip,selected:k===ex.variantIdx,notSelected:k!==ex.variantIdx,onSelect:()=>this.swapExercise(ex.id,k)}));
     const dayNames=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
@@ -3856,8 +3869,16 @@ class Component extends DCLogic {
     const nextSet=sets.find(s=>!s.done);
 
     // ===== nutrición =====
+    const smd=this.state.selMealDay;
+    const nutriWeekDays=dayNames.map((nm,k)=>{
+      const seld=k===smd;
+      return {label:nm[0], onClick:()=>this.selectMealDay(k),
+        bg:seld?'var(--selbg)':'var(--card)', border:seld?'rgba(91,214,232,.4)':'var(--bd1)',
+        fg:seld?'var(--text)':'var(--muted)', dot:'#5BD6E8'};
+    });
     const meals=this.getMeals().map(m=>this.resolveMeal(m));
-    const md=this.state.mealsDone||{};
+    const allMealsDone=this.state.mealsDone||{};
+    const md=(allMealsDone[smd])||{};
     const extra=this.state.extra||{kcal:0,protein:0,carbs:0,fat:0};
     const mealRows=meals.map(m=>({name:m.name,time:m.time,kcal:m.kcal,foodsText:m.foods.join(' · '),macro:m.protein+'P · '+m.carbs+'C · '+m.fat+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
     // sustitución de comida
@@ -3868,10 +3889,12 @@ class Component extends DCLogic {
       mealSwapVariants=mealSwapMeal.variants.map((v,k)=>({foodsText:v.join(' · '),selected:k===mealSwapMeal.variantIdx,notSelected:k!==mealSwapMeal.variantIdx,onSelect:()=>this.swapMeal(mealSwapMeal.id,k)}));
     }
     const eaten=meals.filter(m=>md[m.id]);
-    const nKcal=eaten.reduce((a,m)=>a+m.kcal,0)+extra.kcal;
-    const nP=eaten.reduce((a,m)=>a+m.protein,0)+extra.protein;
-    const nC=eaten.reduce((a,m)=>a+m.carbs,0)+extra.carbs;
-    const nF=eaten.reduce((a,m)=>a+m.fat,0)+extra.fat;
+    const todayDow=new Date().getDay()===0?6:(new Date().getDay()-1);
+    const isToday=smd===todayDow;
+    const nKcal=eaten.reduce((a,m)=>a+m.kcal,0)+(isToday?extra.kcal:0);
+    const nP=eaten.reduce((a,m)=>a+m.protein,0)+(isToday?extra.protein:0);
+    const nC=eaten.reduce((a,m)=>a+m.carbs,0)+(isToday?extra.carbs:0);
+    const nF=eaten.reduce((a,m)=>a+m.fat,0)+(isToday?extra.fat:0);
     const npct=(v,t)=>Math.min(100,Math.round(v/(t||1)*100))+'%';
 
     // ===== progreso =====
@@ -3902,6 +3925,7 @@ class Component extends DCLogic {
 
     // exercise image for session
     const exImgUrl=wk.length&&wk[exIdx]?(wk[exIdx].img||''):'';
+    const exImg2Url=wk.length&&wk[exIdx]?(wk[exIdx].img2||''):'';
     const hasExImg=!!exImgUrl;
     // nutri photo
     const nutriPhotoResult=this.state.nutriPhotoResult||null;
@@ -4023,7 +4047,7 @@ class Component extends DCLogic {
       exercisePreview,
       startSession:()=>this.goEntreno('session'),
       backToList:()=>this.goEntreno('list'),
-      exNum:exIdx+1, exTotal:wk.length, exName:ex.name, exMuscle:ex.muscle, exGif:'gif_'+ex.id, exImgUrl, hasExImg,
+      exNum:exIdx+1, exTotal:wk.length, exName:ex.name, exMuscle:ex.muscle, exGif:'gif_'+ex.id, exImgUrl, exImg2Url, hasExImg,
       exTarget:ex.sets+' series · '+ex.reps+' '+ex.unit+' · '+ex.rest+'s descanso',
       exDots, setRows,
       showPrev:exIdx>0, nextLabel:exIdx>=wk.length-1?'Terminar entrenamiento':'Siguiente ejercicio',
@@ -4036,6 +4060,7 @@ class Component extends DCLogic {
       onOpenSwap:()=>this.openSwap(ex.id), onCloseSwap:()=>this.closeSwap(),
       // nutrición
       isNutricion:screen==='nutricion',
+      nutriWeekDays, selMealDayName:dayNames[smd],
       mealRows,
       nKcal:nKcal.toLocaleString('es-ES'), nKcalTarget:p.cal.toLocaleString('es-ES'), nKcalPct:npct(nKcal,p.cal),
       nP, nC, nF, proteinTarget:p.proteinG, carbsTarget:p.carbsG, fatTarget:p.fatG,
