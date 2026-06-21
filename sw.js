@@ -5,7 +5,7 @@ const ASSETS = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
-  './imgs/progreso-1.jpg'
+  './imgs/progreso-2.jpg'
 ];
 
 self.addEventListener('install', e => {
