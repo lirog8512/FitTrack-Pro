@@ -1,10 +1,11 @@
-const CACHE = 'vital-v1';
+const CACHE = 'vital-v2';
 const ASSETS = [
   './index.html',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  './icons/apple-touch-icon.png'
+  './icons/apple-touch-icon.png',
+  './imgs/progreso-1.jpg'
 ];
 
 self.addEventListener('install', e => {
