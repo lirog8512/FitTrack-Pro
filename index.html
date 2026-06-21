@@ -3643,43 +3643,38 @@ class Component extends DCLogic {
   startRulerDrag(e){
     const q=this.questions()[this.state.qIndex]; if(!q||q.type!=='ruler')return;
     const cfg=this.rulerCfg(q);
-    const el=e.currentTarget;
-    const pid=e.pointerId;
-    if(el.setPointerCapture&&pid!=null) el.setPointerCapture(pid);
     const startX=e.clientX;
     const startDisp=cfg.toDisp(this.rulerVal(q));
-    const move=(ev)=>{ const delta=(startX-ev.clientX)/cfg.gap*cfg.minor; this.setRuler(q,startDisp+delta); };
-    const up=()=>{ el.removeEventListener('pointermove',move); el.removeEventListener('pointerup',up); el.removeEventListener('pointercancel',up); };
-    el.addEventListener('pointermove',move,{passive:true});
-    el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up);
+    const move=(ev)=>{ ev.preventDefault(); const delta=(startX-ev.clientX)/cfg.gap*cfg.minor; this.setRuler(q,startDisp+delta); };
+    const up=()=>{ document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
+    document.addEventListener('pointermove',move,{passive:false});
+    document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
   }
   // ----- fecha de nacimiento (ruedas) -----
   dateVal(){ const A=this.state.answers; return A.nacimiento||this.questions().find(x=>x.id==='nacimiento').default; }
   setDatePart(part,val){ this.setState(s=>{ const d={...(s.answers.nacimiento||this.questions().find(x=>x.id==='nacimiento').default)}; d[part]=val; return {answers:{...s.answers,nacimiento:d}}; }); }
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
   startWheelDrag(part,values,e){
-    const el=e.currentTarget;
-    const pid=e.pointerId;
-    if(el.setPointerCapture&&pid!=null) el.setPointerCapture(pid);
     const startY=e.clientY;
     const startIdx=values.indexOf(this.dateVal()[part]);
     const ITEM_H=40;
     let lastNi=startIdx, lastY=startY, lastT=Date.now(), vel=0;
     const move=(ev)=>{
+      ev.preventDefault();
       const now=Date.now(), dt=Math.max(1,now-lastT);
       vel=(lastY-ev.clientY)/dt; lastY=ev.clientY; lastT=now;
       const ni=Math.max(0,Math.min(values.length-1,Math.round(startIdx+(startY-ev.clientY)/ITEM_H)));
       if(ni!==lastNi){ lastNi=ni; this.setDatePart(part,values[ni]); }
     };
     const up=(ev)=>{
-      el.removeEventListener('pointermove',move); el.removeEventListener('pointerup',up); el.removeEventListener('pointercancel',up);
+      document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up);
       const coast=Math.round(vel*180/ITEM_H);
       const rawDelta=Math.round((startY-ev.clientY)/ITEM_H);
       const ni=Math.max(0,Math.min(values.length-1,startIdx+rawDelta+coast));
       this.setDatePart(part,values[ni]);
     };
-    el.addEventListener('pointermove',move,{passive:true});
-    el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up);
+    document.addEventListener('pointermove',move,{passive:false});
+    document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
   }
   // ----- Salud de Apple -----
   openHealth(){ this.setState({healthOpen:true}); }
