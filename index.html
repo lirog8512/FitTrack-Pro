@@ -2253,7 +2253,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
               <sc-for list="{{ currentOptions }}" as="opt" hint-placeholder-count="4">
                 <button onClick="{{ opt.onSelect }}" style="position:relative;text-align:left;width:100%;padding:17px 18px;border-radius:16px;background:var(--surface);border:1px solid var(--bd);color:var(--text);cursor:pointer;display:flex;align-items:center;gap:14px;overflow:hidden;font-family:inherit;">
                   <sc-if value="{{ opt.hasSym }}" hint-placeholder-val="{{ false }}">
-                    <div style="width:40px;height:40px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;flex:none;" dangerouslySetInnerHTML="{{ {__html: opt.sym} }}"></div>
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:21px;color:#7CF5A0;flex:none;">{{ opt.sym }}</div>
                   </sc-if>
                   <div style="flex:1;">
                     <div style="font-size:15px;font-weight:600;">{{ opt.label }}</div>
@@ -3269,11 +3269,7 @@ class Component extends DCLogic {
           maintain:{t:'Plan adaptado',x:'Mantendremos tus calorías de equilibrio con entrenamiento variado para sostener tu forma.'},
           performance:{t:'Plan adaptado',x:'Combinaremos fuerza y trabajo metabólico para subir tu rendimiento general.'}}},
       {id:'sexo',type:'single',kicker:'Sobre ti',title:'¿Con qué sexo te identificas?',subtitle:'Lo usamos para calcular tus calorías y macros con precisión.',
-        options:[
-          {value:'Hombre',label:'Hombre',sym:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8" cy="12" r="6" stroke="#7CF5A0" stroke-width="2"/><line x1="13" y1="7" x2="18" y2="2" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round"/><polyline points="13,2 18,2 18,7" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>'},
-          {value:'Mujer',label:'Mujer',sym:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="8" r="6" stroke="#7CF5A0" stroke-width="2"/><line x1="10" y1="14" x2="10" y2="19" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="17" x2="13" y2="17" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round"/></svg>'},
-          {value:'otro',label:'Otro',sym:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="5.5" stroke="#7CF5A0" stroke-width="2"/><line x1="10" y1="15.5" x2="10" y2="19" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="17.5" x2="13" y2="17.5" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round"/><line x1="14.5" y1="5.5" x2="18" y2="2" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round"/><polyline points="14,2 18,2 18,6" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>'}
-        ]},
+        options:[{value:'Hombre',label:'Hombre',sym:'♂'},{value:'Mujer',label:'Mujer',sym:'♀'},{value:'otro',label:'Otro',sym:'⊕'}]},
       {id:'nacimiento',type:'date',kicker:'Sobre ti',title:'¿Cuál es tu fecha de nacimiento?',subtitle:'Calcularemos tu edad y la mantendremos siempre actualizada.',default:{y:1996,m:5,d:15}},
       {id:'altura',type:'ruler',field:'height',kicker:'Medidas',title:'¿Cuál es tu altura?',default:172},
       {id:'peso',type:'ruler',field:'weight',kicker:'Medidas',title:'¿Cuál es tu peso actual?',default:74},
