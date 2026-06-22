@@ -2242,7 +2242,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.5px;flex:none;">{{ stepLabel }}</div>
         </div>
 
-        <div class="vscroll" style="flex:1;overflow-y:{{ isRuler||isDate ? 'hidden' : 'auto' }};display:flex;flex-direction:column;touch-action:{{ isRuler||isDate ? 'none' : 'pan-y' }};">
+        <div class="vscroll" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
           <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:2.5px;color:#7CF5A0;text-transform:uppercase;margin-bottom:13px;">{{ qKicker }}</div>
           <h1 style="font-size:25px;line-height:1.2;font-weight:800;letter-spacing:-.4px;text-wrap:pretty;">{{ qTitle }}</h1>
           <sc-if value="{{ hasSubtitle }}" hint-placeholder-val="{{ false }}">
@@ -2294,7 +2294,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
             </div>
             <div style="position:relative;margin-top:24px;height:96px;display:flex;align-items:center;gap:12px;">
               <button onClick="{{ onRulerDec }}" style="width:42px;height:42px;border-radius:50%;border:1px solid var(--bd3);background:var(--surface);color:var(--text);font-size:22px;line-height:1;cursor:pointer;flex:none;z-index:3;">−</button>
-              <div class="drag-zone" onPointerDown="{{ onRulerDrag }}" onTouchStart="{{ onRulerDrag }}" style="position:relative;flex:1;height:96px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;">
+              <div class="drag-zone drag-ruler" onPointerDown="{{ onRulerDrag }}" style="position:relative;flex:1;height:96px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;">
                 <div style="position:absolute;left:50%;bottom:8px;height:80px;display:flex;align-items:flex-end;transform:translateX({{ rulerOffset }}px);will-change:transform;">
                   <sc-for list="{{ rulerTicks }}" as="t" hint-placeholder-count="40">
                     <div onClick="{{ t.onClick }}" style="width:{{ rulerGap }}px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;cursor:pointer;">
@@ -2317,21 +2317,21 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
             <div style="text-align:center;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:1px;color:#7CF5A0;">{{ dateBig }}</div>
             <div style="position:relative;margin-top:14px;height:200px;display:flex;gap:8px;">
               <div style="position:absolute;left:0;right:0;top:80px;height:40px;border-radius:13px;background:var(--card2);pointer-events:none;"></div>
-              <div class="drag-zone" onPointerDown="{{ onDiaDrag }}" onTouchStart="{{ onDiaDrag }}" style="position:relative;width:64px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
+              <div class="drag-zone drag-dia" onPointerDown="{{ onDiaDrag }}" style="position:relative;width:64px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
                 <div style="position:absolute;left:0;right:0;top:80px;transform:translateY({{ offDia }}px);will-change:transform;">
                   <sc-for list="{{ dDia }}" as="o" hint-placeholder-count="6">
                     <div onClick="{{ o.onClick }}" style="height:40px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:{{ o.color }};cursor:pointer;">{{ o.v }}</div>
                   </sc-for>
                 </div>
               </div>
-              <div class="drag-zone" onPointerDown="{{ onMesDrag }}" onTouchStart="{{ onMesDrag }}" style="position:relative;flex:1;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
+              <div class="drag-zone drag-mes" onPointerDown="{{ onMesDrag }}" style="position:relative;flex:1;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
                 <div style="position:absolute;left:0;right:0;top:80px;transform:translateY({{ offMes }}px);will-change:transform;">
                   <sc-for list="{{ dMes }}" as="o" hint-placeholder-count="6">
                     <div onClick="{{ o.onClick }}" style="height:40px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:{{ o.color }};cursor:pointer;">{{ o.label }}</div>
                   </sc-for>
                 </div>
               </div>
-              <div class="drag-zone" onPointerDown="{{ onAnioDrag }}" onTouchStart="{{ onAnioDrag }}" style="position:relative;width:78px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
+              <div class="drag-zone drag-anio" onPointerDown="{{ onAnioDrag }}" style="position:relative;width:78px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
                 <div style="position:absolute;left:0;right:0;top:80px;transform:translateY({{ offAnio }}px);will-change:transform;">
                   <sc-for list="{{ dAnio }}" as="o" hint-placeholder-count="6">
                     <div onClick="{{ o.onClick }}" style="height:40px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:{{ o.color }};cursor:pointer;">{{ o.v }}</div>
@@ -3755,6 +3755,7 @@ class Component extends DCLogic {
   }
 
   renderVals(){
+    window.__vitalComp=this;
     const qs=this.questions(), total=qs.length, i=this.state.qIndex, q=qs[i], A=this.state.answers;
     const screen=this.state.screen;
     const ans=A[q.id];
@@ -4140,15 +4141,37 @@ class Component extends DCLogic {
 </script>
 
 <script>
-// Capture-phase non-passive touchstart: must live outside DC runtime so it's
-// always registered. iOS Safari commits to scroll on touchstart before any
-// touchmove fires, so we block it here for drag zones.
+// Non-passive capture-phase touchstart — must live outside DC runtime.
+// iOS Safari decides scroll on touchstart, before any touchmove.
+// We also call the component drag handlers directly here, because
+// onTouchStart bindings inside the DC runtime may not fire reliably.
 document.addEventListener('touchstart', function(e){
-  var el = e.target;
+  var el = e.target, zone = null;
   while(el && el !== document){
-    if(el.classList && el.classList.contains('drag-zone')){ e.preventDefault(); return; }
+    if(el.classList && el.classList.contains('drag-zone')){ zone = el; break; }
     el = el.parentElement;
   }
+  if(!zone) return;
+  e.preventDefault();
+
+  var c = window.__vitalComp;
+  if(!c || c._dragActive) return;
+  c._dragActive = true;
+
+  if(zone.classList.contains('drag-ruler')){
+    c.startRulerDrag(e);
+  } else {
+    var dayV=[],monV=[],yrV=[];
+    for(var d=1;d<=31;d++) dayV.push(d);
+    for(var m=1;m<=12;m++) monV.push(m);
+    for(var y=1940;y<=2012;y++) yrV.push(y);
+    if(zone.classList.contains('drag-dia'))  c.startWheelDrag('d',dayV,e);
+    if(zone.classList.contains('drag-mes'))  c.startWheelDrag('m',monV,e);
+    if(zone.classList.contains('drag-anio')) c.startWheelDrag('y',yrV,e);
+  }
+  // clear flag on touch end
+  document.addEventListener('touchend',  function(){ c._dragActive=false; }, {once:true});
+  document.addEventListener('touchcancel',function(){ c._dragActive=false; }, {once:true});
 }, {passive:false, capture:true});
 </script>
 </body>
