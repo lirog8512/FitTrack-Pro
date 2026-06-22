@@ -2294,7 +2294,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
             </div>
             <div style="position:relative;margin-top:24px;height:96px;display:flex;align-items:center;gap:12px;">
               <button onClick="{{ onRulerDec }}" style="width:42px;height:42px;border-radius:50%;border:1px solid var(--bd3);background:var(--surface);color:var(--text);font-size:22px;line-height:1;cursor:pointer;flex:none;z-index:3;">−</button>
-              <div onPointerDown="{{ onRulerDrag }}" style="position:relative;flex:1;height:96px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;">
+              <div onPointerDown="{{ onRulerDrag }}" onTouchStart="{{ onRulerDrag }}" style="position:relative;flex:1;height:96px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;">
                 <div style="position:absolute;left:50%;bottom:8px;height:80px;display:flex;align-items:flex-end;transform:translateX({{ rulerOffset }}px);will-change:transform;">
                   <sc-for list="{{ rulerTicks }}" as="t" hint-placeholder-count="40">
                     <div onClick="{{ t.onClick }}" style="width:{{ rulerGap }}px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;cursor:pointer;">
@@ -2317,21 +2317,21 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
             <div style="text-align:center;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:1px;color:#7CF5A0;">{{ dateBig }}</div>
             <div style="position:relative;margin-top:14px;height:200px;display:flex;gap:8px;">
               <div style="position:absolute;left:0;right:0;top:80px;height:40px;border-radius:13px;background:var(--card2);pointer-events:none;"></div>
-              <div onPointerDown="{{ onDiaDrag }}" style="position:relative;width:64px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
+              <div onPointerDown="{{ onDiaDrag }}" onTouchStart="{{ onDiaDrag }}" style="position:relative;width:64px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
                 <div style="position:absolute;left:0;right:0;top:80px;transform:translateY({{ offDia }}px);will-change:transform;">
                   <sc-for list="{{ dDia }}" as="o" hint-placeholder-count="6">
                     <div onClick="{{ o.onClick }}" style="height:40px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:{{ o.color }};cursor:pointer;">{{ o.v }}</div>
                   </sc-for>
                 </div>
               </div>
-              <div onPointerDown="{{ onMesDrag }}" style="position:relative;flex:1;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
+              <div onPointerDown="{{ onMesDrag }}" onTouchStart="{{ onMesDrag }}" style="position:relative;flex:1;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
                 <div style="position:absolute;left:0;right:0;top:80px;transform:translateY({{ offMes }}px);will-change:transform;">
                   <sc-for list="{{ dMes }}" as="o" hint-placeholder-count="6">
                     <div onClick="{{ o.onClick }}" style="height:40px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:{{ o.color }};cursor:pointer;">{{ o.label }}</div>
                   </sc-for>
                 </div>
               </div>
-              <div onPointerDown="{{ onAnioDrag }}" style="position:relative;width:78px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
+              <div onPointerDown="{{ onAnioDrag }}" onTouchStart="{{ onAnioDrag }}" style="position:relative;width:78px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
                 <div style="position:absolute;left:0;right:0;top:80px;transform:translateY({{ offAnio }}px);will-change:transform;">
                   <sc-for list="{{ dAnio }}" as="o" hint-placeholder-count="6">
                     <div onClick="{{ o.onClick }}" style="height:40px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:{{ o.color }};cursor:pointer;">{{ o.v }}</div>
@@ -3643,38 +3643,43 @@ class Component extends DCLogic {
   startRulerDrag(e){
     const q=this.questions()[this.state.qIndex]; if(!q||q.type!=='ruler')return;
     const cfg=this.rulerCfg(q);
-    const startX=e.clientX;
+    if(e.cancelable) e.preventDefault();
+    const startX=(e.touches?e.touches[0].clientX:e.clientX);
     const startDisp=cfg.toDisp(this.rulerVal(q));
-    const move=(ev)=>{ ev.preventDefault(); const delta=(startX-ev.clientX)/cfg.gap*cfg.minor; this.setRuler(q,startDisp+delta); };
-    const up=()=>{ document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
-    document.addEventListener('pointermove',move,{passive:false});
-    document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
+    const move=(ev)=>{ if(ev.cancelable) ev.preventDefault(); const x=(ev.touches?ev.touches[0].clientX:ev.clientX); const delta=(startX-x)/cfg.gap*cfg.minor; this.setRuler(q,startDisp+delta); };
+    const up=()=>{ window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); window.removeEventListener('touchmove',move); window.removeEventListener('touchend',up); window.removeEventListener('touchcancel',up); };
+    window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
+    window.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',up); window.addEventListener('touchcancel',up);
   }
   // ----- fecha de nacimiento (ruedas) -----
   dateVal(){ const A=this.state.answers; return A.nacimiento||this.questions().find(x=>x.id==='nacimiento').default; }
   setDatePart(part,val){ this.setState(s=>{ const d={...(s.answers.nacimiento||this.questions().find(x=>x.id==='nacimiento').default)}; d[part]=val; return {answers:{...s.answers,nacimiento:d}}; }); }
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
   startWheelDrag(part,values,e){
-    const startY=e.clientY;
+    if(e.cancelable) e.preventDefault();
+    const startY=(e.touches?e.touches[0].clientY:e.clientY);
     const startIdx=values.indexOf(this.dateVal()[part]);
     const ITEM_H=40;
     let lastNi=startIdx, lastY=startY, lastT=Date.now(), vel=0;
     const move=(ev)=>{
-      ev.preventDefault();
+      if(ev.cancelable) ev.preventDefault();
+      const y=(ev.touches?ev.touches[0].clientY:ev.clientY);
       const now=Date.now(), dt=Math.max(1,now-lastT);
-      vel=(lastY-ev.clientY)/dt; lastY=ev.clientY; lastT=now;
-      const ni=Math.max(0,Math.min(values.length-1,Math.round(startIdx+(startY-ev.clientY)/ITEM_H)));
+      vel=(lastY-y)/dt; lastY=y; lastT=now;
+      const ni=Math.max(0,Math.min(values.length-1,Math.round(startIdx+(startY-y)/ITEM_H)));
       if(ni!==lastNi){ lastNi=ni; this.setDatePart(part,values[ni]); }
     };
     const up=(ev)=>{
-      document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up);
+      window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up);
+      window.removeEventListener('touchmove',move); window.removeEventListener('touchend',up); window.removeEventListener('touchcancel',up);
+      const y=(ev.changedTouches?ev.changedTouches[0]?.clientY:ev.clientY)??lastY;
       const coast=Math.round(vel*180/ITEM_H);
-      const rawDelta=Math.round((startY-ev.clientY)/ITEM_H);
+      const rawDelta=Math.round((startY-y)/ITEM_H);
       const ni=Math.max(0,Math.min(values.length-1,startIdx+rawDelta+coast));
       this.setDatePart(part,values[ni]);
     };
-    document.addEventListener('pointermove',move,{passive:false});
-    document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
+    window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
+    window.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',up); window.addEventListener('touchcancel',up);
   }
   // ----- Salud de Apple -----
   openHealth(){ this.setState({healthOpen:true}); }
