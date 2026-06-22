@@ -2840,11 +2840,15 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           <p style="font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.5;">Mismo grupo muscular y series. Elige según el material que tengas.</p>
           <div style="display:flex;flex-direction:column;gap:9px;margin-top:16px;">
             <sc-for list="{{ swapVariants }}" as="v" hint-placeholder-count="4">
-              <button onClick="{{ v.onSelect }}" style="position:relative;text-align:left;width:100%;padding:15px 16px;border-radius:15px;background:var(--surface);border:1px solid var(--bd);color:var(--text);cursor:pointer;font-family:inherit;">
+              <button onClick="{{ v.onSelect }}" style="position:relative;text-align:left;width:100%;padding:12px 14px;border-radius:15px;background:var(--surface);border:1px solid var(--bd);color:var(--text);cursor:pointer;font-family:inherit;">
                 <div style="display:flex;align-items:center;gap:12px;">
-                  <div style="flex:1;">
-                    <div style="font-size:14.5px;font-weight:600;">{{ v.name }}</div>
-                    <div style="font-size:12px;color:var(--muted);margin-top:3px;">{{ v.equip }}</div>
+                  <div style="width:68px;height:56px;border-radius:11px;overflow:hidden;background:#111;flex:none;position:relative;">
+                    <img src="{{ v.img }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'">
+                    <img src="{{ v.img2 }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;animation:exFlip 2.4s ease-in-out infinite;" onerror="this.style.display='none'">
+                  </div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-size:14px;font-weight:600;line-height:1.3;">{{ v.name }}</div>
+                    <div style="font-size:11.5px;color:var(--muted);margin-top:3px;">{{ v.equip }}</div>
                   </div>
                   <sc-if value="{{ v.selected }}" hint-placeholder-val="{{ false }}">
                     <div style="width:24px;height:24px;border-radius:50%;background:#7CF5A0;display:flex;align-items:center;justify-content:center;color:#07080A;font-size:14px;font-weight:800;flex:none;">✓</div>
@@ -3553,24 +3557,27 @@ class Component extends DCLogic {
   selectDay(i){ this.setState({selDay:i}); }
   _exDb(){
     const gh=(id)=>`https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/${id}/`;
-    const ex=(id,muscle,sets,reps,unit,rest,ghId,variants)=>({id,muscle,sets,reps,unit,rest,img:gh(ghId)+'0.jpg',img2:gh(ghId)+'1.jpg',variants});
+    const ex=(id,muscle,sets,reps,unit,rest,ghId,variants)=>{
+      const vi=(g)=>({img:gh(g)+'0.jpg',img2:gh(g)+'1.jpg'});
+      return {id,muscle,sets,reps,unit,rest,...vi(ghId),variants:variants.map(v=>({...v,...vi(v.g||ghId)}))};
+    };
     return {
-      sentadilla:ex('sentadilla','Cuádriceps · Glúteo',4,10,'reps',90,'Barbell_Squat',[{name:'Sentadilla con barra',weight:60,equip:'Barra'},{name:'Sentadilla con mancuernas',weight:24,equip:'Mancuernas'},{name:'Goblet squat',weight:20,equip:'1 mancuerna'},{name:'Prensa de piernas',weight:90,equip:'Máquina'},{name:'Sentadilla peso corporal',weight:0,equip:'Sin equipo'}]),
-      press_banca:ex('press_banca','Pecho · Tríceps',4,8,'reps',90,'Barbell_Bench_Press_-_Medium_Grip',[{name:'Press de banca con barra',weight:50,equip:'Barra'},{name:'Press con mancuernas',weight:22,equip:'Mancuernas'},{name:'Press en máquina',weight:45,equip:'Máquina'},{name:'Flexiones',weight:0,equip:'Sin equipo'}]),
-      press_inclinado:ex('press_inclinado','Pecho superior',3,10,'reps',90,'Barbell_Incline_Bench_Press_-_Medium_Grip',[{name:'Press inclinado con barra',weight:40,equip:'Barra'},{name:'Press inclinado mancuernas',weight:18,equip:'Mancuernas'},{name:'Flexiones inclinadas',weight:0,equip:'Sin equipo'}]),
-      remo:ex('remo','Espalda · Bíceps',3,12,'reps',75,'Bent_Over_Barbell_Row',[{name:'Remo con barra',weight:40,equip:'Barra'},{name:'Remo con mancuerna',weight:18,equip:'Mancuernas'},{name:'Remo en polea',weight:45,equip:'Polea'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]),
-      dominadas:ex('dominadas','Espalda · Bíceps',3,8,'reps',90,'Band_Assisted_Pull-Up',[{name:'Dominadas',weight:0,equip:'Barra fija'},{name:'Jalón en polea',weight:55,equip:'Polea'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]),
-      polea_alta:ex('polea_alta','Espalda · Dorsal',3,12,'reps',75,'Close-Grip_Front_Lat_Pulldown',[{name:'Jalón al pecho en polea',weight:55,equip:'Polea'},{name:'Jalón trasnuca',weight:50,equip:'Polea'},{name:'Dominadas asistidas',weight:0,equip:'Máquina'}]),
-      press_militar:ex('press_militar','Hombro · Tríceps',3,10,'reps',75,'Barbell_Shoulder_Press',[{name:'Press militar con barra',weight:30,equip:'Barra'},{name:'Press con mancuernas',weight:14,equip:'Mancuernas'},{name:'Press en máquina',weight:30,equip:'Máquina'}]),
+      sentadilla:ex('sentadilla','Cuádriceps · Glúteo',4,10,'reps',90,'Barbell_Squat',[{name:'Sentadilla con barra',weight:60,equip:'Barra'},{name:'Sentadilla con mancuernas',weight:24,equip:'Mancuernas',g:'Dumbbell_Squat'},{name:'Goblet squat',weight:20,equip:'1 mancuerna'},{name:'Prensa de piernas',weight:90,equip:'Máquina',g:'Leg_Press'},{name:'Sentadilla peso corporal',weight:0,equip:'Sin equipo'}]),
+      press_banca:ex('press_banca','Pecho · Tríceps',4,8,'reps',90,'Barbell_Bench_Press_-_Medium_Grip',[{name:'Press de banca con barra',weight:50,equip:'Barra'},{name:'Press con mancuernas',weight:22,equip:'Mancuernas',g:'Dumbbell_Bench_Press'},{name:'Press en máquina',weight:45,equip:'Máquina'},{name:'Flexiones',weight:0,equip:'Sin equipo',g:'Push-Up'}]),
+      press_inclinado:ex('press_inclinado','Pecho superior',3,10,'reps',90,'Barbell_Incline_Bench_Press_-_Medium_Grip',[{name:'Press inclinado con barra',weight:40,equip:'Barra'},{name:'Press inclinado mancuernas',weight:18,equip:'Mancuernas',g:'Dumbbell_Incline_Bench_Press_-_Medium_Grip'},{name:'Flexiones inclinadas',weight:0,equip:'Sin equipo'}]),
+      remo:ex('remo','Espalda · Bíceps',3,12,'reps',75,'Bent_Over_Barbell_Row',[{name:'Remo con barra',weight:40,equip:'Barra'},{name:'Remo con mancuerna',weight:18,equip:'Mancuernas',g:'One-Arm_Dumbbell_Row'},{name:'Remo en polea',weight:45,equip:'Polea'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]),
+      dominadas:ex('dominadas','Espalda · Bíceps',3,8,'reps',90,'Band_Assisted_Pull-Up',[{name:'Dominadas',weight:0,equip:'Barra fija',g:'Pull-Up'},{name:'Jalón en polea',weight:55,equip:'Polea',g:'Close-Grip_Front_Lat_Pulldown'},{name:'Remo invertido',weight:0,equip:'Sin equipo'}]),
+      polea_alta:ex('polea_alta','Espalda · Dorsal',3,12,'reps',75,'Close-Grip_Front_Lat_Pulldown',[{name:'Jalón al pecho en polea',weight:55,equip:'Polea'},{name:'Jalón trasnuca',weight:50,equip:'Polea'},{name:'Dominadas asistidas',weight:0,equip:'Máquina',g:'Band_Assisted_Pull-Up'}]),
+      press_militar:ex('press_militar','Hombro · Tríceps',3,10,'reps',75,'Barbell_Shoulder_Press',[{name:'Press militar con barra',weight:30,equip:'Barra'},{name:'Press con mancuernas',weight:14,equip:'Mancuernas',g:'Dumbbell_Shoulder_Press'},{name:'Press en máquina',weight:30,equip:'Máquina'}]),
       elevacion_lateral:ex('elevacion_lateral','Hombro lateral',3,15,'reps',60,'Side_Lateral_Raise',[{name:'Elevaciones laterales',weight:8,equip:'Mancuernas'},{name:'Elevaciones en polea',weight:12,equip:'Polea'},{name:'Elevaciones con banda',weight:0,equip:'Banda elástica'}]),
       tricep_fondos:ex('tricep_fondos','Tríceps',3,12,'reps',60,'Bench_Dips',[{name:'Fondos en paralelas',weight:0,equip:'Paralelas'},{name:'Press francés',weight:20,equip:'Barra'},{name:'Extensión en polea',weight:25,equip:'Polea'}]),
-      curl:ex('curl','Bíceps',3,12,'reps',60,'Barbell_Curl',[{name:'Curl con mancuerna',weight:14,equip:'Mancuernas'},{name:'Curl con barra',weight:25,equip:'Barra'},{name:'Curl en polea',weight:20,equip:'Polea'},{name:'Curl con banda',weight:0,equip:'Banda elástica'}]),
-      curl_martillo:ex('curl_martillo','Bíceps · Antebrazo',3,12,'reps',60,'Alternate_Hammer_Curl',[{name:'Curl martillo mancuernas',weight:14,equip:'Mancuernas'},{name:'Curl martillo cable',weight:18,equip:'Polea'},{name:'Curl inclinado',weight:12,equip:'Mancuernas'}]),
-      plancha:ex('plancha','Core · Abdomen',3,45,'seg',45,'Plank',[{name:'Plancha isométrica',weight:0,equip:'Sin equipo'},{name:'Plancha lateral',weight:0,equip:'Sin equipo'},{name:'Crunch en polea',weight:25,equip:'Polea'},{name:'Rueda abdominal',weight:0,equip:'Rueda'}]),
-      peso_muerto:ex('peso_muerto','Isquios · Glúteo · Espalda',4,8,'reps',120,'Barbell_Deadlift',[{name:'Peso muerto con barra',weight:70,equip:'Barra'},{name:'Peso muerto rumano',weight:50,equip:'Barra'},{name:'Peso muerto mancuernas',weight:28,equip:'Mancuernas'}]),
-      prensa:ex('prensa','Cuádriceps · Glúteo',4,12,'reps',90,'Leg_Press',[{name:'Prensa de piernas',weight:100,equip:'Máquina'},{name:'Hack squat',weight:60,equip:'Máquina'},{name:'Sentadilla búlgara',weight:20,equip:'Mancuernas'}]),
-      zancadas:ex('zancadas','Cuádriceps · Glúteo',3,12,'reps',75,'Barbell_Lunge',[{name:'Zancadas con mancuernas',weight:18,equip:'Mancuernas'},{name:'Zancadas en caminata',weight:0,equip:'Sin equipo'},{name:'Zancadas en polea',weight:20,equip:'Polea'}]),
-      gemelos:ex('gemelos','Gemelo · Sóleo',4,20,'reps',45,'Standing_Barbell_Calf_Raise',[{name:'Elevaciones de talón de pie',weight:0,equip:'Sin equipo'},{name:'Elevaciones en máquina',weight:60,equip:'Máquina'},{name:'Elevaciones sentado',weight:40,equip:'Máquina'}]),
+      curl:ex('curl','Bíceps',3,12,'reps',60,'Barbell_Curl',[{name:'Curl con mancuerna',weight:14,equip:'Mancuernas',g:'Alternating_Dumbbell_Curl'},{name:'Curl con barra',weight:25,equip:'Barra'},{name:'Curl en polea',weight:20,equip:'Polea'},{name:'Curl con banda',weight:0,equip:'Banda elástica'}]),
+      curl_martillo:ex('curl_martillo','Bíceps · Antebrazo',3,12,'reps',60,'Alternate_Hammer_Curl',[{name:'Curl martillo mancuernas',weight:14,equip:'Mancuernas'},{name:'Curl martillo cable',weight:18,equip:'Polea'},{name:'Curl inclinado',weight:12,equip:'Mancuernas',g:'Incline_Dumbbell_Curl'}]),
+      plancha:ex('plancha','Core · Abdomen',3,45,'seg',45,'Plank',[{name:'Plancha isométrica',weight:0,equip:'Sin equipo'},{name:'Plancha lateral',weight:0,equip:'Sin equipo',g:'Side_Plank'},{name:'Crunch en polea',weight:25,equip:'Polea'},{name:'Rueda abdominal',weight:0,equip:'Rueda'}]),
+      peso_muerto:ex('peso_muerto','Isquios · Glúteo · Espalda',4,8,'reps',120,'Barbell_Deadlift',[{name:'Peso muerto con barra',weight:70,equip:'Barra'},{name:'Peso muerto rumano',weight:50,equip:'Barra',g:'Romanian_Deadlift'},{name:'Peso muerto mancuernas',weight:28,equip:'Mancuernas'}]),
+      prensa:ex('prensa','Cuádriceps · Glúteo',4,12,'reps',90,'Leg_Press',[{name:'Prensa de piernas',weight:100,equip:'Máquina'},{name:'Hack squat',weight:60,equip:'Máquina',g:'Hack_Squat'},{name:'Sentadilla búlgara',weight:20,equip:'Mancuernas'}]),
+      zancadas:ex('zancadas','Cuádriceps · Glúteo',3,12,'reps',75,'Barbell_Lunge',[{name:'Zancadas con mancuernas',weight:18,equip:'Mancuernas',g:'Dumbbell_Lunges'},{name:'Zancadas en caminata',weight:0,equip:'Sin equipo'},{name:'Zancadas en polea',weight:20,equip:'Polea'}]),
+      gemelos:ex('gemelos','Gemelo · Sóleo',4,20,'reps',45,'Standing_Barbell_Calf_Raise',[{name:'Elevaciones de talón de pie',weight:0,equip:'Sin equipo'},{name:'Elevaciones en máquina',weight:60,equip:'Máquina',g:'Seated_Calf_Raise'},{name:'Elevaciones sentado',weight:40,equip:'Máquina',g:'Seated_Calf_Raise'}]),
     };
   }
   _dayPlan(){
@@ -3600,7 +3607,7 @@ class Component extends DCLogic {
   resolveEx(e){
     const idx=Math.min(this.state.exSwap[e.id]||0,e.variants.length-1);
     const v=e.variants[idx];
-    return {id:e.id,muscle:e.muscle,sets:e.sets,reps:e.reps,unit:e.unit,rest:e.rest,name:v.name,weight:v.weight,equip:v.equip,variantIdx:idx,variants:e.variants,img:e.img||'',img2:e.img2||''};
+    return {id:e.id,muscle:e.muscle,sets:e.sets,reps:e.reps,unit:e.unit,rest:e.rest,name:v.name,weight:v.weight,equip:v.equip,variantIdx:idx,variants:e.variants,img:v.img||e.img||'',img2:v.img2||e.img2||''};
   }
   openSwap(exId){ this.setState({swapOpen:exId}); }
   closeSwap(){ this.setState({swapOpen:null}); }
@@ -4022,9 +4029,9 @@ Devuelve SOLO JSON sin markdown:
       toggle:()=>this.toggleDone(ex,idx)
     }));
     const exDots=wk.map((_,k)=>({color:k<=exIdx?'#7CF5A0':'var(--bd2)'}));
-    const exercisePreview=wk.map(e=>{const r=this.resolveEx(e);return {name:r.name,muscle:e.muscle,target:e.sets+'×'+e.reps,img:e.img||'',img2:e.img2||''};});
+    const exercisePreview=wk.map(e=>{const r=this.resolveEx(e);return {name:r.name,muscle:e.muscle,target:e.sets+'×'+e.reps,img:r.img||'',img2:r.img2||''};});
     // sustitución de ejercicio
-    const swapVariants=ex.variants.map((v,k)=>({name:v.name,equip:v.equip,selected:k===ex.variantIdx,notSelected:k!==ex.variantIdx,onSelect:()=>this.swapExercise(ex.id,k)}));
+    const swapVariants=ex.variants.map((v,k)=>({name:v.name,equip:v.equip,img:v.img||'',img2:v.img2||'',selected:k===ex.variantIdx,notSelected:k!==ex.variantIdx,onSelect:()=>this.swapExercise(ex.id,k)}));
     const dayNames=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
     let dayPlan;
     if(this.state.customWorkout){
@@ -4116,9 +4123,9 @@ Devuelve SOLO JSON sin markdown:
     const idealRange=(wUnit==='lbs'?[Math.round((idealKg-5)*2.20462),Math.round((idealKg+5)*2.20462)]:[Math.round((idealKg-2)*10)/10,Math.round((idealKg+2)*10)/10]);
     const idealRangeLabel=idealRange[0]+'-'+idealRange[1]+' '+wUnit;
 
-    // exercise image for session
-    const exImgUrl=wk.length&&wk[exIdx]?(wk[exIdx].img||''):'';
-    const exImg2Url=wk.length&&wk[exIdx]?(wk[exIdx].img2||''):'';
+    // exercise image for session — use resolved variant image
+    const exImgUrl=ex.img||'';
+    const exImg2Url=ex.img2||'';
     const hasExImg=!!exImgUrl;
     // nutri photo
     const nutriPhotoResult=this.state.nutriPhotoResult||null;
