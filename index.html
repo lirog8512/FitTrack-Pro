@@ -2623,9 +2623,14 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">{{ todayDow }}</div>
         </div>
         <div style="margin:12px 22px 0;border-radius:22px;background:var(--card);border:1px solid var(--bd);overflow:hidden;">
-          <div style="height:118px;background:repeating-linear-gradient(135deg,var(--ph1),var(--ph1) 11px,var(--ph2) 11px,var(--ph2) 22px);position:relative;display:flex;align-items:flex-end;justify-content:space-between;padding:14px;">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);letter-spacing:1px;">cover_entreno.jpg</span>
-            <div style="background:rgba(7,8,10,.7);backdrop-filter:blur(4px);border-radius:8px;padding:5px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#7CF5A0;">{{ todayDuration }}</div>
+          <div style="height:118px;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:-7%;animation:kenBurns 26s ease-in-out infinite;">
+              <img src="{{ todayBannerUrl }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.background='linear-gradient(150deg,#0D1B2A,#1C3A5A)'">
+            </div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,10,.08),rgba(7,8,10,.55));pointer-events:none;"></div>
+            <div style="position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:14px;">
+              <div style="background:rgba(7,8,10,.7);backdrop-filter:blur(4px);border-radius:8px;padding:5px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#7CF5A0;">{{ todayDuration }}</div>
+            </div>
           </div>
           <div style="padding:16px 18px;">
             <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#7CF5A0;text-transform:uppercase;">{{ todayFocus }}</div>
@@ -4035,6 +4040,10 @@ Devuelve SOLO JSON sin markdown:
         fg:seld?'var(--text)':'var(--muted)', dot:rest?'var(--grabber)':'#7CF5A0'};
     });
     const selRest=dayPlan[sd]==='Descanso';
+    const _todayPlanType=dayPlan[_todayDow]||'Descanso';
+    const _bannerUrls={'Full Body':'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80&auto=format&fit=crop','Empuje':'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80&auto=format&fit=crop','Tirón':'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=80&auto=format&fit=crop','Piernas':'https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&q=80&auto=format&fit=crop','Descanso':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80&auto=format&fit=crop'};
+    const todayBannerUrl=_bannerUrls[_todayPlanType]||_bannerUrls['Full Body'];
+    const todayIsRest=_todayPlanType==='Descanso';
     const restMM=Math.floor(this.state.restLeft/60), restSS=this.state.restLeft%60;
     const restOffset=this.state.restTotal>0?Math.round(339*(1-this.state.restLeft/this.state.restTotal)):0;
     const nextSet=sets.find(s=>!s.done);
@@ -4217,6 +4226,7 @@ Devuelve SOLO JSON sin markdown:
       carbsDonePct:Math.min(100,Math.round(carbsDone/p.carbsG*100))+'%',
       fatDonePct:Math.min(100,Math.round(fatDone/p.fatG*100))+'%',
       todayName:tw.n, todayFocus:tw.f, todayDuration:'45 min', todayCount:6, todayCountLabel:'6 ejercicios',
+      todayBannerUrl, todayIsRest,
       openWorkout:()=>this.go('entreno'),
       streak:this.state.streakDays||0, weightVal:wlog.length?toW(cw):'—',
       navItems,
