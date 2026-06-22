@@ -3641,7 +3641,9 @@ class Component extends DCLogic {
   }
   pickBodyPhoto(){
     const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
-    inp.onchange=(e)=>{ const f=e.target.files&&e.target.files[0]; if(!f)return; const url=URL.createObjectURL(f);
+    inp.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(inp);
+    inp.onchange=(e)=>{ document.body.removeChild(inp); const f=e.target.files&&e.target.files[0]; if(!f)return; const url=URL.createObjectURL(f);
       const now=new Date(); const lbl=now.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][now.getMonth()];
       this.setState(s=>({progressPhotos:[...s.progressPhotos,{url,date:lbl,label:s.progressPhotos.length===0?'Inicio':'Sem '+(s.progressPhotos.length+1)}]})); };
     inp.click();
