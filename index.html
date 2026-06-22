@@ -2221,6 +2221,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 }
 @keyframes kenBurns{0%{transform:scale(1) translate(0,0);}50%{transform:scale(1.1) translate(-2%,-1.5%);}100%{transform:scale(1) translate(0,0);}}
 @keyframes exFlip{0%,35%{opacity:0}50%,85%{opacity:1}100%{opacity:0}}
+@keyframes scanLine{0%{top:0%;opacity:1}80%{opacity:1}100%{top:100%;opacity:0}}
 </style>
 </helmet>
 
@@ -3156,7 +3157,10 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
         <div style="display:flex;gap:11px;padding:14px 22px 0;overflow-x:auto;" class="vscroll">
           <sc-for list="{{ photos }}" as="ph" hint-placeholder-count="0">
             <div style="flex:none;width:104px;">
-              <div style="height:138px;border-radius:14px;overflow:hidden;border:1px solid var(--bd1);"><img src="{{ ph.url }}" style="width:100%;height:100%;object-fit:cover;"></div>
+              <div style="position:relative;height:138px;border-radius:14px;overflow:hidden;border:1px solid var(--bd1);">
+                <img src="{{ ph.url }}" style="width:100%;height:100%;object-fit:cover;">
+                <button onClick="{{ ph.onDelete }}" style="position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(7,8,10,.75);border:none;color:#fff;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
+              </div>
               <div style="font-size:12px;font-weight:600;margin-top:8px;">{{ ph.label }}</div>
               <div style="font-size:11px;color:var(--muted);">{{ ph.date }}</div>
             </div>
@@ -3195,41 +3199,75 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           </sc-if>
 
           <sc-if value="{{ hasBodyPhotos }}" hint-placeholder-val="{{ false }}">
-            <h2 style="text-align:center;font-size:22px;font-weight:800;margin-top:10px;letter-spacing:-.3px;">8 semanas de cambio</h2>
+            <h2 style="text-align:center;font-size:20px;font-weight:800;margin-top:10px;letter-spacing:-.3px;">{{ bodyTitulo }}</h2>
 
-            <div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
-              <div style="flex:1;position:relative;height:170px;border-radius:16px;background:repeating-linear-gradient(135deg,var(--ph1),var(--ph1) 10px,var(--ph2) 10px,var(--ph2) 20px);display:flex;align-items:flex-end;padding:9px;"><div style="position:absolute;top:9px;left:9px;background:rgba(7,8,10,.7);border-radius:6px;padding:3px 8px;font-size:9px;color:var(--muted2);">Antes</div></div>
+            <!-- Before / After photos with scan animation -->
+            <div style="display:flex;gap:10px;margin-top:16px;align-items:center;">
+              <div style="flex:1;position:relative;height:170px;border-radius:16px;overflow:hidden;">
+                <img src="{{ photo0Url }}" style="width:100%;height:100%;object-fit:cover;">
+                <sc-if value="{{ bodyAnalyzing }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;inset:0;pointer-events:none;">
+                    <div style="position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#7CF5A0,transparent);box-shadow:0 0 10px #7CF5A0;animation:scanLine 1.8s linear infinite;"></div>
+                    <div style="position:absolute;inset:0;background:rgba(124,245,160,.07);"></div>
+                  </div>
+                </sc-if>
+                <div style="position:absolute;top:9px;left:9px;background:rgba(7,8,10,.7);border-radius:6px;padding:3px 8px;font-size:9px;color:var(--muted2);">{{ photo0Label }}</div>
+              </div>
               <div style="flex:none;width:38px;height:38px;border-radius:50%;background:rgba(124,245,160,.14);display:flex;align-items:center;justify-content:center;color:#7CF5A0;font-size:18px;">→</div>
-              <div style="flex:1;position:relative;height:170px;border-radius:16px;background:repeating-linear-gradient(135deg,var(--ph3),var(--ph3) 10px,var(--ph4) 10px,var(--ph4) 20px);display:flex;align-items:flex-end;padding:9px;"><div style="position:absolute;top:9px;left:9px;background:rgba(124,245,160,.18);border:1px solid rgba(124,245,160,.3);border-radius:6px;padding:3px 8px;font-size:9px;color:#7CF5A0;">Hoy</div></div>
+              <div style="flex:1;position:relative;height:170px;border-radius:16px;overflow:hidden;">
+                <img src="{{ photoLastUrl }}" style="width:100%;height:100%;object-fit:cover;">
+                <sc-if value="{{ bodyAnalyzing }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;inset:0;pointer-events:none;">
+                    <div style="position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#7CF5A0,transparent);box-shadow:0 0 10px #7CF5A0;animation:scanLine 1.8s linear infinite;animation-delay:.9s;"></div>
+                    <div style="position:absolute;inset:0;background:rgba(124,245,160,.07);"></div>
+                  </div>
+                </sc-if>
+                <div style="position:absolute;top:9px;left:9px;background:rgba(124,245,160,.18);border:1px solid rgba(124,245,160,.3);border-radius:6px;padding:3px 8px;font-size:9px;color:#7CF5A0;">{{ photoLastLabel }}</div>
+              </div>
             </div>
 
-            <div style="display:flex;gap:9px;margin-top:14px;">
-              <div style="flex:1;text-align:center;padding:13px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#7CF5A0;">{{ deltaW }}kg</div><div style="font-size:10.5px;color:var(--muted);margin-top:3px;">Peso</div></div>
-              <div style="flex:1;text-align:center;padding:13px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#5BD6E8;">−3.1%</div><div style="font-size:10.5px;color:var(--muted);margin-top:3px;">Grasa est.</div></div>
-              <div style="flex:1;text-align:center;padding:13px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#EDEB6A;">+1.8kg</div><div style="font-size:10.5px;color:var(--muted);margin-top:3px;">Músculo est.</div></div>
-            </div>
-
-            <div style="margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;">Lo que observamos</div>
-            <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
-              <sc-for list="{{ findings }}" as="f" hint-placeholder-count="3">
-                <div style="display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border-radius:14px;background:var(--card);border:1px solid var(--bd1);">
-                  <div style="width:6px;height:6px;border-radius:50%;background:#5BD6E8;flex:none;margin-top:6px;"></div>
-                  <div style="font-size:13px;color:var(--c7);line-height:1.45;">{{ f }}</div>
+            <!-- Scanning state -->
+            <sc-if value="{{ bodyAnalyzing }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;margin-top:22px;padding:16px;">
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;">
+                  <div style="width:7px;height:7px;border-radius:50%;background:#7CF5A0;animation:pulseGlow .8s infinite;"></div>
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7CF5A0;letter-spacing:1.5px;">ESCANEANDO CAMBIOS…</div>
                 </div>
-              </sc-for>
-            </div>
+                <div style="font-size:12px;color:var(--muted);">Comparando composición corporal entre fotos</div>
+              </div>
+            </sc-if>
 
-            <div style="margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#7CF5A0;text-transform:uppercase;">Ajustes recomendados a tu plan</div>
-            <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
-              <sc-for list="{{ adjustments }}" as="a" hint-placeholder-count="3">
-                <div style="display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border-radius:14px;background:linear-gradient(135deg,rgba(124,245,160,.08),rgba(91,214,232,.04));border:1px solid rgba(124,245,160,.18);">
-                  <div style="width:18px;height:18px;border-radius:50%;background:rgba(124,245,160,.16);display:flex;align-items:center;justify-content:center;color:#7CF5A0;font-size:11px;font-weight:800;flex:none;margin-top:1px;">↑</div>
-                  <div style="font-size:13px;color:var(--c7);line-height:1.45;">{{ a }}</div>
+            <!-- Results state -->
+            <sc-if value="{{ !bodyAnalyzing }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:9px;margin-top:14px;">
+                <div style="flex:1;text-align:center;padding:13px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#7CF5A0;">{{ deltaW }}kg</div><div style="font-size:10.5px;color:var(--muted);margin-top:3px;">Cambio</div></div>
+                <div style="flex:1;text-align:center;padding:13px 0;border-radius:13px;background:var(--card2);"><div style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#5BD6E8;">{{ photos.length }}</div><div style="font-size:10.5px;color:var(--muted);margin-top:3px;">Semanas</div></div>
+              </div>
+              <sc-if value="{{ bodyResumen }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:14px;padding:13px 15px;border-radius:14px;background:linear-gradient(135deg,rgba(124,245,160,.08),rgba(91,214,232,.04));border:1px solid rgba(124,245,160,.2);">
+                  <div style="font-size:13px;color:var(--c7);line-height:1.5;font-style:italic;">{{ bodyResumen }}</div>
                 </div>
-              </sc-for>
-            </div>
-
-            <button onClick="{{ onCloseAnalysis }}" style="width:100%;margin-top:20px;padding:16px;border-radius:14px;border:none;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);color:#07080A;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;">Aplicar cambios a mi plan</button>
+              </sc-if>
+              <div style="margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;">Lo que observamos</div>
+              <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ bodyFindings }}" as="f" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border-radius:14px;background:var(--card);border:1px solid var(--bd1);">
+                    <div style="width:6px;height:6px;border-radius:50%;background:#5BD6E8;flex:none;margin-top:6px;"></div>
+                    <div style="font-size:13px;color:var(--c7);line-height:1.45;">{{ f }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#7CF5A0;text-transform:uppercase;">Ajustes recomendados</div>
+              <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ bodyAdjustments }}" as="a" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border-radius:14px;background:linear-gradient(135deg,rgba(124,245,160,.08),rgba(91,214,232,.04));border:1px solid rgba(124,245,160,.18);">
+                    <div style="width:18px;height:18px;border-radius:50%;background:rgba(124,245,160,.16);display:flex;align-items:center;justify-content:center;color:#7CF5A0;font-size:11px;font-weight:800;flex:none;margin-top:1px;">↑</div>
+                    <div style="font-size:13px;color:var(--c7);line-height:1.45;">{{ a }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <button onClick="{{ onCloseAnalysis }}" style="width:100%;margin-top:20px;padding:16px;border-radius:14px;border:none;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);color:#07080A;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;">Aplicar cambios a mi plan</button>
+            </sc-if>
           </sc-if>
         </div>
       </sc-if>
@@ -3254,6 +3292,21 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
             <button onClick="{{ onWeighInc }}" style="width:52px;height:52px;border-radius:50%;border:1px solid var(--bd3);background:var(--surface);color:var(--text);font-size:24px;line-height:1;cursor:pointer;">+</button>
           </div>
           <button onClick="{{ onSaveWeigh }}" style="width:100%;margin-top:24px;padding:16px;border-radius:14px;border:none;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);color:#07080A;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;">Guardar</button>
+        </div>
+      </sc-if>
+
+      <!-- modal de recorte de foto -->
+      <sc-if value="{{ cropOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 16px) 20px 14px;flex:none;">
+            <button onClick="{{ onCancelCrop }}" style="color:#7CF5A0;background:transparent;border:none;font-size:15px;font-family:inherit;cursor:pointer;padding:4px 0;">Cancelar</button>
+            <div style="font-size:14px;font-weight:700;color:#fff;">Ajustar foto</div>
+            <button onClick="{{ onConfirmCrop }}" style="color:#7CF5A0;background:transparent;border:none;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;padding:4px 0;">Confirmar</button>
+          </div>
+          <div id="cropImgWrap" style="flex:1;position:relative;overflow:hidden;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;">
+            <img id="cropImg" src="{{ cropImgUrl }}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform-origin:center center;pointer-events:none;will-change:transform;">
+          </div>
+          <div style="flex:none;text-align:center;padding:14px 20px;color:rgba(255,255,255,.4);font-size:12px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));">Arrastra para mover · Pellizca para hacer zoom</div>
         </div>
       </sc-if>
     </sc-if>
@@ -3400,7 +3453,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false };
+  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null };
 
   questions(){
     return [
@@ -3643,13 +3696,72 @@ class Component extends DCLogic {
     const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
     inp.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0;';
     document.body.appendChild(inp);
-    inp.onchange=(e)=>{ document.body.removeChild(inp); const f=e.target.files&&e.target.files[0]; if(!f)return; const url=URL.createObjectURL(f);
-      const now=new Date(); const lbl=now.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][now.getMonth()];
-      this.setState(s=>({progressPhotos:[...s.progressPhotos,{url,date:lbl,label:s.progressPhotos.length===0?'Inicio':'Sem '+(s.progressPhotos.length+1)}]})); };
+    inp.onchange=(e)=>{ document.body.removeChild(inp); const f=e.target.files&&e.target.files[0]; if(!f)return;
+      const url=URL.createObjectURL(f);
+      window.__cropState={x:0,y:0,scale:1};
+      this.setState({cropOpen:true,cropImgUrl:url}); };
     inp.click();
   }
-  openAnalysis(){ this.setState({analysisOpen:true}); }
-  closeAnalysis(){ this.setState({analysisOpen:false}); }
+  cancelCrop(){ if(this.state.cropImgUrl)URL.revokeObjectURL(this.state.cropImgUrl); window.__cropState=null; this.setState({cropOpen:false,cropImgUrl:null}); }
+  async confirmCrop(){
+    const imgEl=document.getElementById('cropImg'); const wrapEl=document.getElementById('cropImgWrap');
+    if(!imgEl||!wrapEl||!imgEl.naturalWidth){ this.cancelCrop(); return; }
+    const st=window.__cropState||{x:0,y:0,scale:1};
+    const nW=imgEl.naturalWidth,nH=imgEl.naturalHeight,cW=wrapEl.offsetWidth,cH=wrapEl.offsetHeight;
+    const cs=Math.max(cW/nW,cH/nH); // object-fit:cover scale
+    const ox=(cW-nW*cs)/2, oy=(cH-nH*cs)/2; // content offset in element
+    // map container pixel → element coords (inverse of translate(X,Y)scale(S) around element center)
+    const toEl=(cpx,cpy)=>[(cpx-st.x-cW/2)/st.scale+cW/2,(cpy-st.y-cH/2)/st.scale+cH/2];
+    const [ex0,ey0]=toEl(0,0); const [ex1,ey1]=toEl(cW,cH);
+    const nx0=(ex0-ox)/cs,ny0=(ey0-oy)/cs,nx1=(ex1-ox)/cs,ny1=(ey1-oy)/cs;
+    const srcX=Math.max(0,nx0),srcY=Math.max(0,ny0);
+    const srcW=Math.max(1,Math.min(nW,nx1)-srcX),srcH=Math.max(1,Math.min(nH,ny1)-srcY);
+    const OUT_W=600,OUT_H=Math.round(600*cH/cW);
+    const canvas=document.createElement('canvas'); canvas.width=OUT_W; canvas.height=OUT_H;
+    const ctx=canvas.getContext('2d'); ctx.fillStyle='#000'; ctx.fillRect(0,0,OUT_W,OUT_H);
+    const sc=OUT_W/(nx1-nx0);
+    ctx.drawImage(imgEl,srcX,srcY,srcW,srcH,Math.max(0,(srcX-nx0)*sc),Math.max(0,(srcY-ny0)*sc),srcW*sc,srcH*sc);
+    const rawUrl=this.state.cropImgUrl;
+    canvas.toBlob(blob=>{
+      const url=URL.createObjectURL(blob);
+      if(rawUrl)URL.revokeObjectURL(rawUrl);
+      window.__cropState=null;
+      this.setState(s=>{
+        const now=new Date(),lbl=now.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][now.getMonth()];
+        return {cropOpen:false,cropImgUrl:null,progressPhotos:[...s.progressPhotos,{url,date:lbl,label:s.progressPhotos.length===0?'Inicio':'Sem '+(s.progressPhotos.length+1)}]};
+      });
+    },'image/jpeg',0.88);
+  }
+  deleteBodyPhoto(idx){ this.setState(s=>({progressPhotos:s.progressPhotos.filter((_,i)=>i!==idx)})); }
+  async openAnalysis(){
+    const photos=this.state.progressPhotos||[];
+    this.setState({analysisOpen:true,bodyAnalysisResult:null,bodyAnalyzing:photos.length>0});
+    if(!photos.length) return;
+    const p=this.computePlan();
+    const wlog=this.state.weightLog||[{label:'Hoy',kg:p.kg}];
+    const startKg=wlog[0].kg,curKg=wlog[wlog.length-1].kg,delta=curKg-startKg;
+    const goalMap={fat_loss:'perder grasa',muscle:'ganar músculo',recomp:'recomposición',maintain:'mantenimiento',performance:'rendimiento'};
+    try{
+      if(!(window.claude&&window.claude.complete))throw new Error('no AI');
+      const prompt=`Eres un coach de fitness experto. El usuario lleva ${photos.length} semana(s) registrando fotos corporales. Datos:
+- Objetivo: ${goalMap[p.goal]||p.goal}
+- Peso inicio: ${startKg}kg, Peso actual: ${curKg}kg (${delta>=0?'+':''}${delta.toFixed(1)}kg)
+- Calorías objetivo: ${p.cal} kcal/día, Proteína: ${p.proteinG}g/día
+Devuelve SOLO JSON sin markdown:
+{"titulo":"Título corto (4-6 palabras)","hallazgos":["hallazgo 1","hallazgo 2","hallazgo 3"],"ajustes":["ajuste 1","ajuste 2","ajuste 3"],"resumen":"1-2 frases motivadoras"}`;
+      const raw=await window.claude.complete(prompt);
+      const data=JSON.parse(raw.trim().replace(/^```json\n?/,'').replace(/\n?```$/,''));
+      this.setState({bodyAnalyzing:false,bodyAnalysisResult:data});
+    }catch(err){
+      this.setState({bodyAnalyzing:false,bodyAnalysisResult:{
+        titulo:delta<0?'Vas perdiendo grasa':'Ganando masa muscular',
+        hallazgos:['Cambio de '+Math.abs(delta).toFixed(1)+'kg en '+photos.length+' semanas.','Constancia en el registro: '+photos.length+' fotos en tu cronología.','El cuerpo está respondiendo al plan de '+p.cal+' kcal.'],
+        ajustes:['Revisa la adherencia a los '+p.cal+' kcal diarios.','Alcanza los '+p.proteinG+'g de proteína cada día.','Sigue registrando fotos semanalmente para ver la evolución.'],
+        resumen:'Sigue el plan con constancia y los resultados seguirán llegando.'
+      }});
+    }
+  }
+  closeAnalysis(){ this.setState({analysisOpen:false,bodyAnalyzing:false}); }
   openAdjust(){ this.setState({adjustOpen:true}); }
   closeAdjust(){ this.setState({adjustOpen:false}); }
   setAnswer(key,val){ this.setState(s=>({answers:{...s.answers,[key]:val}})); }
@@ -3969,11 +4081,12 @@ class Component extends DCLogic {
     const weighHistory=[...wlog].reverse().slice(0,6).map((e,i,arr)=>{ const prev=arr[i+1]; const diff=prev?Math.round((toW(e.kg)-toW(prev.kg))*10)/10:0;
       return {label:e.label,w:toW(e.kg),unit:wUnit,hasDiff:!!prev,diff:(diff>0?'+':'')+diff,diffColor:diff<0?'#7CF5A0':(diff>0?'#EDEB6A':'var(--muted)')}; });
     const weighDraftDisp=this.state.weighDraft==null?'':(wUnit==='lbs'?Math.round(this.state.weighDraft*2.20462*10)/10:this.state.weighDraft);
-    const photos=this.state.progressPhotos||[];
+    const photos=(this.state.progressPhotos||[]).map((ph,idx)=>({...ph,onDelete:()=>this.deleteBodyPhoto(idx)}));
     const hasBodyPhotos=photos.length>0;
     const findings=['Menos grasa abdominal y más definición en el core.','Hombros y espalda más marcados; mejora la postura.','El tren inferior puede ganar algo más de volumen.'];
-    // peso objetivo
-    const pesoObjKg=p.pesoObj;
+    // peso objetivo — fallback to default ruler value when user didn't interact
+    const pesoObjQ=this.questions().find(q=>q.id==='peso_objetivo');
+    const pesoObjKg=p.pesoObj!=null?p.pesoObj:(screen!=='onboarding'&&pesoObjQ?this.rulerVal(pesoObjQ):null);
     const hasPesoObj=pesoObjKg!=null;
     let pesoObjDisp='', pesoObjPct=0;
     if(hasPesoObj){
@@ -4154,7 +4267,16 @@ class Component extends DCLogic {
       photos, hasBodyPhotos, findings, adjustments,
       idealLabel, idealRangeLabel, onAddBodyPhoto:()=>this.pickBodyPhoto(),
       hasPesoObj, pesoObjDisp, pesoObjPct,
+      cropOpen:this.state.cropOpen, cropImgUrl:this.state.cropImgUrl||'',
+      onCancelCrop:()=>this.cancelCrop(), onConfirmCrop:()=>this.confirmCrop(),
       analysisOpen:this.state.analysisOpen,
+      bodyAnalyzing:this.state.bodyAnalyzing,
+      photo0Url:photos.length>0?photos[0].url:'', photoLastUrl:photos.length>0?photos[photos.length-1].url:'',
+      photo0Label:photos.length>0?photos[0].label:'', photoLastLabel:photos.length>0?photos[photos.length-1].label:'',
+      bodyFindings:this.state.bodyAnalysisResult?this.state.bodyAnalysisResult.hallazgos:findings,
+      bodyAdjustments:this.state.bodyAnalysisResult?this.state.bodyAnalysisResult.ajustes:adjustments,
+      bodyTitulo:this.state.bodyAnalysisResult?this.state.bodyAnalysisResult.titulo:'Analizando tu progreso…',
+      bodyResumen:this.state.bodyAnalysisResult?this.state.bodyAnalysisResult.resumen:'',
       isProfile:screen==='perfil',
       onOpenAnalysis:()=>this.openAnalysis(), onCloseAnalysis:()=>this.closeAnalysis(),
       // pasos
@@ -4220,6 +4342,34 @@ document.addEventListener('touchstart', function(e){
   document.addEventListener('touchend',  function(){ c._dragActive=false; }, {once:true});
   document.addEventListener('touchcancel',function(){ c._dragActive=false; }, {once:true});
 }, {passive:false, capture:true});
+
+// === Crop image pan/zoom ===
+(function(){
+  var ptrs={}, initDist=null, initScale=1, initX=0, initY=0, panStart=null;
+  function getWrap(){ return document.getElementById('cropImgWrap'); }
+  function getImg(){ return document.getElementById('cropImg'); }
+  function applyT(x,y,s){ window.__cropState={x:x,y:y,scale:s}; var img=getImg(); if(img) img.style.transform='translate('+x+'px,'+y+'px) scale('+s+')'; }
+  document.addEventListener('pointerdown',function(e){
+    var wrap=getWrap(); if(!wrap) return;
+    var el=e.target; var inside=false; while(el){ if(el===wrap){inside=true;break;} el=el.parentElement; }
+    if(!inside) return;
+    e.preventDefault(); e.stopPropagation();
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+    var ks=Object.keys(ptrs), st=window.__cropState||{x:0,y:0,scale:1};
+    if(ks.length===1){ panStart={mx:e.clientX,my:e.clientY,ox:st.x,oy:st.y}; initDist=null; }
+    else if(ks.length===2){ var p0=ptrs[ks[0]],p1=ptrs[ks[1]]; initDist=Math.hypot(p1.x-p0.x,p1.y-p0.y); initScale=st.scale; initX=st.x; initY=st.y; panStart=null; }
+  },{passive:false,capture:true});
+  document.addEventListener('pointermove',function(e){
+    if(!ptrs[e.pointerId]) return;
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+    var ks=Object.keys(ptrs), st=window.__cropState||{x:0,y:0,scale:1};
+    if(ks.length===1&&panStart){ applyT(panStart.ox+(e.clientX-panStart.mx),panStart.oy+(e.clientY-panStart.my),st.scale); }
+    else if(ks.length>=2&&initDist!=null){ var p0=ptrs[ks[0]],p1=ptrs[ks[1]]; var d=Math.hypot(p1.x-p0.x,p1.y-p0.y); applyT(initX,initY,Math.max(0.5,Math.min(8,initScale*d/initDist))); }
+  },{passive:false,capture:true});
+  function onUp(e){ delete ptrs[e.pointerId]; if(!Object.keys(ptrs).length){panStart=null;initDist=null;} }
+  document.addEventListener('pointerup',onUp,{capture:true});
+  document.addEventListener('pointercancel',onUp,{capture:true});
+})();
 </script>
 </body>
 </html>
