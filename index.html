@@ -3821,13 +3821,25 @@ Devuelve SOLO JSON sin markdown:
   dateVal(){ const A=this.state.answers; return A.nacimiento||this.questions().find(x=>x.id==='nacimiento').default; }
   setDatePart(part,val){ this.setState(s=>{ const d={...(s.answers.nacimiento||this.questions().find(x=>x.id==='nacimiento').default)}; d[part]=val; return {answers:{...s.answers,nacimiento:d}}; }); }
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
+  _wheelClick(){
+    try{
+      if(!this._wACtx) this._wACtx=new(window.AudioContext||window.webkitAudioContext)();
+      const ctx=this._wACtx;
+      if(ctx.state==='suspended') ctx.resume();
+      const g=ctx.createGain(), o=ctx.createOscillator();
+      o.frequency.value=680; o.type='sine';
+      g.gain.setValueAtTime(0.07,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.016);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime+0.016);
+    }catch(_){}
+  }
   startWheelDrag(part,values,e){
     e.preventDefault();
     if(this._coastRaf){cancelAnimationFrame(this._coastRaf);this._coastRaf=null;}
     const startY=(e.touches?e.touches[0].clientY:e.clientY);
     const startIdx=values.indexOf(this.dateVal()[part]);
     const ITEM_H=40;
-    const vib=()=>{try{navigator.vibrate&&navigator.vibrate(1);}catch(_){}};
     let lastNi=startIdx, lastY=startY, lastT=Date.now(), vel=0;
     const move=(ev)=>{
       if(ev.cancelable) ev.preventDefault();
@@ -3835,24 +3847,25 @@ Devuelve SOLO JSON sin markdown:
       const now=Date.now(), dt=Math.max(1,now-lastT);
       vel=(lastY-y)/dt; lastY=y; lastT=now;
       const ni=Math.max(0,Math.min(values.length-1,Math.round(startIdx+(startY-y)/ITEM_H)));
-      if(ni!==lastNi){lastNi=ni; this.setDatePart(part,values[ni]); vib();}
+      if(ni!==lastNi){lastNi=ni; this.setDatePart(part,values[ni]); this._wheelClick();}
     };
     const up=()=>{
       window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up);
       window.removeEventListener('touchmove',move); window.removeEventListener('touchend',up); window.removeEventListener('touchcancel',up);
+      // Physics: decay factor 0.96 per frame → coasts ~25 items on a fast flick (~1.5s)
       let idxVel=vel*16/ITEM_H, curIdx=lastNi;
-      const tick=()=>{
-        idxVel*=0.86;
-        if(Math.abs(idxVel)<0.02){
+      const coast=()=>{
+        idxVel*=0.96;
+        if(Math.abs(idxVel)<0.016){
           const fi=Math.max(0,Math.min(values.length-1,Math.round(curIdx)));
           this.setDatePart(part,values[fi]); this._coastRaf=null; return;
         }
         curIdx+=idxVel;
         const fi=Math.max(0,Math.min(values.length-1,Math.round(curIdx)));
-        if(fi!==lastNi){lastNi=fi; this.setDatePart(part,values[fi]); vib();}
-        this._coastRaf=requestAnimationFrame(tick);
+        if(fi!==lastNi){lastNi=fi; this.setDatePart(part,values[fi]); this._wheelClick();}
+        this._coastRaf=requestAnimationFrame(coast);
       };
-      this._coastRaf=requestAnimationFrame(tick);
+      this._coastRaf=requestAnimationFrame(coast);
     };
     window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
     window.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',up); window.addEventListener('touchcancel',up);
