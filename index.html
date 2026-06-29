@@ -3823,23 +3823,27 @@ Devuelve SOLO JSON sin markdown:
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
   _wheelClick(){
     try{
-      if(!this._wACtx) this._wACtx=new(window.AudioContext||window.webkitAudioContext)();
-      const ctx=this._wACtx;
-      const play=()=>{
-        const buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.018),ctx.sampleRate);
-        const d=buf.getChannelData(0);
-        for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length)*0.35;
-        const flt=ctx.createBiquadFilter();
-        flt.type='bandpass'; flt.frequency.value=1800; flt.Q.value=1.5;
-        const src=ctx.createBufferSource();
-        src.buffer=buf; src.connect(flt); flt.connect(ctx.destination); src.start();
-      };
-      if(ctx.state==='suspended') ctx.resume().then(play); else play();
+      const ctx=this._wACtx; if(!ctx||ctx.state==='suspended') return;
+      const buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.018),ctx.sampleRate);
+      const d=buf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length)*0.35;
+      const flt=ctx.createBiquadFilter();
+      flt.type='bandpass'; flt.frequency.value=1800; flt.Q.value=1.5;
+      const src=ctx.createBufferSource();
+      src.buffer=buf; src.connect(flt); flt.connect(ctx.destination); src.start();
     }catch(_){}
   }
   startWheelDrag(part,values,e){
+    // On mobile Chrome, both touchstart (global) and pointerdown (framework) fire.
+    // Ignore the pointerdown duplicate — let only the touchstart call through.
+    if(e.pointerType==='touch') return;
     e.preventDefault();
     if(this._coastRaf){cancelAnimationFrame(this._coastRaf);this._coastRaf=null;}
+    // Unlock AudioContext during the user gesture (touchstart/pointerdown)
+    try{
+      if(!this._wACtx) this._wACtx=new(window.AudioContext||window.webkitAudioContext)();
+      if(this._wACtx.state==='suspended') this._wACtx.resume();
+    }catch(_){}
     const startY=(e.touches?e.touches[0].clientY:e.clientY);
     const startIdx=values.indexOf(this.dateVal()[part]);
     const ITEM_H=40;
