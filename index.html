@@ -2207,7 +2207,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
   --gif1:#1e2530;--gif2:#12161d;--ph1:#1b2027;--ph2:#171b22;--ph3:#1e2730;--ph4:#19222b;--gridline:rgba(255,255,255,.04);
   --bd:rgba(255,255,255,.07);--bd1:rgba(255,255,255,.06);--bd2:rgba(255,255,255,.1);--bd3:rgba(255,255,255,.12);--bd4:rgba(255,255,255,.16);
   --hair:rgba(255,255,255,.05);--track:rgba(255,255,255,.08);--grabber:rgba(255,255,255,.18);
-  --tabbar:rgba(12,14,18,.82);--scrim:rgba(5,6,9,.66);
+  --tabbar:rgba(12,14,18,.82);--scrim:rgba(5,6,9,.66);--gram-fg:#EDEB6A;
 }
 .theme-light{
   --ws1:#EAEEF3;--ws2:#D2DAE2;--bg:#F4F6F9;
@@ -2217,7 +2217,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
   --gif1:#E8EDF2;--gif2:#F3F6F9;--ph1:#E4E9EE;--ph2:#EDF1F5;--ph3:#DCEFE6;--ph4:#E8F4EE;--gridline:rgba(0,0,0,.05);
   --bd:rgba(18,28,40,.10);--bd1:rgba(18,28,40,.08);--bd2:rgba(18,28,40,.13);--bd3:rgba(18,28,40,.15);--bd4:rgba(18,28,40,.22);
   --hair:rgba(18,28,40,.07);--track:rgba(18,28,40,.10);--grabber:rgba(18,28,40,.22);
-  --tabbar:rgba(255,255,255,.86);--scrim:rgba(30,40,52,.34);
+  --tabbar:rgba(255,255,255,.86);--scrim:rgba(30,40,52,.34);--gram-fg:#7A6900;
 }
 @keyframes kenBurns{0%{transform:scale(1) translate(0,0);}50%{transform:scale(1.1) translate(-2%,-1.5%);}100%{transform:scale(1) translate(0,0);}}
 @keyframes exFlip{0%,35%{opacity:0}50%,85%{opacity:1}100%{opacity:0}}
@@ -2932,10 +2932,10 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
                   <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">{{ m.time }}</span>
                 </div>
                 <div style="margin-top:5px;display:flex;flex-direction:column;gap:1px;">
-                  <sc-if value="{{ m.fi0.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi0.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ m.fi0.gt }}</span></div></sc-if>
-                  <sc-if value="{{ m.fi1.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi1.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ m.fi1.gt }}</span></div></sc-if>
-                  <sc-if value="{{ m.fi2.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi2.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ m.fi2.gt }}</span></div></sc-if>
-                  <sc-if value="{{ m.fi3.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi3.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ m.fi3.gt }}</span></div></sc-if>
+                  <sc-if value="{{ m.fi0.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi0.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi0.gt }}</span></div></sc-if>
+                  <sc-if value="{{ m.fi1.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi1.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi1.gt }}</span></div></sc-if>
+                  <sc-if value="{{ m.fi2.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi2.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi2.gt }}</span></div></sc-if>
+                  <sc-if value="{{ m.fi3.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi3.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi3.gt }}</span></div></sc-if>
                 </div>
                 <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5BD6E8;margin-top:7px;">{{ m.kcal }} kcal · {{ m.macro }}</div>
                 <button onClick="{{ m.onSwap }}" style="display:inline-flex;align-items:center;gap:6px;margin-top:11px;padding:7px 12px;border-radius:11px;border:1px solid rgba(91,214,232,.28);background:rgba(91,214,232,.07);color:#5BD6E8;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;">
@@ -3017,10 +3017,10 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
                 <div style="flex:1;">
                   <div style="font-size:13px;font-weight:600;margin-bottom:4px;">{{ v.foodsText }}</div>
                   <div style="display:flex;flex-direction:column;gap:1px;">
-                    <sc-if value="{{ v.fi0.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi0.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ v.fi0.gt }}</span></div></sc-if>
-                    <sc-if value="{{ v.fi1.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi1.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ v.fi1.gt }}</span></div></sc-if>
-                    <sc-if value="{{ v.fi2.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi2.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ v.fi2.gt }}</span></div></sc-if>
-                    <sc-if value="{{ v.fi3.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi3.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ v.fi3.gt }}</span></div></sc-if>
+                    <sc-if value="{{ v.fi0.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi0.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ v.fi0.gt }}</span></div></sc-if>
+                    <sc-if value="{{ v.fi1.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi1.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ v.fi1.gt }}</span></div></sc-if>
+                    <sc-if value="{{ v.fi2.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi2.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ v.fi2.gt }}</span></div></sc-if>
+                    <sc-if value="{{ v.fi3.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi3.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ v.fi3.gt }}</span></div></sc-if>
                   </div>
                 </div>
                 <sc-if value="{{ v.selected }}" hint-placeholder-val="{{ false }}">
