@@ -2931,7 +2931,12 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
                   <span style="font-size:15px;font-weight:700;">{{ m.name }}</span>
                   <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">{{ m.time }}</span>
                 </div>
-                <div style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4;">{{ m.foodsText }}</div>
+                <div style="margin-top:5px;display:flex;flex-direction:column;gap:1px;">
+                  <sc-if value="{{ m.fi0.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi0.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ m.fi0.gt }}</span></div></sc-if>
+                  <sc-if value="{{ m.fi1.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi1.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ m.fi1.gt }}</span></div></sc-if>
+                  <sc-if value="{{ m.fi2.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi2.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ m.fi2.gt }}</span></div></sc-if>
+                  <sc-if value="{{ m.fi3.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi3.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ m.fi3.gt }}</span></div></sc-if>
+                </div>
                 <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5BD6E8;margin-top:7px;">{{ m.kcal }} kcal · {{ m.macro }}</div>
                 <button onClick="{{ m.onSwap }}" style="display:inline-flex;align-items:center;gap:6px;margin-top:11px;padding:7px 12px;border-radius:11px;border:1px solid rgba(91,214,232,.28);background:rgba(91,214,232,.07);color:#5BD6E8;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5BD6E8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>
@@ -3009,7 +3014,15 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           <div style="display:flex;flex-direction:column;gap:9px;margin-top:16px;">
             <sc-for list="{{ mealSwapVariants }}" as="v" hint-placeholder-count="4">
               <button onClick="{{ v.onSelect }}" style="position:relative;text-align:left;width:100%;padding:15px 16px;border-radius:15px;background:var(--surface);border:1px solid var(--bd);color:var(--text);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:12px;">
-                <div style="flex:1;font-size:13.5px;font-weight:600;line-height:1.4;">{{ v.foodsText }}</div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:600;margin-bottom:4px;">{{ v.foodsText }}</div>
+                  <div style="display:flex;flex-direction:column;gap:1px;">
+                    <sc-if value="{{ v.fi0.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi0.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ v.fi0.gt }}</span></div></sc-if>
+                    <sc-if value="{{ v.fi1.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi1.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ v.fi1.gt }}</span></div></sc-if>
+                    <sc-if value="{{ v.fi2.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi2.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ v.fi2.gt }}</span></div></sc-if>
+                    <sc-if value="{{ v.fi3.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:11.5px;color:var(--muted);">{{ v.fi3.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#EDEB6A;white-space:nowrap;">{{ v.fi3.gt }}</span></div></sc-if>
+                  </div>
+                </div>
                 <sc-if value="{{ v.selected }}" hint-placeholder-val="{{ false }}">
                   <div style="width:24px;height:24px;border-radius:50%;background:#7CF5A0;display:flex;align-items:center;justify-content:center;color:#07080A;font-size:14px;font-weight:800;flex:none;">✓</div>
                 </sc-if>
@@ -3651,30 +3664,30 @@ class Component extends DCLogic {
     const count=parseInt(this.state.answers.comidas)||3;
     const all=[
       {id:'m1',name:'Desayuno',time:'08:00',kcal:480,protein:34,carbs:52,fat:14,variants:[
-        ['Avena con plátano y proteína','Café solo'],
-        ['Tortilla de claras con pan integral','Té verde'],
-        ['Yogur griego con granola y miel','Café con leche'],
-        ['Tostada de aguacate y huevo','Infusión']]},
+        [{n:'Avena',r:80,c:210},{n:'Plátano',g:120},{n:'Proteína en polvo',g:30},{n:'Café',g:240}],
+        [{n:'Claras de huevo',g:200},{n:'Pan integral',g:60},{n:'Té verde',g:240}],
+        [{n:'Yogur griego',g:150},{n:'Granola',g:40},{n:'Miel',g:15},{n:'Café con leche',g:240}],
+        [{n:'Pan integral',g:60},{n:'Aguacate',g:80},{n:'Huevo',g:120},{n:'Infusión',g:240}]]},
       {id:'m2',name:'Media mañana',time:'11:00',kcal:210,protein:20,carbs:18,fat:7,variants:[
-        ['Yogur griego','Puñado de almendras'],
-        ['Batido de proteína','1 mandarina'],
-        ['Requesón con arándanos','Nueces'],
-        ['Hummus con crudités','Pan de centeno']]},
+        [{n:'Yogur griego',g:150},{n:'Almendras',g:25}],
+        [{n:'Proteína en polvo',g:30},{n:'Mandarina',g:100}],
+        [{n:'Requesón',g:150},{n:'Arándanos',g:80},{n:'Nueces',g:20}],
+        [{n:'Hummus',g:80},{n:'Crudités',g:120},{n:'Pan de centeno',g:35}]]},
       {id:'m3',name:'Comida',time:'14:00',kcal:620,protein:48,carbs:60,fat:18,variants:[
-        ['Pechuga de pollo a la plancha','Arroz integral','Ensalada'],
-        ['Ternera magra salteada','Patata cocida','Verduras'],
-        ['Lentejas estofadas con verduras','Arroz'],
-        ['Tofu salteado con quinoa','Brócoli']]},
+        [{n:'Pechuga de pollo',r:175,c:145},{n:'Arroz integral',r:80,c:220},{n:'Ensalada',g:150}],
+        [{n:'Ternera magra',r:180,c:150},{n:'Patata',r:250,c:230},{n:'Verduras',g:150}],
+        [{n:'Lentejas',r:100,c:240},{n:'Arroz blanco',r:70,c:200}],
+        [{n:'Tofu firme',g:200},{n:'Quinoa',r:75,c:185},{n:'Brócoli',g:200}]]},
       {id:'m4',name:'Merienda',time:'17:30',kcal:230,protein:24,carbs:20,fat:6,variants:[
-        ['Batido de proteína','Manzana'],
-        ['Yogur proteico','Plátano'],
-        ['Tortitas de arroz con pavo'],
-        ['Edamame','1 pera']]},
+        [{n:'Proteína en polvo',g:30},{n:'Manzana',g:150}],
+        [{n:'Yogur proteico',g:170},{n:'Plátano',g:120}],
+        [{n:'Tortitas de arroz',g:30},{n:'Pavo',g:100}],
+        [{n:'Edamame',g:150},{n:'Pera',g:150}]]},
       {id:'m5',name:'Cena',time:'21:00',kcal:520,protein:42,carbs:34,fat:20,variants:[
-        ['Salmón al horno','Verduras asadas','Quinoa'],
-        ['Merluza a la plancha','Boniato','Espárragos'],
-        ['Tortilla de espinacas','Ensalada','Pan integral'],
-        ['Garbanzos con espinacas','Aguacate']]}
+        [{n:'Salmón',r:180,c:150},{n:'Verduras asadas',g:200},{n:'Quinoa',r:70,c:175}],
+        [{n:'Merluza',r:200,c:170},{n:'Boniato',r:200,c:180},{n:'Espárragos',g:150}],
+        [{n:'Espinacas',g:120},{n:'Huevos',g:180},{n:'Ensalada',g:120},{n:'Pan integral',g:40}],
+        [{n:'Garbanzos',r:100,c:240},{n:'Espinacas',g:100},{n:'Aguacate',g:80}]]}
     ];
     const order=count===3?['m1','m3','m5']:count===4?['m1','m3','m4','m5']:['m1','m2','m3','m4','m5'];
     return all.filter(m=>order.includes(m.id));
@@ -4067,13 +4080,15 @@ Devuelve SOLO JSON sin markdown:
     const allMealsDone=this.state.mealsDone||{};
     const md=(allMealsDone[smd])||{};
     const extra=this.state.extra||{kcal:0,protein:0,carbs:0,fat:0};
-    const mealRows=meals.map(m=>({name:m.name,time:m.time,kcal:m.kcal,foodsText:m.foods.join(' · '),macro:m.protein+'P · '+m.carbs+'C · '+m.fat+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
+    const _fmtFS=f=>{if(!f)return{name:'',gt:'',show:false};if(typeof f==='string')return{name:f,gt:'',show:true};if(f.r&&f.c)return{name:f.n,gt:f.r+'g crudo · '+f.c+'g coc',show:true};return{name:f.n,gt:(f.g||0)+'g',show:true};};
+    const _fi=foods=>{const s=[0,1,2,3].map(i=>_fmtFS(foods[i]));return{fi0:s[0],fi1:s[1],fi2:s[2],fi3:s[3],foodsText:foods.map(f=>typeof f==='string'?f:f.n).join(' · ')};};
+    const mealRows=meals.map(m=>({name:m.name,time:m.time,kcal:m.kcal,..._fi(m.foods),macro:m.protein+'P · '+m.carbs+'C · '+m.fat+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
     // sustitución de comida
     const mealSwapMeal=meals.find(m=>m.id===this.state.mealSwapOpen);
     let mealSwapVariants=[],mealSwapName='',mealSwapKcal='';
     if(mealSwapMeal){
       mealSwapName=mealSwapMeal.name; mealSwapKcal=mealSwapMeal.kcal+' kcal · '+mealSwapMeal.protein+'P · '+mealSwapMeal.carbs+'C · '+mealSwapMeal.fat+'G';
-      mealSwapVariants=mealSwapMeal.variants.map((v,k)=>({foodsText:v.join(' · '),selected:k===mealSwapMeal.variantIdx,notSelected:k!==mealSwapMeal.variantIdx,onSelect:()=>this.swapMeal(mealSwapMeal.id,k)}));
+      mealSwapVariants=mealSwapMeal.variants.map((v,k)=>({..._fi(v),selected:k===mealSwapMeal.variantIdx,notSelected:k!==mealSwapMeal.variantIdx,onSelect:()=>this.swapMeal(mealSwapMeal.id,k)}));
     }
     const eaten=meals.filter(m=>md[m.id]);
     const todayDow=new Date().getDay()===0?6:(new Date().getDay()-1);
