@@ -3825,13 +3825,16 @@ Devuelve SOLO JSON sin markdown:
     try{
       if(!this._wACtx) this._wACtx=new(window.AudioContext||window.webkitAudioContext)();
       const ctx=this._wACtx;
-      if(ctx.state==='suspended') ctx.resume();
-      const g=ctx.createGain(), o=ctx.createOscillator();
-      o.frequency.value=680; o.type='sine';
-      g.gain.setValueAtTime(0.07,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.016);
-      o.connect(g); g.connect(ctx.destination);
-      o.start(ctx.currentTime); o.stop(ctx.currentTime+0.016);
+      const play=()=>{
+        const buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.018),ctx.sampleRate);
+        const d=buf.getChannelData(0);
+        for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length)*0.35;
+        const flt=ctx.createBiquadFilter();
+        flt.type='bandpass'; flt.frequency.value=1800; flt.Q.value=1.5;
+        const src=ctx.createBufferSource();
+        src.buffer=buf; src.connect(flt); flt.connect(ctx.destination); src.start();
+      };
+      if(ctx.state==='suspended') ctx.resume().then(play); else play();
     }catch(_){}
   }
   startWheelDrag(part,values,e){
@@ -3852,11 +3855,13 @@ Devuelve SOLO JSON sin markdown:
     const up=()=>{
       window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up);
       window.removeEventListener('touchmove',move); window.removeEventListener('touchend',up); window.removeEventListener('touchcancel',up);
-      // Physics: decay factor 0.96 per frame → coasts ~25 items on a fast flick (~1.5s)
-      let idxVel=vel*16/ITEM_H, curIdx=lastNi;
+      // Multiply by 80 (not 16) so slow rolls still get 8-12 items of coast
+      let idxVel=vel*80/ITEM_H;
+      idxVel=Math.max(-2.5,Math.min(2.5,idxVel)); // cap extremes
+      let curIdx=lastNi;
       const coast=()=>{
-        idxVel*=0.96;
-        if(Math.abs(idxVel)<0.016){
+        idxVel*=0.95; // gentle friction: slow roll → ~10 items, fast flick → ~40 items
+        if(Math.abs(idxVel)<0.012){
           const fi=Math.max(0,Math.min(values.length-1,Math.round(curIdx)));
           this.setDatePart(part,values[fi]); this._coastRaf=null; return;
         }
