@@ -2340,11 +2340,6 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
                 </div>
               </div>
             </div>
-            <div style="display:flex;gap:8px;margin-top:14px;">
-              <div style="width:64px;display:flex;gap:5px;justify-content:center;"><button onClick="{{ onDiaUp }}" style="flex:1;height:34px;border-radius:9px;border:1px solid var(--bd3);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;">‹</button><button onClick="{{ onDiaDown }}" style="flex:1;height:34px;border-radius:9px;border:1px solid var(--bd3);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;">›</button></div>
-              <div style="flex:1;display:flex;gap:5px;justify-content:center;"><button onClick="{{ onMesUp }}" style="flex:1;height:34px;border-radius:9px;border:1px solid var(--bd3);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;">‹</button><button onClick="{{ onMesDown }}" style="flex:1;height:34px;border-radius:9px;border:1px solid var(--bd3);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;">›</button></div>
-              <div style="width:78px;display:flex;gap:5px;justify-content:center;"><button onClick="{{ onAnioUp }}" style="flex:1;height:34px;border-radius:9px;border:1px solid var(--bd3);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;">‹</button><button onClick="{{ onAnioDown }}" style="flex:1;height:34px;border-radius:9px;border:1px solid var(--bd3);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;">›</button></div>
-            </div>
           </sc-if>
 
           <sc-if value="{{ isHealth }}" hint-placeholder-val="{{ false }}">
@@ -3828,9 +3823,11 @@ Devuelve SOLO JSON sin markdown:
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
   startWheelDrag(part,values,e){
     e.preventDefault();
+    if(this._coastRaf){cancelAnimationFrame(this._coastRaf);this._coastRaf=null;}
     const startY=(e.touches?e.touches[0].clientY:e.clientY);
     const startIdx=values.indexOf(this.dateVal()[part]);
     const ITEM_H=40;
+    const vib=()=>{try{navigator.vibrate&&navigator.vibrate(1);}catch(_){}};
     let lastNi=startIdx, lastY=startY, lastT=Date.now(), vel=0;
     const move=(ev)=>{
       if(ev.cancelable) ev.preventDefault();
@@ -3838,16 +3835,24 @@ Devuelve SOLO JSON sin markdown:
       const now=Date.now(), dt=Math.max(1,now-lastT);
       vel=(lastY-y)/dt; lastY=y; lastT=now;
       const ni=Math.max(0,Math.min(values.length-1,Math.round(startIdx+(startY-y)/ITEM_H)));
-      if(ni!==lastNi){ lastNi=ni; this.setDatePart(part,values[ni]); }
+      if(ni!==lastNi){lastNi=ni; this.setDatePart(part,values[ni]); vib();}
     };
-    const up=(ev)=>{
+    const up=()=>{
       window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up);
       window.removeEventListener('touchmove',move); window.removeEventListener('touchend',up); window.removeEventListener('touchcancel',up);
-      const y=(ev.changedTouches?ev.changedTouches[0]?.clientY:ev.clientY)??lastY;
-      const coast=Math.round(vel*180/ITEM_H);
-      const rawDelta=Math.round((startY-y)/ITEM_H);
-      const ni=Math.max(0,Math.min(values.length-1,startIdx+rawDelta+coast));
-      this.setDatePart(part,values[ni]);
+      let idxVel=vel*16/ITEM_H, curIdx=lastNi;
+      const tick=()=>{
+        idxVel*=0.86;
+        if(Math.abs(idxVel)<0.02){
+          const fi=Math.max(0,Math.min(values.length-1,Math.round(curIdx)));
+          this.setDatePart(part,values[fi]); this._coastRaf=null; return;
+        }
+        curIdx+=idxVel;
+        const fi=Math.max(0,Math.min(values.length-1,Math.round(curIdx)));
+        if(fi!==lastNi){lastNi=fi; this.setDatePart(part,values[fi]); vib();}
+        this._coastRaf=requestAnimationFrame(tick);
+      };
+      this._coastRaf=requestAnimationFrame(tick);
     };
     window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
     window.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',up); window.addEventListener('touchcancel',up);
@@ -4219,9 +4224,6 @@ Devuelve SOLO JSON sin markdown:
       onRulerDrag:(e)=>this.startRulerDrag(e), onRulerDec:()=>this.bumpRuler(-1), onRulerInc:()=>this.bumpRuler(1),
       isDate, dDia, dMes, dAnio, dateBig, offDia, offMes, offAnio,
       onDiaDrag:(e)=>this.startWheelDrag('d',dayVals,e), onMesDrag:(e)=>this.startWheelDrag('m',monVals,e), onAnioDrag:(e)=>this.startWheelDrag('y',yrVals,e),
-      onDiaUp:()=>this.bumpDate('d',dayVals,-1), onDiaDown:()=>this.bumpDate('d',dayVals,1),
-      onMesUp:()=>this.bumpDate('m',monVals,-1), onMesDown:()=>this.bumpDate('m',monVals,1),
-      onAnioUp:()=>this.bumpDate('y',yrVals,-1), onAnioDown:()=>this.bumpDate('y',yrVals,1),
       isHealth, healthOn, healthOff, healthItems, allHealthOn,
       onOpenHealth:()=>this.openHealth(), onSkipHealth:()=>this.skipHealth(),
       healthSheetOpen:this.state.healthOpen, onCloseHealth:()=>this.closeHealth(),
