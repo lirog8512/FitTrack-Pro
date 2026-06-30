@@ -2929,10 +2929,10 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
                   <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">{{ m.time }}</span>
                 </div>
                 <div style="margin-top:5px;display:flex;flex-direction:column;gap:1px;">
-                  <sc-if value="{{ m.fi0.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi0.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi0.gt }}</span></div></sc-if>
-                  <sc-if value="{{ m.fi1.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi1.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi1.gt }}</span></div></sc-if>
-                  <sc-if value="{{ m.fi2.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi2.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi2.gt }}</span></div></sc-if>
-                  <sc-if value="{{ m.fi3.show }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="font-size:12px;color:var(--muted);">{{ m.fi3.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi3.gt }}</span></div></sc-if>
+                  <sc-if value="{{ m.fi0.show }}" hint-placeholder-val="{{ false }}"><div onClick="{{ m.fi0.onTap }}" style="display:flex;justify-content:space-between;align-items:center;gap:6px;cursor:pointer;padding:2px 0;"><span style="font-size:12px;color:var(--muted);">{{ m.fi0.name }}</span><div style="display:flex;align-items:center;gap:3px;flex-shrink:0;"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi0.gt }}</span><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);opacity:.4;flex-shrink:0;"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg></div></div></sc-if>
+                  <sc-if value="{{ m.fi1.show }}" hint-placeholder-val="{{ false }}"><div onClick="{{ m.fi1.onTap }}" style="display:flex;justify-content:space-between;align-items:center;gap:6px;cursor:pointer;padding:2px 0;"><span style="font-size:12px;color:var(--muted);">{{ m.fi1.name }}</span><div style="display:flex;align-items:center;gap:3px;flex-shrink:0;"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi1.gt }}</span><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);opacity:.4;flex-shrink:0;"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg></div></div></sc-if>
+                  <sc-if value="{{ m.fi2.show }}" hint-placeholder-val="{{ false }}"><div onClick="{{ m.fi2.onTap }}" style="display:flex;justify-content:space-between;align-items:center;gap:6px;cursor:pointer;padding:2px 0;"><span style="font-size:12px;color:var(--muted);">{{ m.fi2.name }}</span><div style="display:flex;align-items:center;gap:3px;flex-shrink:0;"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi2.gt }}</span><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);opacity:.4;flex-shrink:0;"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg></div></div></sc-if>
+                  <sc-if value="{{ m.fi3.show }}" hint-placeholder-val="{{ false }}"><div onClick="{{ m.fi3.onTap }}" style="display:flex;justify-content:space-between;align-items:center;gap:6px;cursor:pointer;padding:2px 0;"><span style="font-size:12px;color:var(--muted);">{{ m.fi3.name }}</span><div style="display:flex;align-items:center;gap:3px;flex-shrink:0;"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gram-fg);white-space:nowrap;">{{ m.fi3.gt }}</span><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);opacity:.4;flex-shrink:0;"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg></div></div></sc-if>
                 </div>
                 <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5BD6E8;margin-top:7px;">{{ m.kcal }} kcal · {{ m.macro }}</div>
                 <button onClick="{{ m.onSwap }}" style="display:inline-flex;align-items:center;gap:6px;margin-top:11px;padding:7px 12px;border-radius:11px;border:1px solid rgba(91,214,232,.28);background:rgba(91,214,232,.07);color:#5BD6E8;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;">
@@ -3027,6 +3027,39 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
                   <div style="width:24px;height:24px;border-radius:50%;border:1.5px solid var(--bd4);flex:none;"></div>
                 </sc-if>
                 <sc-if value="{{ v.selected }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;inset:0;border:1.5px solid #7CF5A0;border-radius:15px;pointer-events:none;"></div>
+                </sc-if>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- sustituir alimento individual -->
+      <sc-if value="{{ foodSwapSheetOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ onCloseFoodSwap }}" style="position:absolute;inset:0;z-index:68;background:var(--scrim);"></div>
+        <div class="vscroll" style="position:absolute;left:0;right:0;bottom:0;z-index:69;background:var(--sheet);border-top:1px solid var(--bd2);border-radius:30px 30px 0 0;padding:14px 22px 32px;max-height:74%;overflow-y:auto;animation:sheetUp .28s cubic-bezier(.2,.8,.2,1);">
+          <div style="width:40px;height:5px;border-radius:3px;background:var(--grabber);margin:0 auto 16px;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:#7CF5A0;text-transform:uppercase;">Sustituir alimento</div>
+          <div style="font-size:19px;font-weight:800;margin-top:5px;">{{ foodSwapFoodName }}</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;margin-bottom:18px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#7CF5A0;"></div>
+            <p style="font-size:12.5px;color:var(--c7);">Alternativas con calorías equivalentes</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <sc-for list="{{ foodSwapAlts }}" as="a" hint-placeholder-count="4">
+              <button onClick="{{ a.onSelect }}" style="position:relative;text-align:left;width:100%;padding:15px 16px;border-radius:15px;background:var(--surface);border:1px solid var(--bd);color:var(--text);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:12px;">
+                <div style="flex:1;">
+                  <div style="font-size:14px;font-weight:700;">{{ a.name }}</div>
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gram-fg);margin-top:3px;">{{ a.gt }}</div>
+                </div>
+                <sc-if value="{{ a.isCurrent }}" hint-placeholder-val="{{ false }}">
+                  <div style="width:24px;height:24px;border-radius:50%;background:#7CF5A0;display:flex;align-items:center;justify-content:center;color:#07080A;font-size:14px;font-weight:800;flex:none;">✓</div>
+                </sc-if>
+                <sc-if value="{{ a.notCurrent }}" hint-placeholder-val="{{ true }}">
+                  <div style="width:24px;height:24px;border-radius:50%;border:1.5px solid var(--bd4);flex:none;"></div>
+                </sc-if>
+                <sc-if value="{{ a.isCurrent }}" hint-placeholder-val="{{ false }}">
                   <div style="position:absolute;inset:0;border:1.5px solid #7CF5A0;border-radius:15px;pointer-events:none;"></div>
                 </sc-if>
               </button>
@@ -3471,7 +3504,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true };
+  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true };
 
   questions(){
     return [
@@ -3695,7 +3728,10 @@ class Component extends DCLogic {
   }
   openMealSwap(id){ this.setState({mealSwapOpen:id}); }
   closeMealSwap(){ this.setState({mealSwapOpen:null}); }
-  swapMeal(id,idx){ this.setState(s=>({mealSwap:{...s.mealSwap,[id]:idx},mealSwapOpen:null})); }
+  swapMeal(id,idx){ this.setState(s=>({mealSwap:{...s.mealSwap,[id]:idx},mealSwapOpen:null,foodSwap:{...s.foodSwap,[id]:{}}})); }
+  openFoodSwap(mealId,itemIdx,food){ this.setState({foodSwapOpen:{mealId,itemIdx,food}}); }
+  closeFoodSwap(){ this.setState({foodSwapOpen:null}); }
+  swapFood(mealId,itemIdx,alt){ this.setState(s=>({foodSwap:{...s.foodSwap,[mealId]:{...(s.foodSwap[mealId]||{}),[itemIdx]:alt}},foodSwapOpen:null})); }
   selectMealDay(i){ this.setState({selMealDay:i}); }
   toggleMeal(id){ const d=this.state.selMealDay; this.setState(s=>({mealsDone:{...s.mealsDone,[d]:{...(s.mealsDone[d]||{}),[id]:!(s.mealsDone[d]||{})[id]}}})); }
   openPhoto(){ this.setState({photoOpen:true,nutriPhotoResult:null}); }
@@ -4070,14 +4106,25 @@ Devuelve SOLO JSON sin markdown:
     const md=(allMealsDone[smd])||{};
     const extra=this.state.extra||{kcal:0,protein:0,carbs:0,fat:0};
     const _fmtFS=f=>{if(!f)return{name:'',gt:'',show:false};if(typeof f==='string')return{name:f,gt:'',show:true};if(f.r&&f.c)return{name:f.n,gt:f.r+'g crudo · '+f.c+'g coc',show:true};return{name:f.n,gt:(f.g||0)+'g',show:true};};
-    const _fi=foods=>{const s=[0,1,2,3].map(i=>_fmtFS(foods[i]));return{fi0:s[0],fi1:s[1],fi2:s[2],fi3:s[3],foodsText:foods.map(f=>typeof f==='string'?f:f.n).join(' · ')};};
-    const mealRows=meals.map(m=>({name:m.name,time:m.time,kcal:m.kcal,..._fi(m.foods),macro:m.protein+'P · '+m.carbs+'C · '+m.fat+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
-    // sustitución de comida
+    const FOOD_ALTS={'Café':[{n:'Té verde',g:240},{n:'Infusión herbal',g:240},{n:'Achicoria',g:200},{n:'Agua con limón',g:300},{n:'Cacao puro',g:200}],'Té verde':[{n:'Café',g:240},{n:'Infusión herbal',g:240},{n:'Achicoria',g:200},{n:'Té negro',g:240}],'Leche de almendra':[{n:'Leche desnatada',g:200},{n:'Bebida de avena',g:200},{n:'Leche de soja',g:200}],'Avena':[{n:'Copos de centeno',r:80,c:200},{n:'Quinoa',r:70,c:185},{n:'Pan integral',g:90},{n:'Arroz integral',r:70,c:200}],'Pan integral':[{n:'Pan de centeno',g:80},{n:'Tortitas de arroz',g:70},{n:'Avena',r:70,c:180},{n:'Boniato cocido',g:150}],'Pan de centeno':[{n:'Pan integral',g:80},{n:'Tostada integral',g:80},{n:'Avena',r:70,c:180}],'Tostada integral':[{n:'Pan de centeno',g:80},{n:'Tortitas de arroz',g:70},{n:'Pan integral',g:80}],'Arroz integral':[{n:'Quinoa',r:70,c:185},{n:'Pasta integral',r:80,c:200},{n:'Patata cocida',g:200},{n:'Boniato',r:100,c:130}],'Pasta integral':[{n:'Arroz integral',r:80,c:220},{n:'Quinoa',r:75,c:195},{n:'Patata cocida',g:220}],'Quinoa':[{n:'Arroz integral',r:75,c:210},{n:'Pasta integral',r:80,c:200},{n:'Avena',r:70,c:180}],'Tortitas de avena':[{n:'Avena',r:80,c:210},{n:'Pan integral',g:90}],'Tortitas de arroz':[{n:'Pan integral',g:80},{n:'Pan de centeno',g:80},{n:'Avena',r:70,c:180}],'Dátiles':[{n:'Plátano',g:100},{n:'Uvas',g:150},{n:'Higos',g:100},{n:'Mango',g:130}],'Plátano':[{n:'Manzana',g:160},{n:'Pera',g:170},{n:'Mango',g:130},{n:'Uvas',g:130},{n:'Kiwi',g:180}],'Manzana':[{n:'Plátano',g:100},{n:'Pera',g:170},{n:'Naranja',g:180},{n:'Melocotón',g:180}],'Fresas':[{n:'Arándanos',g:130},{n:'Frambuesas',g:140},{n:'Kiwi',g:140},{n:'Naranja',g:180}],'Arándanos':[{n:'Fresas',g:140},{n:'Frambuesas',g:140},{n:'Moras',g:130},{n:'Kiwi',g:140}],'Mango':[{n:'Plátano',g:120},{n:'Melocotón',g:180},{n:'Uvas',g:130}],'Fruta':[{n:'Plátano',g:120},{n:'Manzana',g:160},{n:'Pera',g:170},{n:'Naranja',g:180},{n:'Kiwi',g:140}],'Proteína en polvo':[{n:'Requesón',g:150},{n:'Claras de huevo',g:200},{n:'Yogur griego 0%',g:200},{n:'Pechuga de pavo',g:100}],'Pechuga de pollo':[{n:'Pechuga de pavo',g:130},{n:'Atún al natural',g:130},{n:'Merluza',g:160},{n:'Salmón',g:120},{n:'Claras de huevo',g:250}],'Pechuga de pavo':[{n:'Pechuga de pollo',g:130},{n:'Atún al natural',g:130},{n:'Merluza',g:160}],'Atún al natural':[{n:'Pechuga de pollo',r:120,c:100},{n:'Salmón',g:130},{n:'Merluza',g:160},{n:'Pechuga de pavo',g:130}],'Salmón':[{n:'Atún al natural',g:130},{n:'Merluza',g:160},{n:'Caballa al natural',g:130},{n:'Pechuga de pollo',r:120,c:100}],'Merluza':[{n:'Salmón',g:120},{n:'Atún al natural',g:130},{n:'Lubina',g:160},{n:'Dorada',g:160}],'Ternera':[{n:'Pechuga de pollo',r:130,c:110},{n:'Pechuga de pavo',g:130},{n:'Cerdo magro',r:120,c:110}],'Huevos revueltos':[{n:'Claras de huevo',g:250},{n:'Tortilla de claras',g:250},{n:'Huevos a la plancha',g:200}],'Huevos a la plancha':[{n:'Claras de huevo',g:250},{n:'Huevos revueltos',g:200},{n:'Tortilla de claras',g:250}],'Claras de huevo':[{n:'Huevos a la plancha',g:200},{n:'Pechuga de pollo',r:100,c:85},{n:'Atún al natural',g:130},{n:'Requesón',g:150}],'Tortilla de claras':[{n:'Claras de huevo',g:250},{n:'Huevos a la plancha',g:200},{n:'Pechuga de pollo',r:100,c:85}],'Yogur griego':[{n:'Requesón',g:200},{n:'Queso fresco 0%',g:200},{n:'Yogur natural',g:250},{n:'Skyr',g:200}],'Requesón':[{n:'Yogur griego 0%',g:200},{n:'Queso fresco 0%',g:200},{n:'Skyr',g:200}],'Mantequilla de cacahuete':[{n:'Almendras',g:30},{n:'Tahini',g:30},{n:'Aguacate',g:80},{n:'Nueces',g:30}],'Frutos secos':[{n:'Almendras',g:30},{n:'Nueces',g:28},{n:'Anacardos',g:30},{n:'Pistachos',g:35}],'Aguacate':[{n:'Aceite de oliva',g:15},{n:'Nueces',g:30},{n:'Mantequilla de cacahuete',g:30}],'Brócoli':[{n:'Coliflor',g:200},{n:'Judías verdes',g:200},{n:'Espárragos',g:200},{n:'Calabacín',g:250}],'Espárragos':[{n:'Judías verdes',g:200},{n:'Brócoli',g:180},{n:'Calabacín',g:250},{n:'Espinacas',g:200}],'Patata dulce':[{n:'Boniato',r:120,c:160},{n:'Calabaza',r:200,c:180},{n:'Patata cocida',g:200}],'Boniato':[{n:'Patata dulce',r:120,c:160},{n:'Patata cocida',g:200},{n:'Calabaza',r:200,c:180}],'Judías verdes':[{n:'Brócoli',g:180},{n:'Espárragos',g:200},{n:'Calabacín',g:250}],'Verduras al vapor':[{n:'Brócoli al vapor',g:200},{n:'Calabacín',g:250},{n:'Espárragos',g:200},{n:'Judías verdes',g:200}],'Espinacas':[{n:'Rúcula',g:200},{n:'Lechuga',g:250},{n:'Canónigos',g:200},{n:'Acelgas',g:200}],'Champiñones':[{n:'Calabacín',g:200},{n:'Pimiento',g:180},{n:'Berenjena',g:200}],'Calabacín':[{n:'Berenjena',g:200},{n:'Champiñones',g:180},{n:'Pimiento',g:180},{n:'Judías verdes',g:200}],'Ensalada mixta':[{n:'Espinacas frescas',g:150},{n:'Rúcula',g:150},{n:'Canónigos',g:150}],'Granola':[{n:'Muesli sin azúcar',g:60},{n:'Avena',r:70,c:180},{n:'Copos de espelta',r:70,c:180}]};
+    const foodSwapState=this.state.foodSwap||{};
+    const _fi=(foods,mealId)=>{const overrides=mealId?(foodSwapState[mealId]||{}):{};const rf=foods.map((f,i)=>overrides[i]!==undefined?overrides[i]:f);const s=[0,1,2,3].map(i=>{const b=_fmtFS(rf[i]);return(b.show&&mealId)?{...b,onTap:()=>this.openFoodSwap(mealId,i,rf[i])}:b;});return{fi0:s[0],fi1:s[1],fi2:s[2],fi3:s[3],foodsText:rf.filter(Boolean).map(f=>typeof f==='string'?f:f.n).join(' · ')};};
+    const mealRows=meals.map(m=>({name:m.name,time:m.time,kcal:m.kcal,..._fi(m.foods,m.id),macro:m.protein+'P · '+m.carbs+'C · '+m.fat+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
+    // sustitución de comida completa
     const mealSwapMeal=meals.find(m=>m.id===this.state.mealSwapOpen);
     let mealSwapVariants=[],mealSwapName='',mealSwapKcal='';
     if(mealSwapMeal){
       mealSwapName=mealSwapMeal.name; mealSwapKcal=mealSwapMeal.kcal+' kcal · '+mealSwapMeal.protein+'P · '+mealSwapMeal.carbs+'C · '+mealSwapMeal.fat+'G';
       mealSwapVariants=mealSwapMeal.variants.map((v,k)=>({..._fi(v),selected:k===mealSwapMeal.variantIdx,notSelected:k!==mealSwapMeal.variantIdx,onSelect:()=>this.swapMeal(mealSwapMeal.id,k)}));
+    }
+    // sustitución de alimento individual
+    const fso=this.state.foodSwapOpen;
+    let foodSwapSheetOpen=false,foodSwapFoodName='',foodSwapAlts=[];
+    if(fso){
+      foodSwapSheetOpen=true;
+      const f=fso.food; foodSwapFoodName=typeof f==='string'?f:f.n;
+      const alts=FOOD_ALTS[foodSwapFoodName]||[];
+      foodSwapAlts=[{..._fmtFS(f),isCurrent:true,notCurrent:false,onSelect:()=>this.closeFoodSwap()},...alts.map(a=>({..._fmtFS(a),isCurrent:false,notCurrent:true,onSelect:()=>this.swapFood(fso.mealId,fso.itemIdx,a)}))];
     }
     const eaten=meals.filter(m=>md[m.id]);
     const todayDow=new Date().getDay()===0?6:(new Date().getDay()-1);
@@ -4275,6 +4322,8 @@ Devuelve SOLO JSON sin markdown:
       nutriResultProtein:nutriPhotoResult?nutriPhotoResult.protein:0, nutriResultCarbs:nutriPhotoResult?nutriPhotoResult.carbs:0, nutriResultFat:nutriPhotoResult?nutriPhotoResult.fat:0,
       mealSwapSheetOpen:this.state.mealSwapOpen!=null, mealSwapName, mealSwapKcal, mealSwapVariants,
       onCloseMealSwap:()=>this.closeMealSwap(),
+      foodSwapSheetOpen, foodSwapFoodName, foodSwapAlts,
+      onCloseFoodSwap:()=>this.closeFoodSwap(),
       // progreso
       isProgreso:screen==='progreso',
       weightBars, deltaW, currentW:toW(cw), startW:toW(sw), weightUnit:wUnit,
