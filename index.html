@@ -4061,6 +4061,8 @@ Devuelve SOLO JSON sin markdown:
         fg:seld?'var(--text)':'var(--muted)', dot:'#5BD6E8'};
     });
     const meals=this.getMeals().map(m=>this.resolveMeal(m));
+    const _baseKcal=meals.reduce((a,m)=>a+m.kcal,0)||1;
+    const _ks=p.cal/_baseKcal;
     const allMealsDone=this.state.mealsDone||{};
     const md=(allMealsDone[smd])||{};
     const extra=this.state.extra||{kcal:0,protein:0,carbs:0,fat:0};
@@ -4126,7 +4128,7 @@ Devuelve SOLO JSON sin markdown:
     };
     const foodSwapState=this.state.foodSwap||{};
     const _fi=(foods,mealId)=>{const overrides=mealId?(foodSwapState[mealId]||{}):{};const rf=foods.map((f,i)=>overrides[i]!==undefined?overrides[i]:f);const s=[0,1,2,3].map(i=>{const b=_fmtFS(rf[i]);return(b.show&&mealId)?{...b,onTap:()=>this.openFoodSwap(mealId,i,rf[i])}:b;});return{fi0:s[0],fi1:s[1],fi2:s[2],fi3:s[3],foodsText:rf.filter(Boolean).map(f=>typeof f==='string'?f:f.n).join(' · ')};};
-    const mealRows=meals.map(m=>({name:m.name,time:m.time,kcal:m.kcal,..._fi(m.foods,m.id),macro:m.protein+'P · '+m.carbs+'C · '+m.fat+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
+    const mealRows=meals.map(m=>({name:m.name,time:m.time,kcal:Math.round(m.kcal*_ks),..._fi(m.foods,m.id),macro:Math.round(m.protein*_ks)+'P · '+Math.round(m.carbs*_ks)+'C · '+Math.round(m.fat*_ks)+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
     // sustitución de comida completa
     const mealSwapMeal=meals.find(m=>m.id===this.state.mealSwapOpen);
     let mealSwapVariants=[],mealSwapName='',mealSwapKcal='';
@@ -4146,10 +4148,10 @@ Devuelve SOLO JSON sin markdown:
     const eaten=meals.filter(m=>md[m.id]);
     const todayDow=new Date().getDay()===0?6:(new Date().getDay()-1);
     const isToday=smd===todayDow;
-    const nKcal=eaten.reduce((a,m)=>a+m.kcal,0)+(isToday?extra.kcal:0);
-    const nP=eaten.reduce((a,m)=>a+m.protein,0)+(isToday?extra.protein:0);
-    const nC=eaten.reduce((a,m)=>a+m.carbs,0)+(isToday?extra.carbs:0);
-    const nF=eaten.reduce((a,m)=>a+m.fat,0)+(isToday?extra.fat:0);
+    const nKcal=eaten.reduce((a,m)=>a+Math.round(m.kcal*_ks),0)+(isToday?extra.kcal:0);
+    const nP=eaten.reduce((a,m)=>a+Math.round(m.protein*_ks),0)+(isToday?extra.protein:0);
+    const nC=eaten.reduce((a,m)=>a+Math.round(m.carbs*_ks),0)+(isToday?extra.carbs:0);
+    const nF=eaten.reduce((a,m)=>a+Math.round(m.fat*_ks),0)+(isToday?extra.fat:0);
     const npct=(v,t)=>Math.min(100,Math.round(v/(t||1)*100))+'%';
 
     // ===== progreso =====
