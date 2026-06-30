@@ -2197,6 +2197,8 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 @keyframes sheetUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
 .vscroll::-webkit-scrollbar{width:0;height:0;}
 .vscroll{scrollbar-width:none;}
+.wheel-sc::-webkit-scrollbar{display:none;}
+.wheel-sc{scrollbar-width:none;-ms-overflow-style:none;}
 
 .theme-dark,.theme-light{transition:background .35s;}
 .theme-dark{
@@ -2317,26 +2319,32 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           <sc-if value="{{ isDate }}" hint-placeholder-val="{{ false }}">
             <div style="text-align:center;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:1px;color:#7CF5A0;">{{ dateBig }}</div>
             <div style="position:relative;margin-top:14px;height:200px;display:flex;gap:8px;">
-              <div style="position:absolute;left:0;right:0;top:80px;height:40px;border-radius:13px;background:var(--card2);pointer-events:none;"></div>
-              <div class="drag-zone drag-dia" onPointerDown="{{ onDiaDrag }}" style="position:relative;width:64px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
-                <div style="position:absolute;left:0;right:0;top:80px;transform:translateY({{ offDia }}px);will-change:transform;">
-                  <sc-for list="{{ dDia }}" as="o" hint-placeholder-count="6">
-                    <div onClick="{{ o.onClick }}" style="height:40px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:{{ o.color }};cursor:pointer;">{{ o.v }}</div>
+              <div style="position:absolute;left:0;right:0;top:80px;height:40px;border-radius:13px;background:var(--card2);pointer-events:none;z-index:1;"></div>
+              <div style="position:relative;width:64px;height:200px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0%,#000 28%,#000 72%,transparent 100%);mask-image:linear-gradient(transparent 0%,#000 28%,#000 72%,transparent 100%);">
+                <div class="wheel-sc wheel-sc-dia" style="height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
+                  <div style="height:80px;flex-shrink:0;"></div>
+                  <sc-for list="{{ dDia }}" as="o" hint-placeholder-count="31">
+                    <div style="height:40px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--text);">{{ o.v }}</div>
                   </sc-for>
+                  <div style="height:80px;flex-shrink:0;"></div>
                 </div>
               </div>
-              <div class="drag-zone drag-mes" onPointerDown="{{ onMesDrag }}" style="position:relative;flex:1;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
-                <div style="position:absolute;left:0;right:0;top:80px;transform:translateY({{ offMes }}px);will-change:transform;">
-                  <sc-for list="{{ dMes }}" as="o" hint-placeholder-count="6">
-                    <div onClick="{{ o.onClick }}" style="height:40px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:{{ o.color }};cursor:pointer;">{{ o.label }}</div>
+              <div style="position:relative;flex:1;height:200px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0%,#000 28%,#000 72%,transparent 100%);mask-image:linear-gradient(transparent 0%,#000 28%,#000 72%,transparent 100%);">
+                <div class="wheel-sc wheel-sc-mes" style="height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
+                  <div style="height:80px;flex-shrink:0;"></div>
+                  <sc-for list="{{ dMes }}" as="o" hint-placeholder-count="12">
+                    <div style="height:40px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:var(--text);">{{ o.label }}</div>
                   </sc-for>
+                  <div style="height:80px;flex-shrink:0;"></div>
                 </div>
               </div>
-              <div class="drag-zone drag-anio" onPointerDown="{{ onAnioDrag }}" style="position:relative;width:78px;height:200px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:1;">
-                <div style="position:absolute;left:0;right:0;top:80px;transform:translateY({{ offAnio }}px);will-change:transform;">
-                  <sc-for list="{{ dAnio }}" as="o" hint-placeholder-count="6">
-                    <div onClick="{{ o.onClick }}" style="height:40px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:{{ o.color }};cursor:pointer;">{{ o.v }}</div>
+              <div style="position:relative;width:78px;height:200px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0%,#000 28%,#000 72%,transparent 100%);mask-image:linear-gradient(transparent 0%,#000 28%,#000 72%,transparent 100%);">
+                <div class="wheel-sc wheel-sc-anio" style="height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
+                  <div style="height:80px;flex-shrink:0;"></div>
+                  <sc-for list="{{ dAnio }}" as="o" hint-placeholder-count="73">
+                    <div style="height:40px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--text);">{{ o.v }}</div>
                   </sc-for>
+                  <div style="height:80px;flex-shrink:0;"></div>
                 </div>
               </div>
             </div>
@@ -3821,82 +3829,12 @@ Devuelve SOLO JSON sin markdown:
   dateVal(){ const A=this.state.answers; return A.nacimiento||this.questions().find(x=>x.id==='nacimiento').default; }
   setDatePart(part,val){ this.setState(s=>{ const d={...(s.answers.nacimiento||this.questions().find(x=>x.id==='nacimiento').default)}; d[part]=val; return {answers:{...s.answers,nacimiento:d}}; }); }
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
-  startWheelDrag(part,values,e){
-    if(e.pointerType==='touch') return;
-    e.preventDefault();
-    if(this._coastRaf){cancelAnimationFrame(this._coastRaf);this._coastRaf=null;}
-    const isTouch=!!e.touches;
-    const startY=(isTouch?e.touches[0].clientY:e.clientY);
-    const startIdx=values.indexOf(this.dateVal()[part]);
-    const ITEM_H=40;
-    let lastNi=startIdx, lastY=startY, lastT=Date.now(), vel=0;
-    const move=(ev)=>{
-      if(ev.cancelable) ev.preventDefault();
-      const y=(ev.touches?ev.touches[0].clientY:ev.clientY);
-      const now=Date.now(), dt=Math.max(1,now-lastT);
-      vel=(lastY-y)/dt; lastY=y; lastT=now;
-      const ni=Math.max(0,Math.min(values.length-1,Math.round(startIdx+(startY-y)/ITEM_H)));
-      if(ni!==lastNi){
-        lastNi=ni; this.setDatePart(part,values[ni]);
-        try{ if(navigator.vibrate) navigator.vibrate(25); }catch(_){}
-      }
-    };
-    const up=()=>{
-      if(isTouch){
-        window.removeEventListener('touchmove',move);
-        window.removeEventListener('touchend',up);
-        window.removeEventListener('touchcancel',up);
-      } else {
-        window.removeEventListener('pointermove',move);
-        window.removeEventListener('pointerup',up);
-      }
-      let idxVel=vel*80/ITEM_H;
-      idxVel=Math.max(-3,Math.min(3,idxVel));
-      // Pre-schedule the full coast vibration pattern now (touchend = user activation).
-      // RAF callbacks may be blocked from calling vibrate; scheduling upfront avoids that.
-      try{
-        if(navigator.vibrate && Math.abs(idxVel)>0.08){
-          let cv=idxVel, ci=lastNi, lr=lastNi, t=0;
-          const clickMs=[];
-          while(Math.abs(cv)>0.01 && t<5000){
-            cv*=0.94; ci+=cv; t+=16.7;
-            const ri=Math.max(0,Math.min(values.length-1,Math.round(ci)));
-            if(ri!==lr){lr=ri; clickMs.push(Math.round(t));}
-          }
-          if(clickMs.length>0){
-            const VIB=22;
-            // Pattern: [0, delayToFirst, VIB, gap, VIB, gap, ...]
-            const pat=[0, clickMs[0]];
-            for(let i=0;i<clickMs.length;i++){
-              pat.push(VIB);
-              if(i<clickMs.length-1) pat.push(Math.max(1, clickMs[i+1]-clickMs[i]-VIB));
-            }
-            navigator.vibrate(pat);
-          }
-        }
-      }catch(_){}
-      let curIdx=lastNi;
-      const coast=()=>{
-        idxVel*=0.94;
-        if(Math.abs(idxVel)<0.01){
-          const fi=Math.max(0,Math.min(values.length-1,Math.round(curIdx)));
-          this.setDatePart(part,values[fi]); this._coastRaf=null; return;
-        }
-        curIdx+=idxVel;
-        const fi=Math.max(0,Math.min(values.length-1,Math.round(curIdx)));
-        if(fi!==lastNi){lastNi=fi; this.setDatePart(part,values[fi]);}
-        this._coastRaf=requestAnimationFrame(coast);
-      };
-      this._coastRaf=requestAnimationFrame(coast);
-    };
-    if(isTouch){
-      window.addEventListener('touchmove',move,{passive:false});
-      window.addEventListener('touchend',up);
-      window.addEventListener('touchcancel',up);
-    } else {
-      window.addEventListener('pointermove',move);
-      window.addEventListener('pointerup',up);
-    }
+  _onWheelScroll(part,values,scrollTop){
+    clearTimeout(this._wheelT);
+    this._wheelT=setTimeout(()=>{
+      const idx=Math.max(0,Math.min(values.length-1,Math.round(scrollTop/40)));
+      if(values[idx]!==this.dateVal()[part]) this.setDatePart(part,values[idx]);
+    },120);
   }
   // ----- Salud de Apple -----
   openHealth(){ this.setState({healthOpen:true}); }
@@ -3999,16 +3937,27 @@ Devuelve SOLO JSON sin markdown:
     }
     // fecha de nacimiento
     const dayVals=Array.from({length:31},(_,k)=>k+1), monVals=Array.from({length:12},(_,k)=>k+1), yrVals=[]; for(let y=1940;y<=2012;y++)yrVals.push(y);
-    let dDia=[],dMes=[],dAnio=[],dateBig='',offDia=0,offMes=0,offAnio=0;
+    const mesN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    let dDia=[],dMes=[],dAnio=[],dateBig='';
+    const wasDateOpen=this._wheelOpen||false; this._wheelOpen=isDate;
     if(isDate){
       const d=this.dateVal();
-      offDia=-dayVals.indexOf(d.d)*40; offMes=-monVals.indexOf(d.m)*40; offAnio=-yrVals.indexOf(d.y)*40;
-      dDia=dayVals.map(v=>({v,sel:v===d.d,color:v===d.d?'var(--text)':'var(--muted)',onClick:()=>this.setDatePart('d',v)}));
-      const mesN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-      dMes=monVals.map(v=>({v,label:mesN[v-1],sel:v===d.m,color:v===d.m?'var(--text)':'var(--muted)',onClick:()=>this.setDatePart('m',v)}));
-      dAnio=yrVals.map(v=>({v,sel:v===d.y,color:v===d.y?'var(--text)':'var(--muted)',onClick:()=>this.setDatePart('y',v)}));
+      dDia=dayVals.map(v=>({v}));
+      dMes=monVals.map(v=>({v,label:mesN[v-1]}));
+      dAnio=yrVals.map(v=>({v}));
       const t=new Date(); const ag=t.getFullYear()-d.y-((t.getMonth()+1<d.m||(t.getMonth()+1===d.m&&t.getDate()<d.d))?1:0);
       dateBig=ag+' años';
+      // Set scroll positions only when picker first opens (not on every state update)
+      if(!wasDateOpen){
+        requestAnimationFrame(()=>{
+          const dia=document.querySelector('.wheel-sc-dia');
+          const mes=document.querySelector('.wheel-sc-mes');
+          const anio=document.querySelector('.wheel-sc-anio');
+          if(dia) dia.scrollTop=dayVals.indexOf(d.d)*40;
+          if(mes) mes.scrollTop=monVals.indexOf(d.m)*40;
+          if(anio) anio.scrollTop=yrVals.indexOf(d.y)*40;
+        });
+      }
     }
     // salud apple
     const healthOn=ans==='on', healthOff=ans==='off';
@@ -4263,8 +4212,7 @@ Devuelve SOLO JSON sin markdown:
       numValue:isNumber?(ans==null?q.default:ans):0, numUnit:isNumber?q.unit:'',
       isRuler, rulerTicks, rulerBig, rulerUnit, rulerGap, rulerHalfGap:rulerGap/2, rulerUnitOpts, rulerOffset,
       onRulerDrag:(e)=>this.startRulerDrag(e), onRulerDec:()=>this.bumpRuler(-1), onRulerInc:()=>this.bumpRuler(1),
-      isDate, dDia, dMes, dAnio, dateBig, offDia, offMes, offAnio,
-      onDiaDrag:(e)=>this.startWheelDrag('d',dayVals,e), onMesDrag:(e)=>this.startWheelDrag('m',monVals,e), onAnioDrag:(e)=>this.startWheelDrag('y',yrVals,e),
+      isDate, dDia, dMes, dAnio, dateBig,
       isHealth, healthOn, healthOff, healthItems, allHealthOn,
       onOpenHealth:()=>this.openHealth(), onSkipHealth:()=>this.skipHealth(),
       healthSheetOpen:this.state.healthOpen, onCloseHealth:()=>this.closeHealth(),
@@ -4391,33 +4339,35 @@ Devuelve SOLO JSON sin markdown:
 // We also call the component drag handlers directly here, because
 // onTouchStart bindings inside the DC runtime may not fire reliably.
 document.addEventListener('touchstart', function(e){
-  var el = e.target, zone = null;
+  var el = e.target;
   while(el && el !== document){
-    if(el.classList && el.classList.contains('drag-zone')){ zone = el; break; }
+    if(el.classList && el.classList.contains('drag-ruler')){
+      e.preventDefault();
+      var c = window.__vitalComp;
+      if(c && !c._dragActive){
+        c._dragActive = true;
+        c.startRulerDrag(e);
+        document.addEventListener('touchend',   function(){ c._dragActive=false; }, {once:true});
+        document.addEventListener('touchcancel', function(){ c._dragActive=false; }, {once:true});
+      }
+      return;
+    }
     el = el.parentElement;
   }
-  if(!zone) return;
-  e.preventDefault();
-
-  var c = window.__vitalComp;
-  if(!c || c._dragActive) return;
-  c._dragActive = true;
-
-  if(zone.classList.contains('drag-ruler')){
-    c.startRulerDrag(e);
-  } else {
-    var dayV=[],monV=[],yrV=[];
-    for(var d=1;d<=31;d++) dayV.push(d);
-    for(var m=1;m<=12;m++) monV.push(m);
-    for(var y=1940;y<=2012;y++) yrV.push(y);
-    if(zone.classList.contains('drag-dia'))  c.startWheelDrag('d',dayV,e);
-    if(zone.classList.contains('drag-mes'))  c.startWheelDrag('m',monV,e);
-    if(zone.classList.contains('drag-anio')) c.startWheelDrag('y',yrV,e);
-  }
-  // clear flag on touch end
-  document.addEventListener('touchend',  function(){ c._dragActive=false; }, {once:true});
-  document.addEventListener('touchcancel',function(){ c._dragActive=false; }, {once:true});
 }, {passive:false, capture:true});
+
+// Native scroll → state sync for date wheels
+document.addEventListener('scroll', function(e){
+  var el=e.target; if(!el||!el.classList) return;
+  var c=window.__vitalComp; if(!c) return;
+  var dayV=[],monV=[],yrV=[];
+  for(var d=1;d<=31;d++) dayV.push(d);
+  for(var m=1;m<=12;m++) monV.push(m);
+  for(var y=1940;y<=2012;y++) yrV.push(y);
+  if(el.classList.contains('wheel-sc-dia'))  c._onWheelScroll('d',dayV,el.scrollTop);
+  if(el.classList.contains('wheel-sc-mes'))  c._onWheelScroll('m',monV,el.scrollTop);
+  if(el.classList.contains('wheel-sc-anio')) c._onWheelScroll('y',yrV,el.scrollTop);
+},{capture:true,passive:true});
 
 // === Crop image pan/zoom ===
 (function(){
