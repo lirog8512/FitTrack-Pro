@@ -2967,6 +2967,9 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
               <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#5BD6E8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A2 2 0 0 1 5 6.5h1.5L8 4.5h8l1.5 2H19a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.5"/></svg>
               <div style="text-align:center;"><div style="font-size:15px;font-weight:700;color:#5BD6E8;">Tomar foto o elegir del carrete</div><div style="font-size:12px;color:var(--muted);margin-top:4px;">Analizamos los macros automáticamente</div></div>
             </button>
+            <sc-if value="{{ hasNutriError }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:12px;padding:11px 14px;border-radius:12px;background:rgba(255,90,90,.08);border:1px solid rgba(255,90,90,.3);color:#FF6B6B;font-size:12.5px;">{{ nutriPhotoError }}</div>
+            </sc-if>
           </sc-if>
           <sc-if value="{{ nutriAnalyzing }}" hint-placeholder-val="{{ false }}">
             <div style="height:160px;border-radius:18px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;background:var(--card2);">
@@ -3495,8 +3498,12 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+// URL del Cloudflare Worker que analiza fotos de comida (ver worker/README.md).
+// Reemplázala por tu URL real tras desplegar el worker.
+const NUTRI_ANALYZER_URL = 'https://vital-food-analyzer.REPLACE_ME.workers.dev';
+
 class Component extends DCLogic {
-  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, replicateOpen:false, replicateDays:[], adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true };
+  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, replicateOpen:false, replicateDays:[], adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, nutriPhotoError:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true };
 
   questions(){
     return [
@@ -3730,20 +3737,29 @@ class Component extends DCLogic {
   applyReplicate(){ this.setState(s=>{const d=s.selMealDay,srcFS=(s.foodSwap||{})[d]||{},srcMS=(s.mealSwap||{})[d]||{},days=s.replicateDays||[],nFS={...(s.foodSwap||{})},nMS={...(s.mealSwap||{})};days.forEach(td=>{nFS[td]=JSON.parse(JSON.stringify(srcFS));nMS[td]=JSON.parse(JSON.stringify(srcMS));});return{foodSwap:nFS,mealSwap:nMS,replicateOpen:false,replicateDays:[]};});}
   selectMealDay(i){ this.setState({selMealDay:i}); }
   toggleMeal(id){ const d=this.state.selMealDay; this.setState(s=>({mealsDone:{...s.mealsDone,[d]:{...(s.mealsDone[d]||{}),[id]:!(s.mealsDone[d]||{})[id]}}})); }
-  openPhoto(){ this.setState({photoOpen:true,nutriPhotoResult:null}); }
-  closePhoto(){ this.setState({photoOpen:false}); }
-  addPhoto(){ const r=this.state.nutriPhotoResult||{kcal:0,protein:0,carbs:0,fat:0}; this.setState(s=>({photoOpen:false,nutriPhotoResult:null,extra:{kcal:s.extra.kcal+r.kcal,protein:s.extra.protein+r.protein,carbs:s.extra.carbs+r.carbs,fat:s.extra.fat+r.fat}})); }
+  openPhoto(){ this.setState({photoOpen:true,nutriPhotoResult:null,nutriPhotoError:null}); }
+  closePhoto(){ this.setState({photoOpen:false,nutriPhotoError:null}); }
+  addPhoto(){ const r=this.state.nutriPhotoResult||{kcal:0,protein:0,carbs:0,fat:0}; this.setState(s=>({photoOpen:false,nutriPhotoResult:null,nutriPhotoError:null,extra:{kcal:s.extra.kcal+r.kcal,protein:s.extra.protein+r.protein,carbs:s.extra.carbs+r.carbs,fat:s.extra.fat+r.fat}})); }
   pickNutriPhoto(){ if(this._nutriInput) this._nutriInput.click(); }
   async handleNutriPhoto(file){
     if(!file) return;
     const url=URL.createObjectURL(file);
-    this.setState({nutriPhotoResult:{url,kcal:0,protein:0,carbs:0,fat:0,analyzing:true}});
-    await new Promise(r=>setTimeout(r,1800));
-    const names=['Pollo con arroz','Ensalada César','Pasta boloñesa','Hamburguesa','Salmón a la plancha','Pizza margarita','Tortilla de espinacas'];
-    const kcals=[420,320,580,650,380,680,290];
-    const idx=Math.floor(Math.random()*names.length);
-    const kcal=kcals[idx], protein=Math.round(kcal*0.22/4), carbs=Math.round(kcal*0.48/4), fat=Math.round(kcal*0.30/9);
-    this.setState({nutriPhotoResult:{url,kcal,protein,carbs,fat,name:names[idx],analyzing:false}});
+    this.setState({nutriPhotoResult:{url,kcal:0,protein:0,carbs:0,fat:0,analyzing:true},nutriPhotoError:null});
+    try{
+      const dataUrl=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(new Error('read_failed'));r.readAsDataURL(file);});
+      const m=/^data:([^;]+);base64,(.*)$/.exec(dataUrl);
+      if(!m) throw new Error('invalid_image');
+      const resp=await fetch(NUTRI_ANALYZER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:m[2],mediaType:m[1]})});
+      const data=await resp.json().catch(()=>({}));
+      if(!resp.ok||data.error){
+        const msg=data.error==='no_food'?'No se reconoció comida en la foto. Prueba con otra imagen.':'No se pudo analizar la foto. Inténtalo de nuevo.';
+        this.setState({nutriPhotoResult:null,nutriPhotoError:msg});
+        return;
+      }
+      this.setState({nutriPhotoResult:{url,kcal:data.kcal,protein:data.protein,carbs:data.carbs,fat:data.fat,name:data.name,analyzing:false},nutriPhotoError:null});
+    }catch(e){
+      this.setState({nutriPhotoResult:null,nutriPhotoError:'No se pudo conectar con el analizador. Revisa tu conexión.'});
+    }
   }
   pickBodyPhoto(){
     const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
@@ -4329,6 +4345,8 @@ Devuelve SOLO JSON sin markdown:
     const nutriPhotoResult=this.state.nutriPhotoResult||null;
     const nutriAnalyzing=!!(nutriPhotoResult&&nutriPhotoResult.analyzing);
     const hasNutriResult=!!(nutriPhotoResult&&!nutriPhotoResult.analyzing&&nutriPhotoResult.kcal>0);
+    const nutriPhotoError=this.state.nutriPhotoError||'';
+    const hasNutriError=!!nutriPhotoError;
     // ===== pasos =====
     const stepsGoal=this.state.stepsGoal;
     const stepsToday=this.state.stepsData||0;
@@ -4464,7 +4482,7 @@ Devuelve SOLO JSON sin markdown:
       photoOpen:this.state.photoOpen,
       onOpenPhoto:()=>this.openPhoto(), onClosePhoto:()=>this.closePhoto(), onAddPhoto:()=>this.addPhoto(),
       onPickNutriPhoto:()=>this.pickNutriPhoto(), nutriPhotoRef:(el)=>{this._nutriInput=el;}, onNutriPhotoFile:(e)=>this.handleNutriPhoto(e.target.files&&e.target.files[0]),
-      nutriPhotoResult, nutriAnalyzing, hasNutriResult, nutriPhotoUrl:nutriPhotoResult?nutriPhotoResult.url:'',
+      nutriPhotoResult, nutriAnalyzing, hasNutriResult, nutriPhotoError, hasNutriError, nutriPhotoUrl:nutriPhotoResult?nutriPhotoResult.url:'',
       nutriResultName:nutriPhotoResult?nutriPhotoResult.name:'', nutriResultKcal:nutriPhotoResult?nutriPhotoResult.kcal:0,
       nutriResultProtein:nutriPhotoResult?nutriPhotoResult.protein:0, nutriResultCarbs:nutriPhotoResult?nutriPhotoResult.carbs:0, nutriResultFat:nutriPhotoResult?nutriPhotoResult.fat:0,
       mealSwapSheetOpen:this.state.mealSwapOpen!=null, mealSwapName, mealSwapKcal, mealSwapVariants,
