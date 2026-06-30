@@ -2320,32 +2320,26 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
             <div style="text-align:center;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:1px;color:#7CF5A0;">{{ dateBig }}</div>
             <div style="position:relative;margin-top:14px;height:200px;display:flex;gap:8px;">
               <div style="position:absolute;left:0;right:0;top:80px;height:40px;border-radius:13px;background:var(--card2);pointer-events:none;"></div>
-              <div style="position:relative;width:64px;height:200px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0%,white 22%,white 78%,transparent 100%);mask-image:linear-gradient(transparent 0%,white 22%,white 78%,transparent 100%);">
-                <div class="wheel-sc wheel-sc-dia" style="height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
-                  <div style="height:80px;flex-shrink:0;"></div>
-                  <sc-for list="{{ dDia }}" as="o" hint-placeholder-count="31">
-                    <div style="height:40px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--text);">{{ o.v }}</div>
-                  </sc-for>
-                  <div style="height:80px;flex-shrink:0;"></div>
-                </div>
+              <div class="wheel-sc wheel-sc-dia" style="position:relative;z-index:1;flex-shrink:0;width:64px;height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
+                <div style="height:80px;"></div>
+                <sc-for list="{{ dDia }}" as="o" hint-placeholder-count="31">
+                  <div style="height:40px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--text);">{{ o.v }}</div>
+                </sc-for>
+                <div style="height:80px;"></div>
               </div>
-              <div style="position:relative;flex:1;height:200px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0%,white 22%,white 78%,transparent 100%);mask-image:linear-gradient(transparent 0%,white 22%,white 78%,transparent 100%);">
-                <div class="wheel-sc wheel-sc-mes" style="height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
-                  <div style="height:80px;flex-shrink:0;"></div>
-                  <sc-for list="{{ dMes }}" as="o" hint-placeholder-count="12">
-                    <div style="height:40px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:var(--text);">{{ o.label }}</div>
-                  </sc-for>
-                  <div style="height:80px;flex-shrink:0;"></div>
-                </div>
+              <div class="wheel-sc wheel-sc-mes" style="position:relative;z-index:1;flex:1;height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
+                <div style="height:80px;"></div>
+                <sc-for list="{{ dMes }}" as="o" hint-placeholder-count="12">
+                  <div style="height:40px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:var(--text);">{{ o.label }}</div>
+                </sc-for>
+                <div style="height:80px;"></div>
               </div>
-              <div style="position:relative;width:78px;height:200px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0%,white 22%,white 78%,transparent 100%);mask-image:linear-gradient(transparent 0%,white 22%,white 78%,transparent 100%);">
-                <div class="wheel-sc wheel-sc-anio" style="height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
-                  <div style="height:80px;flex-shrink:0;"></div>
-                  <sc-for list="{{ dAnio }}" as="o" hint-placeholder-count="73">
-                    <div style="height:40px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--text);">{{ o.v }}</div>
-                  </sc-for>
-                  <div style="height:80px;flex-shrink:0;"></div>
-                </div>
+              <div class="wheel-sc wheel-sc-anio" style="position:relative;z-index:1;flex-shrink:0;width:78px;height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
+                <div style="height:80px;"></div>
+                <sc-for list="{{ dAnio }}" as="o" hint-placeholder-count="73">
+                  <div style="height:40px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--text);">{{ o.v }}</div>
+                </sc-for>
+                <div style="height:80px;"></div>
               </div>
             </div>
           </sc-if>
