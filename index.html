@@ -4106,7 +4106,65 @@ Devuelve SOLO JSON sin markdown:
     const md=(allMealsDone[smd])||{};
     const extra=this.state.extra||{kcal:0,protein:0,carbs:0,fat:0};
     const _fmtFS=f=>{if(!f)return{name:'',gt:'',show:false};if(typeof f==='string')return{name:f,gt:'',show:true};if(f.r&&f.c)return{name:f.n,gt:f.r+'g crudo · '+f.c+'g coc',show:true};return{name:f.n,gt:(f.g||0)+'g',show:true};};
-    const FOOD_ALTS={'Café':[{n:'Té verde',g:240},{n:'Infusión herbal',g:240},{n:'Achicoria',g:200},{n:'Agua con limón',g:300},{n:'Cacao puro',g:200}],'Té verde':[{n:'Café',g:240},{n:'Infusión herbal',g:240},{n:'Achicoria',g:200},{n:'Té negro',g:240}],'Leche de almendra':[{n:'Leche desnatada',g:200},{n:'Bebida de avena',g:200},{n:'Leche de soja',g:200}],'Avena':[{n:'Copos de centeno',r:80,c:200},{n:'Quinoa',r:70,c:185},{n:'Pan integral',g:90},{n:'Arroz integral',r:70,c:200}],'Pan integral':[{n:'Pan de centeno',g:80},{n:'Tortitas de arroz',g:70},{n:'Avena',r:70,c:180},{n:'Boniato cocido',g:150}],'Pan de centeno':[{n:'Pan integral',g:80},{n:'Tostada integral',g:80},{n:'Avena',r:70,c:180}],'Tostada integral':[{n:'Pan de centeno',g:80},{n:'Tortitas de arroz',g:70},{n:'Pan integral',g:80}],'Arroz integral':[{n:'Quinoa',r:70,c:185},{n:'Pasta integral',r:80,c:200},{n:'Patata cocida',g:200},{n:'Boniato',r:100,c:130}],'Pasta integral':[{n:'Arroz integral',r:80,c:220},{n:'Quinoa',r:75,c:195},{n:'Patata cocida',g:220}],'Quinoa':[{n:'Arroz integral',r:75,c:210},{n:'Pasta integral',r:80,c:200},{n:'Avena',r:70,c:180}],'Tortitas de avena':[{n:'Avena',r:80,c:210},{n:'Pan integral',g:90}],'Tortitas de arroz':[{n:'Pan integral',g:80},{n:'Pan de centeno',g:80},{n:'Avena',r:70,c:180}],'Dátiles':[{n:'Plátano',g:100},{n:'Uvas',g:150},{n:'Higos',g:100},{n:'Mango',g:130}],'Plátano':[{n:'Manzana',g:160},{n:'Pera',g:170},{n:'Mango',g:130},{n:'Uvas',g:130},{n:'Kiwi',g:180}],'Manzana':[{n:'Plátano',g:100},{n:'Pera',g:170},{n:'Naranja',g:180},{n:'Melocotón',g:180}],'Fresas':[{n:'Arándanos',g:130},{n:'Frambuesas',g:140},{n:'Kiwi',g:140},{n:'Naranja',g:180}],'Arándanos':[{n:'Fresas',g:140},{n:'Frambuesas',g:140},{n:'Moras',g:130},{n:'Kiwi',g:140}],'Mango':[{n:'Plátano',g:120},{n:'Melocotón',g:180},{n:'Uvas',g:130}],'Fruta':[{n:'Plátano',g:120},{n:'Manzana',g:160},{n:'Pera',g:170},{n:'Naranja',g:180},{n:'Kiwi',g:140}],'Proteína en polvo':[{n:'Requesón',g:150},{n:'Claras de huevo',g:200},{n:'Yogur griego 0%',g:200},{n:'Pechuga de pavo',g:100}],'Pechuga de pollo':[{n:'Pechuga de pavo',g:130},{n:'Atún al natural',g:130},{n:'Merluza',g:160},{n:'Salmón',g:120},{n:'Claras de huevo',g:250}],'Pechuga de pavo':[{n:'Pechuga de pollo',g:130},{n:'Atún al natural',g:130},{n:'Merluza',g:160}],'Atún al natural':[{n:'Pechuga de pollo',r:120,c:100},{n:'Salmón',g:130},{n:'Merluza',g:160},{n:'Pechuga de pavo',g:130}],'Salmón':[{n:'Atún al natural',g:130},{n:'Merluza',g:160},{n:'Caballa al natural',g:130},{n:'Pechuga de pollo',r:120,c:100}],'Merluza':[{n:'Salmón',g:120},{n:'Atún al natural',g:130},{n:'Lubina',g:160},{n:'Dorada',g:160}],'Ternera':[{n:'Pechuga de pollo',r:130,c:110},{n:'Pechuga de pavo',g:130},{n:'Cerdo magro',r:120,c:110}],'Huevos revueltos':[{n:'Claras de huevo',g:250},{n:'Tortilla de claras',g:250},{n:'Huevos a la plancha',g:200}],'Huevos a la plancha':[{n:'Claras de huevo',g:250},{n:'Huevos revueltos',g:200},{n:'Tortilla de claras',g:250}],'Claras de huevo':[{n:'Huevos a la plancha',g:200},{n:'Pechuga de pollo',r:100,c:85},{n:'Atún al natural',g:130},{n:'Requesón',g:150}],'Tortilla de claras':[{n:'Claras de huevo',g:250},{n:'Huevos a la plancha',g:200},{n:'Pechuga de pollo',r:100,c:85}],'Yogur griego':[{n:'Requesón',g:200},{n:'Queso fresco 0%',g:200},{n:'Yogur natural',g:250},{n:'Skyr',g:200}],'Requesón':[{n:'Yogur griego 0%',g:200},{n:'Queso fresco 0%',g:200},{n:'Skyr',g:200}],'Mantequilla de cacahuete':[{n:'Almendras',g:30},{n:'Tahini',g:30},{n:'Aguacate',g:80},{n:'Nueces',g:30}],'Frutos secos':[{n:'Almendras',g:30},{n:'Nueces',g:28},{n:'Anacardos',g:30},{n:'Pistachos',g:35}],'Aguacate':[{n:'Aceite de oliva',g:15},{n:'Nueces',g:30},{n:'Mantequilla de cacahuete',g:30}],'Brócoli':[{n:'Coliflor',g:200},{n:'Judías verdes',g:200},{n:'Espárragos',g:200},{n:'Calabacín',g:250}],'Espárragos':[{n:'Judías verdes',g:200},{n:'Brócoli',g:180},{n:'Calabacín',g:250},{n:'Espinacas',g:200}],'Patata dulce':[{n:'Boniato',r:120,c:160},{n:'Calabaza',r:200,c:180},{n:'Patata cocida',g:200}],'Boniato':[{n:'Patata dulce',r:120,c:160},{n:'Patata cocida',g:200},{n:'Calabaza',r:200,c:180}],'Judías verdes':[{n:'Brócoli',g:180},{n:'Espárragos',g:200},{n:'Calabacín',g:250}],'Verduras al vapor':[{n:'Brócoli al vapor',g:200},{n:'Calabacín',g:250},{n:'Espárragos',g:200},{n:'Judías verdes',g:200}],'Espinacas':[{n:'Rúcula',g:200},{n:'Lechuga',g:250},{n:'Canónigos',g:200},{n:'Acelgas',g:200}],'Champiñones':[{n:'Calabacín',g:200},{n:'Pimiento',g:180},{n:'Berenjena',g:200}],'Calabacín':[{n:'Berenjena',g:200},{n:'Champiñones',g:180},{n:'Pimiento',g:180},{n:'Judías verdes',g:200}],'Ensalada mixta':[{n:'Espinacas frescas',g:150},{n:'Rúcula',g:150},{n:'Canónigos',g:150}],'Granola':[{n:'Muesli sin azúcar',g:60},{n:'Avena',r:70,c:180},{n:'Copos de espelta',r:70,c:180}]};
+    const FOOD_ALTS={
+      // BEBIDAS (0-5 kcal — cualquier sustituto equivale)
+      'Café':[{n:'Té verde',g:240},{n:'Infusión herbal',g:240},{n:'Achicoria',g:240},{n:'Cacao puro sin azúcar',g:240},{n:'Agua con limón',g:300}],
+      'Café con leche':[{n:'Té con leche',g:240},{n:'Bebida de avena',g:240},{n:'Leche de almendra',g:300},{n:'Achicoria con leche',g:240},{n:'Kéfir desnatado',g:200}],
+      'Té verde':[{n:'Café',g:240},{n:'Infusión herbal',g:240},{n:'Achicoria',g:240},{n:'Té negro',g:240},{n:'Rooibos',g:240}],
+      'Infusión':[{n:'Té verde',g:240},{n:'Café',g:240},{n:'Achicoria',g:240},{n:'Rooibos',g:240},{n:'Agua con limón',g:300}],
+      // CEREALES Y CARBOHIDRATOS (porciones calibradas en kcal)
+      'Avena':[{n:'Copos de centeno',r:85,c:220},{n:'Quinoa',r:75,c:185},{n:'Pan integral',g:95},{n:'Arroz integral',r:75,c:210},{n:'Muesli sin azúcar',g:75}],
+      'Granola':[{n:'Muesli sin azúcar',g:45},{n:'Avena',r:40,c:100},{n:'Copos de espelta',r:40,c:100},{n:'Semillas mixtas',g:35}],
+      'Pan integral':[{n:'Pan de centeno',g:60},{n:'Pan de espelta',g:60},{n:'Tortitas de arroz',g:45},{n:'Avena',r:45,c:115},{n:'Boniato cocido',g:180}],
+      'Pan de centeno':[{n:'Pan integral',g:35},{n:'Pan de espelta',g:35},{n:'Tortitas de arroz',g:30},{n:'Avena',r:30,c:75}],
+      'Tortitas de arroz':[{n:'Pan de centeno',g:45},{n:'Pan integral',g:40},{n:'Galletas de avena',g:35},{n:'Palomitas sin aceite',g:30}],
+      'Arroz integral':[{n:'Quinoa',r:75,c:185},{n:'Pasta integral',r:80,c:200},{n:'Arroz basmati',r:75,c:205},{n:'Cous cous',r:80,c:200},{n:'Patata cocida',g:280}],
+      'Arroz blanco':[{n:'Arroz integral',r:70,c:190},{n:'Quinoa',r:70,c:175},{n:'Pasta blanca',r:75,c:185},{n:'Cous cous',r:75,c:185},{n:'Patata cocida',g:250}],
+      'Quinoa':[{n:'Arroz integral',r:75,c:210},{n:'Pasta integral',r:80,c:200},{n:'Bulgur',r:75,c:200},{n:'Cous cous',r:80,c:200},{n:'Arroz blanco',r:70,c:200}],
+      'Patata':[{n:'Boniato',r:240,c:210},{n:'Patata dulce',r:240,c:210},{n:'Arroz blanco',r:80,c:220},{n:'Calabaza asada',g:400},{n:'Quinoa',r:80,c:200}],
+      'Boniato':[{n:'Patata cocida',g:230},{n:'Patata dulce',r:200,c:175},{n:'Calabaza asada',g:350},{n:'Arroz integral',r:65,c:175},{n:'Remolacha cocida',g:250}],
+      // PROTEÍNAS EN POLVO Y LÁCTEOS PROTEICOS
+      'Proteína en polvo':[{n:'Requesón',g:200},{n:'Claras de huevo',g:250},{n:'Yogur griego 0%',g:220},{n:'Skyr',g:200},{n:'Pechuga de pavo',g:130}],
+      'Yogur griego':[{n:'Requesón',g:150},{n:'Skyr',g:150},{n:'Queso fresco 0%',g:200},{n:'Yogur natural',g:200},{n:'Kéfir',g:200}],
+      'Yogur proteico':[{n:'Skyr',g:170},{n:'Yogur griego 0%',g:200},{n:'Requesón',g:170},{n:'Queso fresco 0%',g:220}],
+      'Requesón':[{n:'Yogur griego 0%',g:200},{n:'Skyr',g:150},{n:'Queso fresco 0%',g:200},{n:'Kéfir desnatado',g:250}],
+      // HUEVOS
+      'Huevo':[{n:'Claras de huevo',g:250},{n:'Tortilla de claras',g:250},{n:'Tofu revuelto',g:200},{n:'Sardinas al natural',g:120}],
+      'Huevos':[{n:'Claras de huevo',g:300},{n:'Tofu firme',g:220},{n:'Sardinas al natural',g:150},{n:'Salmón',r:120,c:100}],
+      'Claras de huevo':[{n:'Huevo entero',g:150},{n:'Pechuga de pollo',r:100,c:85},{n:'Requesón',g:200},{n:'Atún al natural',g:130},{n:'Tofu firme',g:200}],
+      // CARNES Y PESCADOS
+      'Pechuga de pollo':[{n:'Pechuga de pavo',r:175,c:150},{n:'Atún al natural',g:150},{n:'Merluza',r:220,c:185},{n:'Salmón',r:140,c:120},{n:'Tofu firme',g:280}],
+      'Ternera magra':[{n:'Pechuga de pollo',r:175,c:145},{n:'Cerdo magro',r:180,c:150},{n:'Pechuga de pavo',r:180,c:150},{n:'Atún al natural',g:150}],
+      'Pavo':[{n:'Pechuga de pollo',r:100,c:85},{n:'Atún al natural',g:110},{n:'Merluza',r:120,c:100},{n:'Langostinos cocidos',g:130},{n:'Jamón serrano sin grasa',g:80}],
+      'Salmón':[{n:'Atún fresco',r:180,c:155},{n:'Caballa',r:180,c:155},{n:'Trucha',r:180,c:150},{n:'Atún al natural',g:180},{n:'Sardinas al natural',g:180}],
+      'Merluza':[{n:'Lubina',r:200,c:170},{n:'Dorada',r:200,c:170},{n:'Bacalao fresco',r:220,c:180},{n:'Lenguado',r:220,c:180},{n:'Rodaballo',r:200,c:170}],
+      // LEGUMBRES
+      'Lentejas':[{n:'Garbanzos',r:100,c:240},{n:'Alubias blancas',r:100,c:240},{n:'Judías negras',r:100,c:240},{n:'Edamame',g:200},{n:'Tofu firme',g:280}],
+      'Garbanzos':[{n:'Lentejas',r:100,c:240},{n:'Alubias blancas',r:100,c:240},{n:'Judías negras',r:100,c:240},{n:'Edamame',g:200},{n:'Tofu firme',g:280}],
+      'Edamame':[{n:'Lentejas',r:65,c:155},{n:'Garbanzos',r:65,c:155},{n:'Guisantes',g:200},{n:'Habas',g:160},{n:'Tofu firme',g:200}],
+      'Hummus':[{n:'Guacamole',g:80},{n:'Paté de alcachofas',g:90},{n:'Tahini con limón',g:25},{n:'Crema de garbanzo',g:80}],
+      // PROTEÍNAS VEGETALES
+      'Tofu firme':[{n:'Tempeh',g:130},{n:'Edamame',g:220},{n:'Lentejas',r:80,c:190},{n:'Seitán',g:140},{n:'Garbanzos',r:80,c:190}],
+      // FRUTAS
+      'Plátano':[{n:'Manzana',g:180},{n:'Pera',g:180},{n:'Mango',g:140},{n:'Uvas',g:140},{n:'Naranja',g:220}],
+      'Manzana':[{n:'Plátano',g:100},{n:'Pera',g:180},{n:'Naranja',g:180},{n:'Melocotón',g:180},{n:'Uvas',g:120}],
+      'Pera':[{n:'Manzana',g:150},{n:'Plátano',g:100},{n:'Melocotón',g:180},{n:'Naranja',g:180},{n:'Nectarina',g:180}],
+      'Mandarina':[{n:'Naranja',g:100},{n:'Fresas',g:150},{n:'Melocotón',g:120},{n:'Kiwi',g:100},{n:'Frambuesas',g:120}],
+      'Arándanos':[{n:'Fresas',g:120},{n:'Frambuesas',g:100},{n:'Moras',g:100},{n:'Cerezas',g:80},{n:'Kiwi',g:80}],
+      'Miel':[{n:'Sirope de agave',g:15},{n:'Dátiles triturados',g:20},{n:'Compota sin azúcar',g:40},{n:'Mermelada sin azúcar',g:30}],
+      // VERDURAS (intercambiables, similares en kcal)
+      'Brócoli':[{n:'Coliflor',g:220},{n:'Judías verdes',g:200},{n:'Espárragos',g:200},{n:'Coles de Bruselas',g:170},{n:'Calabacín',g:260}],
+      'Espárragos':[{n:'Judías verdes',g:150},{n:'Brócoli',g:150},{n:'Alcachofas',g:150},{n:'Calabacín',g:200},{n:'Pencas de apio',g:200}],
+      'Espinacas':[{n:'Rúcula',g:150},{n:'Canónigos',g:150},{n:'Acelgas',g:150},{n:'Lechuga romana',g:200},{n:'Endivias',g:200}],
+      'Ensalada':[{n:'Espinacas',g:150},{n:'Rúcula',g:150},{n:'Canónigos',g:150},{n:'Lechuga romana',g:200},{n:'Endivias',g:200}],
+      'Verduras':[{n:'Brócoli',g:150},{n:'Judías verdes',g:200},{n:'Espárragos',g:200},{n:'Calabacín',g:250},{n:'Pimiento+cebolla',g:200}],
+      'Verduras asadas':[{n:'Pimiento+calabacín',g:220},{n:'Brócoli al vapor',g:200},{n:'Espárragos',g:200},{n:'Champiñones',g:250},{n:'Judías verdes',g:200}],
+      'Crudités':[{n:'Zanahoria',g:150},{n:'Pepino',g:200},{n:'Pimiento',g:150},{n:'Apio',g:200},{n:'Brócoli crudo',g:120}],
+      // GRASAS Y FRUTOS SECOS
+      'Almendras':[{n:'Nueces',g:22},{n:'Anacardos',g:25},{n:'Pistachos',g:30},{n:'Semillas de calabaza',g:30},{n:'Mantequilla de almendra',g:25}],
+      'Nueces':[{n:'Almendras',g:25},{n:'Anacardos',g:25},{n:'Avellanas',g:22},{n:'Semillas de girasol',g:30},{n:'Pistachos',g:30}],
+      'Aguacate':[{n:'Hummus',g:90},{n:'Tahini',g:22},{n:'Nueces',g:30},{n:'Mantequilla de cacahuete',g:22},{n:'Aceite de oliva virgen',g:15}],
+    };
     const foodSwapState=this.state.foodSwap||{};
     const _fi=(foods,mealId)=>{const overrides=mealId?(foodSwapState[mealId]||{}):{};const rf=foods.map((f,i)=>overrides[i]!==undefined?overrides[i]:f);const s=[0,1,2,3].map(i=>{const b=_fmtFS(rf[i]);return(b.show&&mealId)?{...b,onTap:()=>this.openFoodSwap(mealId,i,rf[i])}:b;});return{fi0:s[0],fi1:s[1],fi2:s[2],fi3:s[3],foodsText:rf.filter(Boolean).map(f=>typeof f==='string'?f:f.n).join(' · ')};};
     const mealRows=meals.map(m=>({name:m.name,time:m.time,kcal:m.kcal,..._fi(m.foods,m.id),macro:m.protein+'P · '+m.carbs+'C · '+m.fat+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
