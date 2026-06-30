@@ -3822,15 +3822,22 @@ Devuelve SOLO JSON sin markdown:
   setDatePart(part,val){ this.setState(s=>{ const d={...(s.answers.nacimiento||this.questions().find(x=>x.id==='nacimiento').default)}; d[part]=val; return {answers:{...s.answers,nacimiento:d}}; }); }
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
   _wheelClick(){
+    try{ if(navigator.vibrate) navigator.vibrate(8); }catch(_){}
     try{
-      const ctx=this._wACtx; if(!ctx||ctx.state==='suspended') return;
-      const buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.018),ctx.sampleRate);
-      const d=buf.getChannelData(0);
-      for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length)*0.35;
-      const flt=ctx.createBiquadFilter();
-      flt.type='bandpass'; flt.frequency.value=1800; flt.Q.value=1.5;
-      const src=ctx.createBufferSource();
-      src.buffer=buf; src.connect(flt); flt.connect(ctx.destination); src.start();
+      const ctx=this._wACtx; if(!ctx) return;
+      const play=()=>{
+        try{
+          const buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.022),ctx.sampleRate);
+          const d=buf.getChannelData(0);
+          for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length)*0.55;
+          const flt=ctx.createBiquadFilter();
+          flt.type='bandpass'; flt.frequency.value=1500; flt.Q.value=1.0;
+          const src=ctx.createBufferSource();
+          src.buffer=buf; src.connect(flt); flt.connect(ctx.destination); src.start();
+        }catch(_){}
+      };
+      if(ctx.state==='suspended') ctx.resume().then(play).catch(()=>{});
+      else play();
     }catch(_){}
   }
   startWheelDrag(part,values,e){
