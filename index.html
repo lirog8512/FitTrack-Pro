@@ -4384,7 +4384,7 @@ document.addEventListener('scroll', function(e){
   if(el.classList.contains('wheel-sc-anio')) c._onWheelScroll('y',yrV,el.scrollTop);
 },{capture:true,passive:true});
 
-// Wheel haptic: unlock audio + vibrate/click on touchmove (user gesture context)
+// Wheel haptic: use finger position delta (not scrollTop) so detection is instant
 document.addEventListener('touchstart', function(e){
   var c=window.__vitalComp; if(!c) return;
   var el=e.target;
@@ -4392,12 +4392,16 @@ document.addEventListener('touchstart', function(e){
     if(el.classList && el.classList.contains('wheel-sc')){
       c._unlockAudio();
       var wheel=el;
-      var lastSnap=Math.round(wheel.scrollTop/40);
-      function onMove(){
-        var snap=Math.round(wheel.scrollTop/40);
+      var startY=e.touches[0].clientY;
+      var startScroll=wheel.scrollTop;
+      var lastSnap=Math.round(startScroll/40);
+      function onMove(ev){
+        var dy=startY-ev.touches[0].clientY;
+        var estScroll=startScroll+dy;
+        var snap=Math.round(estScroll/40);
         if(snap!==lastSnap){
           lastSnap=snap;
-          try{ if(navigator.vibrate) navigator.vibrate(10); }catch(_){}
+          try{ if(navigator.vibrate) navigator.vibrate(15); }catch(_){}
           c._playClick();
         }
       }
