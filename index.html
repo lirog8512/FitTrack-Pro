@@ -3821,35 +3821,10 @@ Devuelve SOLO JSON sin markdown:
   dateVal(){ const A=this.state.answers; return A.nacimiento||this.questions().find(x=>x.id==='nacimiento').default; }
   setDatePart(part,val){ this.setState(s=>{ const d={...(s.answers.nacimiento||this.questions().find(x=>x.id==='nacimiento').default)}; d[part]=val; return {answers:{...s.answers,nacimiento:d}}; }); }
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
-  _wheelClick(){
-    try{ if(navigator.vibrate) navigator.vibrate(8); }catch(_){}
-    try{
-      const ctx=this._wACtx; if(!ctx) return;
-      const play=()=>{
-        try{
-          const buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.022),ctx.sampleRate);
-          const d=buf.getChannelData(0);
-          for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length)*0.55;
-          const flt=ctx.createBiquadFilter();
-          flt.type='bandpass'; flt.frequency.value=1500; flt.Q.value=1.0;
-          const src=ctx.createBufferSource();
-          src.buffer=buf; src.connect(flt); flt.connect(ctx.destination); src.start();
-        }catch(_){}
-      };
-      if(ctx.state==='suspended') ctx.resume().then(play).catch(()=>{});
-      else play();
-    }catch(_){}
-  }
   startWheelDrag(part,values,e){
-    // Pointer events synthesized from touch must be ignored — the global touchstart
-    // handler already called us with the real touch event.
     if(e.pointerType==='touch') return;
     e.preventDefault();
     if(this._coastRaf){cancelAnimationFrame(this._coastRaf);this._coastRaf=null;}
-    try{
-      if(!this._wACtx) this._wACtx=new(window.AudioContext||window.webkitAudioContext)();
-      if(this._wACtx.state==='suspended') this._wACtx.resume();
-    }catch(_){}
     const isTouch=!!e.touches;
     const startY=(isTouch?e.touches[0].clientY:e.clientY);
     const startIdx=values.indexOf(this.dateVal()[part]);
@@ -3861,7 +3836,10 @@ Devuelve SOLO JSON sin markdown:
       const now=Date.now(), dt=Math.max(1,now-lastT);
       vel=(lastY-y)/dt; lastY=y; lastT=now;
       const ni=Math.max(0,Math.min(values.length-1,Math.round(startIdx+(startY-y)/ITEM_H)));
-      if(ni!==lastNi){lastNi=ni; this.setDatePart(part,values[ni]); this._wheelClick();}
+      if(ni!==lastNi){
+        lastNi=ni; this.setDatePart(part,values[ni]);
+        try{ if(navigator.vibrate) navigator.vibrate(25); }catch(_){}
+      }
     };
     const up=()=>{
       if(isTouch){
@@ -3874,6 +3852,29 @@ Devuelve SOLO JSON sin markdown:
       }
       let idxVel=vel*80/ITEM_H;
       idxVel=Math.max(-3,Math.min(3,idxVel));
+      // Pre-schedule the full coast vibration pattern now (touchend = user activation).
+      // RAF callbacks may be blocked from calling vibrate; scheduling upfront avoids that.
+      try{
+        if(navigator.vibrate && Math.abs(idxVel)>0.08){
+          let cv=idxVel, ci=lastNi, lr=lastNi, t=0;
+          const clickMs=[];
+          while(Math.abs(cv)>0.01 && t<5000){
+            cv*=0.94; ci+=cv; t+=16.7;
+            const ri=Math.max(0,Math.min(values.length-1,Math.round(ci)));
+            if(ri!==lr){lr=ri; clickMs.push(Math.round(t));}
+          }
+          if(clickMs.length>0){
+            const VIB=22;
+            // Pattern: [0, delayToFirst, VIB, gap, VIB, gap, ...]
+            const pat=[0, clickMs[0]];
+            for(let i=0;i<clickMs.length;i++){
+              pat.push(VIB);
+              if(i<clickMs.length-1) pat.push(Math.max(1, clickMs[i+1]-clickMs[i]-VIB));
+            }
+            navigator.vibrate(pat);
+          }
+        }
+      }catch(_){}
       let curIdx=lastNi;
       const coast=()=>{
         idxVel*=0.94;
@@ -3883,7 +3884,7 @@ Devuelve SOLO JSON sin markdown:
         }
         curIdx+=idxVel;
         const fi=Math.max(0,Math.min(values.length-1,Math.round(curIdx)));
-        if(fi!==lastNi){lastNi=fi; this.setDatePart(part,values[fi]); this._wheelClick();}
+        if(fi!==lastNi){lastNi=fi; this.setDatePart(part,values[fi]);}
         this._coastRaf=requestAnimationFrame(coast);
       };
       this._coastRaf=requestAnimationFrame(coast);
