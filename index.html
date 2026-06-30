@@ -2319,7 +2319,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           <sc-if value="{{ isDate }}" hint-placeholder-val="{{ false }}">
             <div style="text-align:center;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:1px;color:#7CF5A0;">{{ dateBig }}</div>
             <div style="position:relative;margin-top:14px;height:200px;display:flex;gap:8px;">
-              <div style="position:absolute;left:0;right:0;top:80px;height:40px;border-radius:13px;background:var(--card2);pointer-events:none;z-index:1;"></div>
+              <div style="position:absolute;left:0;right:0;top:80px;height:40px;border-radius:13px;background:var(--card2);pointer-events:none;"></div>
               <div style="position:relative;width:64px;height:200px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0%,white 22%,white 78%,transparent 100%);mask-image:linear-gradient(transparent 0%,white 22%,white 78%,transparent 100%);">
                 <div class="wheel-sc wheel-sc-dia" style="height:200px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;">
                   <div style="height:80px;flex-shrink:0;"></div>
@@ -3830,11 +3830,15 @@ Devuelve SOLO JSON sin markdown:
   setDatePart(part,val){ this.setState(s=>{ const d={...(s.answers.nacimiento||this.questions().find(x=>x.id==='nacimiento').default)}; d[part]=val; return {answers:{...s.answers,nacimiento:d}}; }); }
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
   _onWheelScroll(part,values,scrollTop){
+    const idx=Math.max(0,Math.min(values.length-1,Math.round(scrollTop/40)));
+    if(this['_wi_'+part]!==idx){
+      this['_wi_'+part]=idx;
+      try{ if(navigator.vibrate) navigator.vibrate(12); }catch(_){}
+    }
     clearTimeout(this._wheelT);
     this._wheelT=setTimeout(()=>{
-      const idx=Math.max(0,Math.min(values.length-1,Math.round(scrollTop/40)));
       if(values[idx]!==this.dateVal()[part]) this.setDatePart(part,values[idx]);
-    },120);
+    },150);
   }
   // ----- Salud de Apple -----
   openHealth(){ this.setState({healthOpen:true}); }
