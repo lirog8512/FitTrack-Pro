@@ -3823,12 +3823,29 @@ Devuelve SOLO JSON sin markdown:
   dateVal(){ const A=this.state.answers; return A.nacimiento||this.questions().find(x=>x.id==='nacimiento').default; }
   setDatePart(part,val){ this.setState(s=>{ const d={...(s.answers.nacimiento||this.questions().find(x=>x.id==='nacimiento').default)}; d[part]=val; return {answers:{...s.answers,nacimiento:d}}; }); }
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
+  _unlockAudio(){
+    try{
+      if(!this._wACtx) this._wACtx=new(window.AudioContext||window.webkitAudioContext)();
+      if(this._wACtx.state==='suspended') this._wACtx.resume();
+    }catch(_){}
+  }
+  _playClick(){
+    try{
+      const ctx=this._wACtx; if(!ctx) return;
+      const play=()=>{
+        const buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.014),ctx.sampleRate);
+        const d=buf.getChannelData(0);
+        for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length)*0.28;
+        const f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=2000; f.Q.value=1.2;
+        const src=ctx.createBufferSource();
+        src.buffer=buf; src.connect(f); f.connect(ctx.destination); src.start();
+      };
+      if(ctx.state==='suspended') ctx.resume().then(play).catch(()=>{});
+      else play();
+    }catch(_){}
+  }
   _onWheelScroll(part,values,scrollTop){
     const idx=Math.max(0,Math.min(values.length-1,Math.round(scrollTop/40)));
-    if(this['_wi_'+part]!==idx){
-      this['_wi_'+part]=idx;
-      try{ if(navigator.vibrate) navigator.vibrate(12); }catch(_){}
-    }
     clearTimeout(this._wheelT);
     this._wheelT=setTimeout(()=>{
       if(values[idx]!==this.dateVal()[part]) this.setDatePart(part,values[idx]);
@@ -4366,6 +4383,37 @@ document.addEventListener('scroll', function(e){
   if(el.classList.contains('wheel-sc-mes'))  c._onWheelScroll('m',monV,el.scrollTop);
   if(el.classList.contains('wheel-sc-anio')) c._onWheelScroll('y',yrV,el.scrollTop);
 },{capture:true,passive:true});
+
+// Wheel haptic: unlock audio + vibrate/click on touchmove (user gesture context)
+document.addEventListener('touchstart', function(e){
+  var c=window.__vitalComp; if(!c) return;
+  var el=e.target;
+  while(el && el!==document){
+    if(el.classList && el.classList.contains('wheel-sc')){
+      c._unlockAudio();
+      var wheel=el;
+      var lastSnap=Math.round(wheel.scrollTop/40);
+      function onMove(){
+        var snap=Math.round(wheel.scrollTop/40);
+        if(snap!==lastSnap){
+          lastSnap=snap;
+          try{ if(navigator.vibrate) navigator.vibrate(10); }catch(_){}
+          c._playClick();
+        }
+      }
+      function onEnd(){
+        wheel.removeEventListener('touchmove',onMove);
+        wheel.removeEventListener('touchend',onEnd);
+        wheel.removeEventListener('touchcancel',onEnd);
+      }
+      wheel.addEventListener('touchmove',onMove,{passive:true});
+      wheel.addEventListener('touchend',onEnd,{once:true,passive:true});
+      wheel.addEventListener('touchcancel',onEnd,{once:true,passive:true});
+      return;
+    }
+    el=el.parentElement;
+  }
+},{passive:true,capture:true});
 
 // === Crop image pan/zoom ===
 (function(){
