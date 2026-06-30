@@ -3834,17 +3834,17 @@ Devuelve SOLO JSON sin markdown:
     }catch(_){}
   }
   startWheelDrag(part,values,e){
-    // On mobile Chrome, both touchstart (global) and pointerdown (framework) fire.
-    // Ignore the pointerdown duplicate — let only the touchstart call through.
+    // Pointer events synthesized from touch must be ignored — the global touchstart
+    // handler already called us with the real touch event.
     if(e.pointerType==='touch') return;
     e.preventDefault();
     if(this._coastRaf){cancelAnimationFrame(this._coastRaf);this._coastRaf=null;}
-    // Unlock AudioContext during the user gesture (touchstart/pointerdown)
     try{
       if(!this._wACtx) this._wACtx=new(window.AudioContext||window.webkitAudioContext)();
       if(this._wACtx.state==='suspended') this._wACtx.resume();
     }catch(_){}
-    const startY=(e.touches?e.touches[0].clientY:e.clientY);
+    const isTouch=!!e.touches;
+    const startY=(isTouch?e.touches[0].clientY:e.clientY);
     const startIdx=values.indexOf(this.dateVal()[part]);
     const ITEM_H=40;
     let lastNi=startIdx, lastY=startY, lastT=Date.now(), vel=0;
@@ -3857,15 +3857,20 @@ Devuelve SOLO JSON sin markdown:
       if(ni!==lastNi){lastNi=ni; this.setDatePart(part,values[ni]); this._wheelClick();}
     };
     const up=()=>{
-      window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up);
-      window.removeEventListener('touchmove',move); window.removeEventListener('touchend',up); window.removeEventListener('touchcancel',up);
-      // Multiply by 80 (not 16) so slow rolls still get 8-12 items of coast
+      if(isTouch){
+        window.removeEventListener('touchmove',move);
+        window.removeEventListener('touchend',up);
+        window.removeEventListener('touchcancel',up);
+      } else {
+        window.removeEventListener('pointermove',move);
+        window.removeEventListener('pointerup',up);
+      }
       let idxVel=vel*80/ITEM_H;
-      idxVel=Math.max(-2.5,Math.min(2.5,idxVel)); // cap extremes
+      idxVel=Math.max(-3,Math.min(3,idxVel));
       let curIdx=lastNi;
       const coast=()=>{
-        idxVel*=0.95; // gentle friction: slow roll → ~10 items, fast flick → ~40 items
-        if(Math.abs(idxVel)<0.012){
+        idxVel*=0.94;
+        if(Math.abs(idxVel)<0.01){
           const fi=Math.max(0,Math.min(values.length-1,Math.round(curIdx)));
           this.setDatePart(part,values[fi]); this._coastRaf=null; return;
         }
@@ -3876,8 +3881,14 @@ Devuelve SOLO JSON sin markdown:
       };
       this._coastRaf=requestAnimationFrame(coast);
     };
-    window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
-    window.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',up); window.addEventListener('touchcancel',up);
+    if(isTouch){
+      window.addEventListener('touchmove',move,{passive:false});
+      window.addEventListener('touchend',up);
+      window.addEventListener('touchcancel',up);
+    } else {
+      window.addEventListener('pointermove',move);
+      window.addEventListener('pointerup',up);
+    }
   }
   // ----- Salud de Apple -----
   openHealth(){ this.setState({healthOpen:true}); }
