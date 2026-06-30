@@ -3500,7 +3500,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 <script type="text/x-dc" data-dc-script>
 // URL del Cloudflare Worker que analiza fotos de comida (ver worker/README.md).
 // Reemplázala por tu URL real tras desplegar el worker.
-const NUTRI_ANALYZER_URL = 'https://vital-food-analyzer.REPLACE_ME.workers.dev';
+const NUTRI_ANALYZER_URL = 'https://vital-food-analyzer.lirog15.workers.dev';
 
 class Component extends DCLogic {
   state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, replicateOpen:false, replicateDays:[], adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, nutriPhotoError:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true };
