@@ -2919,7 +2919,15 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           </div>
         </sc-if>
 
-        <div style="padding:0 22px;margin-top:22px;font-size:16px;font-weight:800;">Comidas del {{ selMealDayName }}</div>
+        <div style="padding:0 22px;margin-top:22px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:16px;font-weight:800;">Comidas del {{ selMealDayName }}</div>
+          <sc-if value="{{ hasSwaps }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ onOpenReplicate }}" style="display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:20px;border:1px solid var(--bd2);background:var(--surface);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Replicar semana
+            </button>
+          </sc-if>
+        </div>
         <div style="padding:12px 22px 0;display:flex;flex-direction:column;gap:10px;">
           <sc-for list="{{ mealRows }}" as="m" hint-placeholder-count="3">
             <div style="display:flex;align-items:center;gap:13px;padding:15px 16px;border-radius:18px;background:var(--card);border:1px solid var(--bd);">
@@ -3024,6 +3032,31 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
               </button>
             </sc-for>
           </div>
+        </div>
+      </sc-if>
+
+      <!-- replicar comidas del día a otros días de la semana -->
+      <sc-if value="{{ replicateOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ onCloseReplicate }}" style="position:absolute;inset:0;z-index:68;background:var(--scrim);"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;z-index:69;background:var(--sheet);border-top:1px solid var(--bd2);border-radius:30px 30px 0 0;padding:14px 22px 32px;animation:sheetUp .28s cubic-bezier(.2,.8,.2,1);">
+          <div style="width:40px;height:5px;border-radius:3px;background:var(--grabber);margin:0 auto 16px;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:#5BD6E8;text-transform:uppercase;">Replicar comidas</div>
+          <div style="font-size:19px;font-weight:800;margin-top:5px;">{{ selMealDayName }} → otros días</div>
+          <p style="font-size:12.5px;color:var(--c7);margin-top:8px;margin-bottom:18px;">Selecciona los días en los que quieres copiar las comidas y sustituciones de hoy.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:9px;">
+            <sc-for list="{{ replicateDayOpts }}" as="d" hint-placeholder-count="6">
+              <button onClick="{{ d.onToggle }}" style="position:relative;padding:13px 18px;border-radius:13px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;">
+                <sc-if value="{{ d.sel }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;inset:0;border-radius:13px;background:rgba(91,214,232,.14);border:1.5px solid #5BD6E8;"></div>
+                </sc-if>
+                <sc-if value="{{ d.notSel }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute;inset:0;border-radius:13px;background:var(--surface);border:1px solid var(--bd);"></div>
+                </sc-if>
+                <span style="position:relative;color:var(--text);">{{ d.name }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <button onClick="{{ onApplyReplicate }}" disabled="{{ !hasReplicateSel }}" style="width:100%;margin-top:22px;padding:16px;border-radius:14px;border:none;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);color:#07080A;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;opacity:{{ hasReplicateSel ? 1 : .45 }};">Aplicar</button>
         </div>
       </sc-if>
     </sc-if>
@@ -3463,7 +3496,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true };
+  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, replicateOpen:false, replicateDays:[], adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true };
 
   questions(){
     return [
@@ -3681,16 +3714,20 @@ class Component extends DCLogic {
     const order=count===3?['m1','m3','m5']:count===4?['m1','m3','m4','m5']:['m1','m2','m3','m4','m5'];
     return all.filter(m=>order.includes(m.id));
   }
-  resolveMeal(m){
-    const idx=Math.min(this.state.mealSwap[m.id]||0,m.variants.length-1);
+  resolveMeal(m, dayMealSwap={}){
+    const idx=Math.min(dayMealSwap[m.id]||0,m.variants.length-1);
     return {id:m.id,name:m.name,time:m.time,kcal:m.kcal,protein:m.protein,carbs:m.carbs,fat:m.fat,foods:m.variants[idx],variantIdx:idx,variants:m.variants};
   }
   openMealSwap(id){ this.setState({mealSwapOpen:id}); }
   closeMealSwap(){ this.setState({mealSwapOpen:null}); }
-  swapMeal(id,idx){ this.setState(s=>({mealSwap:{...s.mealSwap,[id]:idx},mealSwapOpen:null,foodSwap:{...s.foodSwap,[id]:{}}})); }
+  swapMeal(id,idx){ this.setState(s=>{const d=s.selMealDay,ms=s.mealSwap||{},fs=s.foodSwap||{};return{mealSwap:{...ms,[d]:{...(ms[d]||{}),[id]:idx}},mealSwapOpen:null,foodSwap:{...fs,[d]:{...(fs[d]||{}),[id]:{}}}};});}
   openFoodSwap(mealId,itemIdx,food){ this.setState({foodSwapOpen:{mealId,itemIdx,food}}); }
   closeFoodSwap(){ this.setState({foodSwapOpen:null}); }
-  swapFood(mealId,itemIdx,alt){ this.setState(s=>({foodSwap:{...s.foodSwap,[mealId]:{...(s.foodSwap[mealId]||{}),[itemIdx]:alt}},foodSwapOpen:null})); }
+  swapFood(mealId,itemIdx,alt){ this.setState(s=>{const d=s.selMealDay,fs=s.foodSwap||{};return{foodSwap:{...fs,[d]:{...(fs[d]||{}),[mealId]:{...((fs[d]||{})[mealId]||{}),[itemIdx]:alt}}},foodSwapOpen:null};});}
+  openReplicate(){ this.setState({replicateOpen:true,replicateDays:[]}); }
+  closeReplicate(){ this.setState({replicateOpen:false,replicateDays:[]}); }
+  toggleReplicateDay(d){ this.setState(s=>{const days=s.replicateDays||[];return{replicateDays:days.includes(d)?days.filter(x=>x!==d):[...days,d]};});}
+  applyReplicate(){ this.setState(s=>{const d=s.selMealDay,srcFS=(s.foodSwap||{})[d]||{},srcMS=(s.mealSwap||{})[d]||{},days=s.replicateDays||[],nFS={...(s.foodSwap||{})},nMS={...(s.mealSwap||{})};days.forEach(td=>{nFS[td]=JSON.parse(JSON.stringify(srcFS));nMS[td]=JSON.parse(JSON.stringify(srcMS));});return{foodSwap:nFS,mealSwap:nMS,replicateOpen:false,replicateDays:[]};});}
   selectMealDay(i){ this.setState({selMealDay:i}); }
   toggleMeal(id){ const d=this.state.selMealDay; this.setState(s=>({mealsDone:{...s.mealsDone,[d]:{...(s.mealsDone[d]||{}),[id]:!(s.mealsDone[d]||{})[id]}}})); }
   openPhoto(){ this.setState({photoOpen:true,nutriPhotoResult:null}); }
@@ -3782,7 +3819,7 @@ Devuelve SOLO JSON sin markdown:
   openAdjust(){ this.setState({adjustOpen:true}); }
   closeAdjust(){ this.setState({adjustOpen:false}); }
   setAnswer(key,val){ this.setState(s=>({answers:{...s.answers,[key]:val}})); }
-  regenerate(){ this.setState({adjustOpen:false,logs:{},exSwap:{},mealSwap:{},mealsDone:{},extra:{kcal:0,protein:0,carbs:0,fat:0},screen:'analysis'}); }
+  regenerate(){ this.setState({adjustOpen:false,logs:{},exSwap:{},mealSwap:{},mealsDone:{},extra:{kcal:0,protein:0,carbs:0,fat:0},foodSwap:{},replicateOpen:false,replicateDays:[],screen:'analysis'}); }
   reonboard(){ this.setState({adjustOpen:false,screen:'onboarding',qIndex:0}); }
   setStepsGoal(v){ this.setState({stepsGoal:Math.max(2000,Math.min(30000,v))}); }
   stepGoal(d){ this.setState(s=>({stepsGoal:Math.max(2000,Math.min(30000,s.stepsGoal+d))})); }
@@ -3851,7 +3888,7 @@ Devuelve SOLO JSON sin markdown:
   _parseFoods(t){ return (t||'').split(',').map(x=>x.trim()).filter(Boolean); }
   _dayForDow(dow){ return (this.state.customWorkout||[]).find(d=>d.days&&d.days.includes(dow)); }
   _firstTrainingDow(){ const w=this.state.customWorkout||[]; for(let k=0;k<7;k++){ if(w.find(d=>d.days&&d.days.includes(k)))return k; } return 0; }
-  saveBuilder(){ this.setState(s=>({screen:'home',logs:{},exSwap:{},mealSwap:{},mealsDone:{},selDay:this._firstTrainingDow()})); }
+  saveBuilder(){ this.setState(s=>({screen:'home',logs:{},exSwap:{},mealSwap:{},mealsDone:{},foodSwap:{},replicateOpen:false,replicateDays:[],selDay:this._firstTrainingDow()})); }
   // ----- importar plan desde PDF -----
   pickPdf(){ if(this._pdfInput)this._pdfInput.click(); }
   async _extractPdfText(file){
@@ -4054,13 +4091,14 @@ Devuelve SOLO JSON sin markdown:
 
     // ===== nutrición =====
     const smd=this.state.selMealDay;
+    const dayMealSwap=(this.state.mealSwap||{})[smd]||{};
     const nutriWeekDays=dayNames.map((nm,k)=>{
       const seld=k===smd;
       return {label:nm[0], onClick:()=>this.selectMealDay(k),
         bg:seld?'var(--selbg)':'var(--card)', border:seld?'rgba(91,214,232,.4)':'var(--bd1)',
         fg:seld?'var(--text)':'var(--muted)', dot:'#5BD6E8'};
     });
-    const meals=this.getMeals().map(m=>this.resolveMeal(m));
+    const meals=this.getMeals().map(m=>this.resolveMeal(m,dayMealSwap));
     const _baseKcal=meals.reduce((a,m)=>a+m.kcal,0)||1;
     const _ks=p.cal/_baseKcal;
     const allMealsDone=this.state.mealsDone||{};
@@ -4193,7 +4231,7 @@ Devuelve SOLO JSON sin markdown:
       const db=FM[n]; if(!db||!g) return {kcal:0,p:0,c:0,f:0};
       return {kcal:g*db.kcal/100, p:g*db.p/100, c:g*db.c/100, f:g*db.f/100};
     };
-    const foodSwapState=this.state.foodSwap||{};
+    const foodSwapState=(this.state.foodSwap||{})[smd]||{};
     const _fi=(foods,mealId)=>{const overrides=mealId?(foodSwapState[mealId]||{}):{};const rf=foods.map((f,i)=>overrides[i]!==undefined?overrides[i]:f);const s=[0,1,2,3].map(i=>{const b=_fmtFS(rf[i]);return(b.show&&mealId)?{...b,onTap:()=>this.openFoodSwap(mealId,i,rf[i])}:b;});return{fi0:s[0],fi1:s[1],fi2:s[2],fi3:s[3],foodsText:rf.filter(Boolean).map(f=>typeof f==='string'?f:f.n).join(' · ')};};
     // Aplica escala personalizada + delta nutricional de sustituciones individuales
     const adjMeals=meals.map(m=>{
@@ -4219,6 +4257,12 @@ Devuelve SOLO JSON sin markdown:
       const alts=FOOD_ALTS[foodSwapFoodName]||[];
       foodSwapAlts=[{..._fmtFS(f),isCurrent:true,notCurrent:false,onSelect:()=>this.closeFoodSwap()},...alts.map(a=>({..._fmtFS(a),isCurrent:false,notCurrent:true,onSelect:()=>this.swapFood(fso.mealId,fso.itemIdx,a)}))];
     }
+    // replicar semana
+    const replicateOpen=this.state.replicateOpen||false;
+    const replicateDays=this.state.replicateDays||[];
+    const hasSwaps=Object.keys(foodSwapState).length>0||Object.keys(dayMealSwap).length>0;
+    const replicateDayOpts=[0,1,2,3,4,5,6].filter(d=>d!==smd).map(d=>({idx:d,name:dayNames[d],sel:replicateDays.includes(d),notSel:!replicateDays.includes(d),onToggle:()=>this.toggleReplicateDay(d)}));
+    const hasReplicateSel=replicateDays.length>0;
     const eaten=adjMeals.filter(m=>md[m.id]);
     const todayDow=new Date().getDay()===0?6:(new Date().getDay()-1);
     const isToday=smd===todayDow;
@@ -4417,6 +4461,8 @@ Devuelve SOLO JSON sin markdown:
       onCloseMealSwap:()=>this.closeMealSwap(),
       foodSwapSheetOpen, foodSwapFoodName, foodSwapAlts,
       onCloseFoodSwap:()=>this.closeFoodSwap(),
+      replicateOpen, replicateDayOpts, hasReplicateSel, hasSwaps,
+      onOpenReplicate:()=>this.openReplicate(), onCloseReplicate:()=>this.closeReplicate(), onApplyReplicate:()=>this.applyReplicate(),
       // progreso
       isProgreso:screen==='progreso',
       weightBars, deltaW, currentW:toW(cw), startW:toW(sw), weightUnit:wUnit,
