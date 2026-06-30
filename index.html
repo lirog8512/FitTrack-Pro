@@ -4253,9 +4253,19 @@ Devuelve SOLO JSON sin markdown:
     let foodSwapSheetOpen=false,foodSwapFoodName='',foodSwapAlts=[];
     if(fso){
       foodSwapSheetOpen=true;
-      const f=fso.food; foodSwapFoodName=typeof f==='string'?f:f.n;
-      const alts=FOOD_ALTS[foodSwapFoodName]||[];
-      foodSwapAlts=[{..._fmtFS(f),isCurrent:true,notCurrent:false,onSelect:()=>this.closeFoodSwap()},...alts.map(a=>({..._fmtFS(a),isCurrent:false,notCurrent:true,onSelect:()=>this.swapFood(fso.mealId,fso.itemIdx,a)}))];
+      const f=fso.food; const curName=typeof f==='string'?f:f.n;
+      foodSwapFoodName=curName;
+      // las alternativas siempre se basan en el alimento ORIGINAL de la plantilla,
+      // no en el sustituto activo, para poder volver atrás y ver siempre opciones
+      const mObj=meals.find(x=>x.id===fso.mealId);
+      const origFood=(mObj&&mObj.foods[fso.itemIdx]!==undefined)?mObj.foods[fso.itemIdx]:f;
+      const origName=typeof origFood==='string'?origFood:origFood.n;
+      const alts=(FOOD_ALTS[origName]||[]).filter(a=>a.n!==origName);
+      foodSwapAlts=[origFood,...alts].map(o=>{
+        const oName=typeof o==='string'?o:o.n;
+        const isCur=oName===curName;
+        return {..._fmtFS(o),isCurrent:isCur,notCurrent:!isCur,onSelect:isCur?()=>this.closeFoodSwap():()=>this.swapFood(fso.mealId,fso.itemIdx,o)};
+      });
     }
     // replicar semana
     const replicateOpen=this.state.replicateOpen||false;

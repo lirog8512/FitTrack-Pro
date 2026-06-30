@@ -1,4 +1,4 @@
-const CACHE = 'vital-v21';
+const CACHE = 'vital-v22';
 const ASSETS = [
   './index.html',
   './manifest.json',
