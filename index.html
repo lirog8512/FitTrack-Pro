@@ -3823,27 +3823,6 @@ Devuelve SOLO JSON sin markdown:
   dateVal(){ const A=this.state.answers; return A.nacimiento||this.questions().find(x=>x.id==='nacimiento').default; }
   setDatePart(part,val){ this.setState(s=>{ const d={...(s.answers.nacimiento||this.questions().find(x=>x.id==='nacimiento').default)}; d[part]=val; return {answers:{...s.answers,nacimiento:d}}; }); }
   bumpDate(part,values,d){ const cur=this.dateVal()[part]; const i=values.indexOf(cur); const ni=Math.max(0,Math.min(values.length-1,i+d)); this.setDatePart(part,values[ni]); }
-  _unlockAudio(){
-    try{
-      if(!this._wACtx) this._wACtx=new(window.AudioContext||window.webkitAudioContext)();
-      if(this._wACtx.state==='suspended') this._wACtx.resume();
-    }catch(_){}
-  }
-  _playClick(){
-    try{
-      const ctx=this._wACtx; if(!ctx) return;
-      const play=()=>{
-        const buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.014),ctx.sampleRate);
-        const d=buf.getChannelData(0);
-        for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length)*0.28;
-        const f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=2000; f.Q.value=1.2;
-        const src=ctx.createBufferSource();
-        src.buffer=buf; src.connect(f); f.connect(ctx.destination); src.start();
-      };
-      if(ctx.state==='suspended') ctx.resume().then(play).catch(()=>{});
-      else play();
-    }catch(_){}
-  }
   _onWheelScroll(part,values,scrollTop){
     const idx=Math.max(0,Math.min(values.length-1,Math.round(scrollTop/40)));
     clearTimeout(this._wheelT);
@@ -4384,25 +4363,22 @@ document.addEventListener('scroll', function(e){
   if(el.classList.contains('wheel-sc-anio')) c._onWheelScroll('y',yrV,el.scrollTop);
 },{capture:true,passive:true});
 
-// Wheel haptic: use finger position delta (not scrollTop) so detection is instant
+// Wheel haptic: detect item change via finger delta, vibrate from touchmove
 document.addEventListener('touchstart', function(e){
   var c=window.__vitalComp; if(!c) return;
   var el=e.target;
   while(el && el!==document){
     if(el.classList && el.classList.contains('wheel-sc')){
-      c._unlockAudio();
       var wheel=el;
       var startY=e.touches[0].clientY;
       var startScroll=wheel.scrollTop;
       var lastSnap=Math.round(startScroll/40);
       function onMove(ev){
         var dy=startY-ev.touches[0].clientY;
-        var estScroll=startScroll+dy;
-        var snap=Math.round(estScroll/40);
+        var snap=Math.round((startScroll+dy)/40);
         if(snap!==lastSnap){
           lastSnap=snap;
-          try{ if(navigator.vibrate) navigator.vibrate(15); }catch(_){}
-          c._playClick();
+          try{ navigator.vibrate(50); }catch(_){}
         }
       }
       function onEnd(){
