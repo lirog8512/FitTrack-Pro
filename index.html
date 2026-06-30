@@ -4126,9 +4126,78 @@ Devuelve SOLO JSON sin markdown:
       'Nueces':[{n:'Almendras',g:25},{n:'Anacardos',g:25},{n:'Avellanas',g:22},{n:'Semillas de girasol',g:30},{n:'Pistachos',g:30}],
       'Aguacate':[{n:'Hummus',g:90},{n:'Tahini',g:22},{n:'Nueces',g:30},{n:'Mantequilla de cacahuete',g:22},{n:'Aceite de oliva virgen',g:15}],
     };
+    // Macros por 100g (kcal, p=proteína, c=carbos, f=grasa)
+    const FM={
+      'Avena':{kcal:372,p:13,c:58,f:7},'Copos de centeno':{kcal:338,p:11,c:65,f:2},'Quinoa':{kcal:368,p:14,c:64,f:6},
+      'Pan integral':{kcal:240,p:9,c:43,f:3},'Pan de centeno':{kcal:259,p:9,c:48,f:3},'Pan de espelta':{kcal:250,p:10,c:45,f:3},
+      'Tortitas de arroz':{kcal:385,p:7,c:82,f:3},'Arroz integral':{kcal:360,p:8,c:76,f:3},'Arroz basmati':{kcal:356,p:7,c:78,f:1},
+      'Arroz blanco':{kcal:365,p:7,c:80,f:1},'Granola':{kcal:450,p:9,c:65,f:15},'Muesli sin azúcar':{kcal:360,p:10,c:60,f:7},
+      'Pasta integral':{kcal:350,p:13,c:65,f:3},'Cous cous':{kcal:357,p:13,c:73,f:2},'Bulgur':{kcal:342,p:12,c:69,f:1},
+      'Copos de espelta':{kcal:340,p:12,c:66,f:3},'Palomitas sin aceite':{kcal:375,p:11,c:74,f:4},'Galletas de avena':{kcal:420,p:7,c:66,f:14},
+      'Patata':{kcal:77,p:2,c:17,f:0},'Boniato':{kcal:86,p:2,c:20,f:0},'Patata dulce':{kcal:86,p:2,c:20,f:0},
+      'Patata cocida':{kcal:77,p:2,c:17,f:0},'Boniato cocido':{kcal:86,p:2,c:20,f:0},'Calabaza asada':{kcal:26,p:1,c:5,f:0},'Remolacha cocida':{kcal:44,p:2,c:10,f:0},
+      'Pechuga de pollo':{kcal:110,p:23,c:0,f:2},'Pechuga de pavo':{kcal:107,p:22,c:0,f:2},'Ternera magra':{kcal:150,p:21,c:0,f:7},
+      'Cerdo magro':{kcal:145,p:22,c:0,f:6},'Pavo':{kcal:107,p:22,c:0,f:2},'Salmón':{kcal:208,p:20,c:0,f:14},
+      'Merluza':{kcal:82,p:18,c:0,f:1},'Lubina':{kcal:97,p:18,c:0,f:2},'Dorada':{kcal:96,p:18,c:0,f:2},
+      'Bacalao fresco':{kcal:82,p:18,c:0,f:1},'Lenguado':{kcal:91,p:17,c:0,f:2},'Rodaballo':{kcal:91,p:17,c:0,f:2},
+      'Atún fresco':{kcal:144,p:24,c:0,f:5},'Atún al natural':{kcal:116,p:26,c:0,f:1},'Caballa':{kcal:205,p:19,c:0,f:14},
+      'Trucha':{kcal:149,p:21,c:0,f:7},'Sardinas al natural':{kcal:135,p:22,c:0,f:5},'Langostinos cocidos':{kcal:90,p:19,c:1,f:1},
+      'Jamón serrano sin grasa':{kcal:145,p:30,c:0,f:3},
+      'Huevo':{kcal:155,p:13,c:1,f:11},'Huevos':{kcal:155,p:13,c:1,f:11},'Claras de huevo':{kcal:52,p:11,c:1,f:0},'Tortilla de claras':{kcal:52,p:11,c:1,f:0},
+      'Yogur griego':{kcal:97,p:9,c:4,f:5},'Yogur proteico':{kcal:72,p:10,c:5,f:1},'Yogur natural':{kcal:61,p:4,c:5,f:3},
+      'Yogur griego 0%':{kcal:57,p:10,c:4,f:0},'Requesón':{kcal:74,p:11,c:4,f:2},'Skyr':{kcal:63,p:11,c:4,f:0},
+      'Queso fresco 0%':{kcal:45,p:7,c:3,f:0},'Kéfir':{kcal:63,p:4,c:5,f:3},'Kéfir desnatado':{kcal:36,p:4,c:4,f:0},
+      'Proteína en polvo':{kcal:380,p:75,c:8,f:5},
+      'Lentejas':{kcal:353,p:26,c:60,f:2},'Garbanzos':{kcal:364,p:19,c:61,f:6},'Alubias blancas':{kcal:337,p:22,c:60,f:2},
+      'Judías negras':{kcal:341,p:22,c:63,f:2},'Edamame':{kcal:122,p:11,c:10,f:5},'Guisantes':{kcal:81,p:5,c:14,f:0},
+      'Habas':{kcal:88,p:8,c:15,f:1},'Hummus':{kcal:177,p:8,c:15,f:11},'Guacamole':{kcal:150,p:2,c:8,f:13},
+      'Paté de alcachofas':{kcal:90,p:3,c:8,f:5},'Tahini con limón':{kcal:595,p:17,c:21,f:53},'Crema de garbanzo':{kcal:150,p:7,c:14,f:8},
+      'Tofu firme':{kcal:76,p:9,c:2,f:4},'Tempeh':{kcal:193,p:19,c:9,f:11},'Seitán':{kcal:159,p:25,c:14,f:2},
+      'Plátano':{kcal:89,p:1,c:23,f:0},'Manzana':{kcal:52,p:0,c:14,f:0},'Pera':{kcal:57,p:0,c:15,f:0},
+      'Naranja':{kcal:47,p:1,c:12,f:0},'Mandarina':{kcal:53,p:1,c:13,f:0},'Arándanos':{kcal:57,p:1,c:14,f:0},
+      'Fresas':{kcal:32,p:1,c:8,f:0},'Frambuesas':{kcal:52,p:1,c:12,f:1},'Moras':{kcal:43,p:1,c:10,f:0},
+      'Cerezas':{kcal:63,p:1,c:16,f:0},'Kiwi':{kcal:61,p:1,c:15,f:1},'Melocotón':{kcal:39,p:1,c:10,f:0},
+      'Nectarina':{kcal:44,p:1,c:11,f:0},'Uvas':{kcal:69,p:1,c:18,f:0},'Mango':{kcal:60,p:1,c:15,f:0},
+      'Miel':{kcal:304,p:0,c:82,f:0},'Sirope de agave':{kcal:310,p:0,c:76,f:0},'Dátiles triturados':{kcal:282,p:2,c:75,f:0},
+      'Compota sin azúcar':{kcal:60,p:0,c:15,f:0},'Mermelada sin azúcar':{kcal:100,p:0,c:25,f:0},
+      'Brócoli':{kcal:34,p:3,c:7,f:0},'Coliflor':{kcal:25,p:2,c:5,f:0},'Judías verdes':{kcal:31,p:2,c:7,f:0},
+      'Espárragos':{kcal:20,p:2,c:4,f:0},'Coles de Bruselas':{kcal:43,p:3,c:9,f:0},'Calabacín':{kcal:17,p:1,c:3,f:0},
+      'Espinacas':{kcal:23,p:3,c:4,f:0},'Rúcula':{kcal:25,p:3,c:4,f:0},'Canónigos':{kcal:21,p:2,c:4,f:0},
+      'Acelgas':{kcal:19,p:2,c:4,f:0},'Lechuga romana':{kcal:17,p:1,c:3,f:0},'Endivias':{kcal:17,p:1,c:4,f:0},
+      'Ensalada':{kcal:15,p:1,c:3,f:0},'Zanahoria':{kcal:41,p:1,c:10,f:0},'Pepino':{kcal:16,p:1,c:4,f:0},
+      'Pimiento':{kcal:31,p:1,c:7,f:0},'Apio':{kcal:16,p:1,c:3,f:0},'Brócoli crudo':{kcal:34,p:3,c:7,f:0},
+      'Verduras':{kcal:30,p:2,c:6,f:0},'Verduras asadas':{kcal:40,p:2,c:7,f:1},'Pimiento+cebolla':{kcal:35,p:1,c:8,f:0},
+      'Pimiento+calabacín':{kcal:24,p:1,c:5,f:0},'Brócoli al vapor':{kcal:34,p:3,c:7,f:0},'Champiñones':{kcal:22,p:3,c:3,f:0},
+      'Crudités':{kcal:25,p:1,c:6,f:0},'Alcachofas':{kcal:47,p:3,c:11,f:0},'Pencas de apio':{kcal:16,p:1,c:3,f:0},
+      'Almendras':{kcal:576,p:21,c:22,f:49},'Nueces':{kcal:654,p:15,c:14,f:65},'Anacardos':{kcal:553,p:18,c:30,f:44},
+      'Pistachos':{kcal:562,p:20,c:28,f:45},'Semillas de calabaza':{kcal:559,p:30,c:11,f:49},
+      'Semillas de girasol':{kcal:584,p:21,c:20,f:51},'Avellanas':{kcal:628,p:15,c:17,f:61},
+      'Mantequilla de almendra':{kcal:614,p:21,c:20,f:56},'Mantequilla de cacahuete':{kcal:588,p:25,c:20,f:50},
+      'Aguacate':{kcal:160,p:2,c:9,f:15},'Aceite de oliva virgen':{kcal:884,p:0,c:0,f:100},'Tahini':{kcal:595,p:17,c:21,f:53},
+      'Café':{kcal:2,p:0,c:0,f:0},'Café con leche':{kcal:35,p:2,c:3,f:2},'Té verde':{kcal:1,p:0,c:0,f:0},
+      'Infusión':{kcal:1,p:0,c:0,f:0},'Infusión herbal':{kcal:1,p:0,c:0,f:0},'Achicoria':{kcal:5,p:0,c:1,f:0},
+      'Cacao puro sin azúcar':{kcal:20,p:1,c:4,f:1},'Agua con limón':{kcal:4,p:0,c:1,f:0},
+      'Té con leche':{kcal:30,p:2,c:3,f:1},'Bebida de avena':{kcal:45,p:1,c:8,f:2},'Leche de almendra':{kcal:15,p:1,c:2,f:1},
+      'Achicoria con leche':{kcal:35,p:2,c:4,f:1},'Té negro':{kcal:1,p:0,c:0,f:0},'Rooibos':{kcal:1,p:0,c:0,f:0},
+    };
+    // Calcula macros de un food object usando la BD (usa gramos crudos si aplica)
+    const _fmn=food=>{
+      if(!food) return {kcal:0,p:0,c:0,f:0};
+      const n=typeof food==='string'?food:food.n;
+      const g=typeof food==='string'?0:(food.r||food.g||0);
+      const db=FM[n]; if(!db||!g) return {kcal:0,p:0,c:0,f:0};
+      return {kcal:g*db.kcal/100, p:g*db.p/100, c:g*db.c/100, f:g*db.f/100};
+    };
     const foodSwapState=this.state.foodSwap||{};
     const _fi=(foods,mealId)=>{const overrides=mealId?(foodSwapState[mealId]||{}):{};const rf=foods.map((f,i)=>overrides[i]!==undefined?overrides[i]:f);const s=[0,1,2,3].map(i=>{const b=_fmtFS(rf[i]);return(b.show&&mealId)?{...b,onTap:()=>this.openFoodSwap(mealId,i,rf[i])}:b;});return{fi0:s[0],fi1:s[1],fi2:s[2],fi3:s[3],foodsText:rf.filter(Boolean).map(f=>typeof f==='string'?f:f.n).join(' · ')};};
-    const mealRows=meals.map(m=>({name:m.name,time:m.time,kcal:Math.round(m.kcal*_ks),..._fi(m.foods,m.id),macro:Math.round(m.protein*_ks)+'P · '+Math.round(m.carbs*_ks)+'C · '+Math.round(m.fat*_ks)+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
+    // Aplica escala personalizada + delta nutricional de sustituciones individuales
+    const adjMeals=meals.map(m=>{
+      const overrides=foodSwapState[m.id]||{};
+      let dK=0,dP=0,dC=0,dF=0;
+      Object.entries(overrides).forEach(([i,nf])=>{const om=_fmn(m.foods[+i]),nm=_fmn(nf);dK+=nm.kcal-om.kcal;dP+=nm.p-om.p;dC+=nm.c-om.c;dF+=nm.f-om.f;});
+      return {...m,kcal:Math.max(0,Math.round(m.kcal*_ks+dK)),protein:Math.max(0,Math.round(m.protein*_ks+dP)),carbs:Math.max(0,Math.round(m.carbs*_ks+dC)),fat:Math.max(0,Math.round(m.fat*_ks+dF))};
+    });
+    const mealRows=adjMeals.map(m=>({name:m.name,time:m.time,kcal:m.kcal,..._fi(m.foods,m.id),macro:m.protein+'P · '+m.carbs+'C · '+m.fat+'G',done:!!md[m.id],notDone:!md[m.id],toggle:()=>this.toggleMeal(m.id),onSwap:()=>this.openMealSwap(m.id)}));
     // sustitución de comida completa
     const mealSwapMeal=meals.find(m=>m.id===this.state.mealSwapOpen);
     let mealSwapVariants=[],mealSwapName='',mealSwapKcal='';
@@ -4145,13 +4214,13 @@ Devuelve SOLO JSON sin markdown:
       const alts=FOOD_ALTS[foodSwapFoodName]||[];
       foodSwapAlts=[{..._fmtFS(f),isCurrent:true,notCurrent:false,onSelect:()=>this.closeFoodSwap()},...alts.map(a=>({..._fmtFS(a),isCurrent:false,notCurrent:true,onSelect:()=>this.swapFood(fso.mealId,fso.itemIdx,a)}))];
     }
-    const eaten=meals.filter(m=>md[m.id]);
+    const eaten=adjMeals.filter(m=>md[m.id]);
     const todayDow=new Date().getDay()===0?6:(new Date().getDay()-1);
     const isToday=smd===todayDow;
-    const nKcal=eaten.reduce((a,m)=>a+Math.round(m.kcal*_ks),0)+(isToday?extra.kcal:0);
-    const nP=eaten.reduce((a,m)=>a+Math.round(m.protein*_ks),0)+(isToday?extra.protein:0);
-    const nC=eaten.reduce((a,m)=>a+Math.round(m.carbs*_ks),0)+(isToday?extra.carbs:0);
-    const nF=eaten.reduce((a,m)=>a+Math.round(m.fat*_ks),0)+(isToday?extra.fat:0);
+    const nKcal=eaten.reduce((a,m)=>a+m.kcal,0)+(isToday?extra.kcal:0);
+    const nP=eaten.reduce((a,m)=>a+m.protein,0)+(isToday?extra.protein:0);
+    const nC=eaten.reduce((a,m)=>a+m.carbs,0)+(isToday?extra.carbs:0);
+    const nF=eaten.reduce((a,m)=>a+m.fat,0)+(isToday?extra.fat:0);
     const npct=(v,t)=>Math.min(100,Math.round(v/(t||1)*100))+'%';
 
     // ===== progreso =====
