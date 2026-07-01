@@ -3810,17 +3810,18 @@ class Component extends DCLogic {
     const p=this.computePlan();
     const wlog=this.state.weightLog||[{label:'Hoy',kg:p.kg}];
     const startKg=wlog[0].kg,curKg=wlog[wlog.length-1].kg,delta=curKg-startKg;
-    const goalMap={fat_loss:'perder grasa',muscle:'ganar músculo',recomp:'recomposición',maintain:'mantenimiento',performance:'rendimiento'};
+    const toB64=async(blobUrl)=>{
+      try{
+        const r=await fetch(blobUrl);const blob=await r.blob();
+        return await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const m=/^data:([^;]+);base64,(.*)$/.exec(fr.result);res(m?{data:m[2],mediaType:m[1]}:null);};fr.onerror=rej;fr.readAsDataURL(blob);});
+      }catch{return null;}
+    };
+    const idxs=photos.length===1?[0]:photos.length===2?[0,1]:[0,Math.floor((photos.length-1)/2),photos.length-1];
+    const photoB64=(await Promise.all(idxs.map(i=>toB64(photos[i].url)))).filter(Boolean);
     try{
-      if(!(window.claude&&window.claude.complete))throw new Error('no AI');
-      const prompt=`Eres un coach de fitness experto. El usuario lleva ${photos.length} semana(s) registrando fotos corporales. Datos:
-- Objetivo: ${goalMap[p.goal]||p.goal}
-- Peso inicio: ${startKg}kg, Peso actual: ${curKg}kg (${delta>=0?'+':''}${delta.toFixed(1)}kg)
-- Calorías objetivo: ${p.cal} kcal/día, Proteína: ${p.proteinG}g/día
-Devuelve SOLO JSON sin markdown:
-{"titulo":"Título corto (4-6 palabras)","hallazgos":["hallazgo 1","hallazgo 2","hallazgo 3"],"ajustes":["ajuste 1","ajuste 2","ajuste 3"],"resumen":"1-2 frases motivadoras"}`;
-      const raw=await window.claude.complete(prompt);
-      const data=JSON.parse(raw.trim().replace(/^```json\n?/,'').replace(/\n?```$/,''));
+      const resp=await fetch(NUTRI_ANALYZER_URL+'/body',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({goal:p.goal,stats:{startKg,curKg,delta,cal:p.cal,proteinG:p.proteinG,weeks:photos.length},photos:photoB64})});
+      const data=await resp.json().catch(()=>({}));
+      if(!resp.ok||data.error) throw new Error(data.error||'failed');
       this.setState({bodyAnalyzing:false,bodyAnalysisResult:data});
     }catch(err){
       this.setState({bodyAnalyzing:false,bodyAnalysisResult:{
