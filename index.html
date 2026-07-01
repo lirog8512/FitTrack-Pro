@@ -2613,6 +2613,15 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
               <div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted2);margin-bottom:5px;"><span>Grasas</span><span style="font-family:'JetBrains Mono',monospace;color:var(--text);">{{ fatDone }}/{{ fatG }}g</span></div><div style="height:6px;border-radius:3px;background:var(--track);overflow:hidden;"><div style="height:100%;width:{{ fatDonePct }};background:#EDEB6A;border-radius:3px;"></div></div></div>
             </div>
           </div>
+          <sc-if value="{{ hasWorkoutCals }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--bd1);display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EDEB6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c0 0-7 7-7 12a7 7 0 0 0 14 0c0-5-7-12-7-12Z"/></svg>
+                <span style="font-size:11.5px;color:var(--muted2);">Quemadas en entreno</span>
+              </div>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#EDEB6A;">{{ workoutCalsBurnedDisplay }} kcal</span>
+            </div>
+          </sc-if>
         </div>
 
         <div style="padding:0 22px;margin-top:22px;display:flex;align-items:center;justify-content:space-between;">
@@ -2706,6 +2715,29 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           </div>
         </sc-if>
         <div style="height:10px;"></div>
+
+        <!-- resumen de entrenamiento -->
+        <sc-if value="{{ workoutSummaryOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;z-index:68;background:var(--scrim);"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;z-index:69;background:var(--sheet);border-top:1px solid rgba(124,245,160,.25);border-radius:30px 30px 0 0;padding:28px 22px 42px;animation:sheetUp .28s cubic-bezier(.2,.8,.2,1);">
+            <div style="width:40px;height:5px;border-radius:3px;background:var(--grabber);margin:0 auto 20px;"></div>
+            <div style="text-align:center;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:#7CF5A0;text-transform:uppercase;">Entrenamiento completado</div>
+              <div style="font-size:26px;font-weight:800;margin-top:10px;letter-spacing:-.3px;">¡Gran trabajo!</div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:22px;">
+              <div style="flex:1;padding:18px;border-radius:18px;background:rgba(124,245,160,.07);border:1px solid rgba(124,245,160,.2);text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600;color:#7CF5A0;">{{ summaryTime }}</div>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:7px;letter-spacing:1px;text-transform:uppercase;">Duración</div>
+              </div>
+              <div style="flex:1;padding:18px;border-radius:18px;background:rgba(237,235,106,.07);border:1px solid rgba(237,235,106,.2);text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600;color:#EDEB6A;">{{ summaryKcal }}</div>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:7px;letter-spacing:1px;text-transform:uppercase;">Kcal quemadas</div>
+              </div>
+            </div>
+            <button onClick="{{ closeSummary }}" style="width:100%;margin-top:20px;padding:15px;border-radius:14px;border:none;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);color:#07080A;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;">Perfecto, ¡gracias!</button>
+          </div>
+        </sc-if>
       </div>
     </sc-if>
 
@@ -2763,12 +2795,18 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11"/></svg>
             <span style="font-size:12px;color:var(--c7);">{{ exEquip }}</span>
           </div>
+          <sc-if value="{{ workoutTimerActive }}" hint-placeholder-val="{{ false }}">
+            <div style="display:inline-flex;align-items:center;gap:6px;margin-top:11px;margin-left:8px;padding:6px 12px;border-radius:20px;background:rgba(124,245,160,.08);border:1px solid rgba(124,245,160,.3);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#7CF5A0;">{{ workoutTimerMMSS }}</span>
+            </div>
+          </sc-if>
         </div>
 
         <div style="padding:0 22px;margin-top:18px;">
           <div style="display:flex;align-items:center;gap:8px;padding:0 4px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--faint);text-transform:uppercase;">
             <div style="width:24px;text-align:center;">Set</div>
-            <div style="flex:1;text-align:center;">Peso</div>
+            <div style="flex:1;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px;">Peso<button onClick="{{ toggleExWeightUnit }}" style="padding:2px 7px;border-radius:6px;border:1px solid var(--bd3);background:var(--elev);color:var(--c7);font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;text-transform:lowercase;letter-spacing:0;">{{ exWeightUnit }}</button></div>
             <div style="flex:1;text-align:center;">Reps</div>
             <div style="width:40px;text-align:center;">Hecho</div>
           </div>
@@ -3503,7 +3541,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 const NUTRI_ANALYZER_URL = 'https://vital-food-analyzer.lirog15.workers.dev';
 
 class Component extends DCLogic {
-  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, replicateOpen:false, replicateDays:[], adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, nutriPhotoError:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true };
+  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, replicateOpen:false, replicateDays:[], adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, nutriPhotoError:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true, workoutStart:null, workoutElapsed:0, workoutCalsBurned:0, workoutSummary:null };
 
   questions(){
     return [
@@ -3671,12 +3709,30 @@ class Component extends DCLogic {
     const cur=this.getSets(ex)[idx];
     const nd=!cur.done;
     this.mutate(ex,idx,{done:nd});
-    if(nd) this.startRest(ex.rest);
+    if(nd){
+      this.startRest(ex.rest);
+      if(!this.state.workoutStart){
+        const t=Date.now();
+        this.setState({workoutStart:t});
+        clearInterval(this._wt);
+        this._wt=setInterval(()=>this.setState(s=>s.workoutStart?{workoutElapsed:Math.floor((Date.now()-s.workoutStart)/1000)}:null),1000);
+      }
+    }
   }
   startRest(sec){ clearInterval(this._rt); this.setState({restLeft:sec,restTotal:sec}); this._rt=setInterval(()=>{ this.setState(s=>{ if(s.restLeft<=1){ clearInterval(this._rt); return {restLeft:0}; } return {restLeft:s.restLeft-1}; }); },1000); }
   skipRest(){ clearInterval(this._rt); this.setState({restLeft:0}); }
   addRest(){ this.setState(s=>({restLeft:s.restLeft+15,restTotal:s.restTotal+15})); }
-  nextEx(){ const wk=this.getWorkout(); this.setState(s=>{ if(s.exIndex>=wk.length-1){ return {screen:'entreno',entrenoView:'list',exIndex:0}; } return {exIndex:s.exIndex+1}; }); }
+  nextEx(){
+    const wk=this.getWorkout();
+    if(this.state.exIndex>=wk.length-1){
+      clearInterval(this._wt);
+      const elapsed=this.state.workoutElapsed||0;
+      const calsBurned=Math.round(5.5*this.computePlan().kg*(elapsed/3600));
+      this.setState({screen:'entreno',entrenoView:'list',exIndex:0,workoutStart:null,workoutElapsed:0,workoutCalsBurned:calsBurned,workoutSummary:{elapsed,calsBurned}});
+    } else {
+      this.setState(s=>({exIndex:s.exIndex+1}));
+    }
+  }
   prevEx(){ this.setState(s=>({exIndex:Math.max(0,s.exIndex-1)})); }
   componentDidMount(){
     if(typeof matchMedia!=='undefined'){
@@ -3685,7 +3741,7 @@ class Component extends DCLogic {
       this._mq.addEventListener('change',this._mqCb);
     }
   }
-  componentWillUnmount(){ clearInterval(this._rt); if(this._mq&&this._mqCb) this._mq.removeEventListener('change',this._mqCb); }
+  componentWillUnmount(){ clearInterval(this._rt); clearInterval(this._wt); if(this._mq&&this._mqCb) this._mq.removeEventListener('change',this._mqCb); }
   getMeals(){
     if(this.state.customMeals){
       return this.state.customMeals.map(m=>({id:m.id,name:m.name||'Comida',time:m.time||'',kcal:m.kcal||0,protein:m.protein||0,carbs:m.carbs||0,fat:m.fat||0,variants:[this._parseFoods(m.foodsText)]}));
@@ -4070,15 +4126,20 @@ class Component extends DCLogic {
     const exIdx=Math.min(this.state.exIndex,Math.max(0,wk.length-1));
     const ex=wk.length?this.resolveEx(wk[exIdx]):{id:'',muscle:'',sets:0,reps:0,unit:'reps',rest:60,name:'',weight:0,equip:'',variantIdx:0,variants:[{name:'',equip:''}]};
     const sets=wk.length?this.getSets(ex):[];
-    const setRows=sets.map((st,idx)=>({
-      num:idx+1, weight:st.weight, reps:st.reps, unit:ex.unit, done:st.done, notDone:!st.done,
-      hasWeight:ex.weight>0, bodyweight:ex.weight===0,
-      incW:()=>this.mutate(ex,idx,{weight:Math.round((st.weight+2.5)*10)/10}),
-      decW:()=>this.mutate(ex,idx,{weight:Math.max(0,Math.round((st.weight-2.5)*10)/10)}),
-      incR:()=>this.mutate(ex,idx,{reps:st.reps+1}),
-      decR:()=>this.mutate(ex,idx,{reps:Math.max(0,st.reps-1)}),
-      toggle:()=>this.toggleDone(ex,idx)
-    }));
+    const exWUnit=this.state.units.weight;
+    const setRows=sets.map((st,idx)=>{
+      const stepKg=exWUnit==='lbs'?(5/2.20462):2.5;
+      const dispW=exWUnit==='lbs'?Math.round(st.weight*2.20462*10)/10:st.weight;
+      return {
+        num:idx+1, weight:dispW, reps:st.reps, unit:ex.unit, done:st.done, notDone:!st.done,
+        hasWeight:ex.weight>0, bodyweight:ex.weight===0,
+        incW:()=>this.mutate(ex,idx,{weight:Math.round((st.weight+stepKg)*20)/20}),
+        decW:()=>this.mutate(ex,idx,{weight:Math.max(0,Math.round((st.weight-stepKg)*20)/20)}),
+        incR:()=>this.mutate(ex,idx,{reps:st.reps+1}),
+        decR:()=>this.mutate(ex,idx,{reps:Math.max(0,st.reps-1)}),
+        toggle:()=>this.toggleDone(ex,idx)
+      };
+    });
     const exDots=wk.map((_,k)=>({color:k<=exIdx?'#7CF5A0':'var(--bd2)'}));
     const exercisePreview=wk.map(e=>{const r=this.resolveEx(e);return {name:r.name,muscle:e.muscle,target:e.sets+'×'+e.reps,img:r.img||'',img2:r.img2||''};});
     // sustitución de ejercicio
@@ -4464,6 +4525,9 @@ class Component extends DCLogic {
       exNum:exIdx+1, exTotal:wk.length, exName:ex.name, exMuscle:ex.muscle, exGif:'gif_'+ex.id, exImgUrl, exImg2Url, hasExImg,
       exTarget:ex.sets+' series · '+ex.reps+' '+ex.unit+' · '+ex.rest+'s descanso',
       exDots, setRows,
+      exWeightUnit:exWUnit, toggleExWeightUnit:()=>this.setUnit('weight',exWUnit==='lbs'?'kg':'lbs'),
+      workoutTimerActive:!!this.state.workoutStart,
+      workoutTimerMMSS:(()=>{const e=this.state.workoutElapsed||0;return Math.floor(e/60)+':'+String(e%60).padStart(2,'0');})(),
       showPrev:exIdx>0, nextLabel:exIdx>=wk.length-1?'Terminar entrenamiento':'Siguiente ejercicio',
       onPrevEx:()=>this.prevEx(), onNextEx:()=>this.nextEx(),
       restActive:this.state.restLeft>0, restMMSS:restMM+':'+String(restSS).padStart(2,'0'),
@@ -4472,6 +4536,12 @@ class Component extends DCLogic {
       exEquip:ex.equip, exVariantCount:ex.variants.length,
       swapVariants, swapSheetOpen:this.state.swapOpen!=null,
       onOpenSwap:()=>this.openSwap(ex.id), onCloseSwap:()=>this.closeSwap(),
+      workoutSummaryOpen:!!this.state.workoutSummary,
+      summaryTime:(()=>{const e=this.state.workoutSummary?.elapsed||0;const m=Math.floor(e/60);const s=e%60;return m+'m '+String(s).padStart(2,'0')+'s';})(),
+      summaryKcal:this.state.workoutSummary?.calsBurned||0,
+      closeSummary:()=>this.setState({workoutSummary:null}),
+      hasWorkoutCals:(this.state.workoutCalsBurned||0)>0,
+      workoutCalsBurnedDisplay:this.state.workoutCalsBurned||0,
       // nutrición
       isNutricion:screen==='nutricion',
       nutriWeekDays, selMealDayName:dayNames[smd],
