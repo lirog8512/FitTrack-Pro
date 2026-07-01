@@ -2226,6 +2226,9 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
   --a-yellow:#7A6100;--a-yellow-bg:rgba(122,97,0,.06);--a-yellow-bd:rgba(122,97,0,.20);
 }
 @keyframes kenBurns{0%{transform:scale(1) translate(0,0);}50%{transform:scale(1.1) translate(-2%,-1.5%);}100%{transform:scale(1) translate(0,0);}}
+@keyframes wFade{0%,18%{opacity:1}25%,100%{opacity:0}}
+@keyframes wSlideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes wPulse{0%,100%{opacity:.55}50%{opacity:.85}}
 @keyframes exFlip{0%,35%{opacity:0}50%,85%{opacity:1}100%{opacity:0}}
 @keyframes scanLine{0%{top:0%;opacity:1}80%{opacity:1}100%{top:100%;opacity:0}}
 </style>
@@ -2236,8 +2239,79 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 
     <div style="position:absolute;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);z-index:60;pointer-events:none;"></div>
 
+    <!-- ===================== BIENVENIDA ===================== -->
+    <sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;inset:0;overflow:hidden;background:#07080A;">
+        <!-- Carrusel de fondo -->
+        <div style="position:absolute;inset:0;">
+          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&q=80&auto=format&fit=crop" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:wFade 20s infinite 0s;" onerror="this.style.display='none'">
+          <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80&auto=format&fit=crop" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:wFade 20s infinite 5s;" onerror="this.style.display='none'">
+          <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1200&q=80&auto=format&fit=crop" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:wFade 20s infinite 10s;" onerror="this.style.display='none'">
+          <img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=1200&q=80&auto=format&fit=crop" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:wFade 20s infinite 15s;" onerror="this.style.display='none'">
+        </div>
+        <!-- Overlay degradado -->
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,10,.55) 0%,rgba(7,8,10,.38) 35%,rgba(7,8,10,.72) 70%,rgba(7,8,10,.94) 100%);"></div>
+
+        <!-- Contenido -->
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 48px) 28px calc(env(safe-area-inset-bottom,0px) + 28px);">
+
+          <!-- Logo y marca -->
+          <div style="animation:wSlideUp .7s cubic-bezier(.2,.8,.2,1) both;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#7CF5A0,#5BD6E8);display:flex;align-items:center;justify-content:center;flex:none;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#07080A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11"/></svg>
+              </div>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#FFFFFF;letter-spacing:2px;">VITAL</span>
+            </div>
+            <div style="width:48px;height:2px;border-radius:1px;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);margin-top:18px;"></div>
+          </div>
+
+          <!-- Presentación central -->
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;animation:wSlideUp .85s cubic-bezier(.2,.8,.2,1) .15s both;">
+            <div style="font-size:34px;font-weight:800;color:#FFFFFF;letter-spacing:-.6px;line-height:1.15;text-wrap:pretty;">Tu entrenador<br>personal en<br><span style="background:linear-gradient(90deg,#7CF5A0,#5BD6E8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">el bolsillo.</span></div>
+
+            <p style="font-size:14.5px;color:rgba(255,255,255,.75);margin-top:18px;line-height:1.65;text-wrap:pretty;">Diseñamos tu plan de entrenamiento y nutrición completamente a tu medida. Te acompañamos en cada sesión, controlamos tu progreso y celebramos contigo cada logro.</p>
+
+            <!-- Pilares -->
+            <div style="display:flex;gap:8px;margin-top:22px;flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:20px;background:rgba(124,245,160,.12);border:1px solid rgba(124,245,160,.28);">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7CF5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11"/></svg>
+                <span style="font-size:12px;font-weight:600;color:#7CF5A0;">Entrenamiento</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:20px;background:rgba(91,214,232,.12);border:1px solid rgba(91,214,232,.28);">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5BD6E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v8a3 3 0 0 0 6 0V3M9 3v18M18 3c-1.5 1-2 3-2 6s.5 4 2 4v8"/></svg>
+                <span style="font-size:12px;font-weight:600;color:#5BD6E8;">Nutrición</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:20px;background:rgba(237,235,106,.10);border:1px solid rgba(237,235,106,.25);">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EDEB6A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+                <span style="font-size:12px;font-weight:600;color:#EDEB6A;">Progreso</span>
+              </div>
+            </div>
+
+            <p style="font-size:13px;color:rgba(255,255,255,.55);margin-top:20px;line-height:1.6;font-style:italic;">"El único mal entrenamiento es el que no hiciste. Cada pequeño paso te acerca a tu mejor versión."</p>
+          </div>
+
+          <!-- Nombre y CTA -->
+          <div style="animation:wSlideUp .9s cubic-bezier(.2,.8,.2,1) .3s both;">
+            <div style="height:1px;background:rgba(255,255,255,.12);margin-bottom:24px;"></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:10px;">¿Cómo te llamas?</div>
+            <input
+              type="text"
+              value="{{ welcomeNameVal }}"
+              onInput="{{ onWelcomeName }}"
+              placeholder="Tu nombre..."
+              autocomplete="given-name"
+              style="width:100%;padding:16px 18px;border-radius:16px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.09);color:#FFFFFF;font-size:17px;font-weight:600;font-family:inherit;backdrop-filter:blur(8px);outline:none;box-sizing:border-box;"
+            >
+            <button onClick="{{ onStartWelcome }}" style="width:100%;margin-top:12px;padding:17px;border-radius:16px;border:none;background:linear-gradient(90deg,#7CF5A0,#5BD6E8);color:#07080A;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:-.1px;">Comenzar mi plan →</button>
+            <div style="text-align:center;margin-top:14px;font-size:11.5px;color:rgba(255,255,255,.35);">Sin publicidad · Sin suscripción · 100% tuyo</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
     <!-- ===================== ONBOARDING ===================== -->
-    <sc-if value="{{ isOnboarding }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ isOnboarding }}" hint-placeholder-val="{{ false }}">
       <div style="position:absolute;inset:0;padding:calc(env(safe-area-inset-top,0px) + 12px) 22px 22px;display:flex;flex-direction:column;">
         <div style="display:flex;align-items:center;gap:13px;margin-bottom:22px;">
           <sc-if value="{{ showBack }}" hint-placeholder-val="{{ true }}">
@@ -2595,7 +2669,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
           </div>
           <div style="position:absolute;left:18px;bottom:14px;right:18px;pointer-events:none;">
             <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:#7CF5A0;text-transform:uppercase;">{{ todayDate }}</div>
-            <div style="font-size:25px;font-weight:800;letter-spacing:-.4px;color:#FFFFFF;margin-top:3px;">Hola, atleta</div>
+            <div style="font-size:25px;font-weight:800;letter-spacing:-.4px;color:#FFFFFF;margin-top:3px;">Hola, {{ homeGreetingName }}</div>
           </div>
         </div>
 
@@ -3411,7 +3485,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#07080A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
             </div>
             <div>
-              <div style="font-size:20px;font-weight:800;">{{ userSexo||'Usuario' }}</div>
+              <div style="font-size:20px;font-weight:800;">{{ profileUserName }}</div>
               <div style="font-size:13px;color:var(--muted);margin-top:3px;">{{ userAge }} años · {{ profileKg }} {{ weightUnit }} · {{ profileHeight }} cm</div>
             </div>
           </div>
@@ -3545,7 +3619,7 @@ body{background:#07080A;font-family:'Manrope',Helvetica,Arial,sans-serif;}
 const NUTRI_ANALYZER_URL = 'https://vital-food-analyzer.lirog15.workers.dev';
 
 class Component extends DCLogic {
-  state = { screen:'onboarding', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, replicateOpen:false, replicateDays:[], adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, nutriPhotoError:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true, workoutStart:null, workoutElapsed:0, workoutCalsBurned:0, workoutSummary:null };
+  state = { screen:'welcome', welcomeName:'', qIndex:0, answers:{}, entrenoView:'list', exIndex:0, logs:{}, restLeft:0, restTotal:0, selDay:new Date().getDay()===0?6:(new Date().getDay()-1), selMealDay:new Date().getDay()===0?6:(new Date().getDay()-1), mealsDone:{}, photoOpen:false, extra:{kcal:0,protein:0,carbs:0,fat:0}, exSwap:{}, swapOpen:null, mealSwap:{}, mealSwapOpen:null, foodSwap:{}, foodSwapOpen:null, replicateOpen:false, replicateDays:[], adjustOpen:false, stepsGoal:8000, theme:(typeof matchMedia!=='undefined'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark', themeAuto:true, units:{weight:'kg',height:'cm',distance:'km'}, healthOpen:false, healthPerms:{pasos:true,peso:true,fc:true,sueno:true,entreno:true}, customWorkout:null, customMeals:null, builderTab:'entreno', weightLog:null, weighOpen:false, weighDraft:null, pdfImporting:false, pdfError:null, progressPhotos:[], nutriPhotoOpen:false, nutriPhotoResult:null, nutriPhotoError:null, bodyPhotoOpen:false, cropOpen:false, cropImgUrl:null, bodyAnalyzing:false, bodyAnalysisResult:null, photosExpanded:true, workoutStart:null, workoutElapsed:0, workoutCalsBurned:0, workoutSummary:null };
 
   questions(){
     return [
@@ -3898,6 +3972,7 @@ class Component extends DCLogic {
   setAnswer(key,val){ this.setState(s=>({answers:{...s.answers,[key]:val}})); }
   regenerate(){ this.setState({adjustOpen:false,logs:{},exSwap:{},mealSwap:{},mealsDone:{},extra:{kcal:0,protein:0,carbs:0,fat:0},foodSwap:{},replicateOpen:false,replicateDays:[],screen:'analysis'}); }
   reonboard(){ this.setState({adjustOpen:false,screen:'onboarding',qIndex:0}); }
+  startFromWelcome(){ const name=(this.state.welcomeName||'').trim(); this.setState(s=>({screen:'onboarding',qIndex:0,answers:{...s.answers,nombre:name||'Atleta'}})); }
   setStepsGoal(v){ this.setState({stepsGoal:Math.max(2000,Math.min(30000,v))}); }
   stepGoal(d){ this.setState(s=>({stepsGoal:Math.max(2000,Math.min(30000,s.stepsGoal+d))})); }
   setTheme(t){ this.setState({theme:t,themeAuto:false}); }
@@ -4471,12 +4546,19 @@ class Component extends DCLogic {
 
     return {
       // screen flags
+      isWelcome:screen==='welcome',
       isOnboarding:screen==='onboarding', isAnalysis:screen==='analysis', isHome:screen==='home',
       isStub:false,
       showTabs:['home','entreno','nutricion','progreso','perfil'].includes(screen),
       userName, userSexo, userAge,
+      homeGreetingName:userName||'atleta',
+      profileUserName:userName||(userSexo||'Atleta'),
       profileKg:wlog.length?toW(wlog[wlog.length-1].kg):'—',
       profileHeight:this.state.answers.altura??'—',
+      // bienvenida
+      welcomeNameVal:this.state.welcomeName||'',
+      onWelcomeName:(e)=>this.setState({welcomeName:e.target.value}),
+      onStartWelcome:()=>this.startFromWelcome(),
       stubLabel:stubLabels[screen]||'',
       // onboarding
       qKicker:q.kicker, qTitle:q.title, qSubtitle:q.subtitle||'', hasSubtitle:!!q.subtitle,
